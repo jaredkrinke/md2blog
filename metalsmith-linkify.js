@@ -1,7 +1,7 @@
 /** Metalsmith plugin to add links to each item, for example:
  * 
  * file.link = {
- *     fromRoot: "path/From/Root/" // Forward slashes only, with "index.html" removed
+ *     fromRoot: "path/From/Root/" // Forward slashes only
  *     absolute: "https://site.com/path/From/Root/" // Using site.url from global metadata
  * };
  */
