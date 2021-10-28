@@ -1,0 +1,29 @@
+{
+  "name": "md2blog",
+  "version": "0.1.0",
+  "description": "Builds a static dev blog from a pile of categorized Markdown files",
+  "type": "module",
+  "bin": { "md2blog": "./main.js" },
+  "scripts": {
+  },
+  "dependencies": {
+    "dot2svg-wasm": "git+https://github.com/jaredkrinke/modules.git#dot2svg-wasm-1.0.1",
+    "highlight.js": "^11.2.0",
+    "jstransformer-handlebars": "^1.1.0",
+    "marked": "^3.0.7",
+    "metalsmith": "^2.3.0",
+    "metalsmith-broken-link-checker": "^1.0.2",
+    "metalsmith-collections": "git+https://github.com/segmentio/metalsmith-collections.git#v1.0.0",
+    "metalsmith-discover-partials": "^0.1.2",
+    "metalsmith-drafts": "^1.0.0",
+    "metalsmith-express": "^0.1.0",
+    "metalsmith-filemetadata": "^2.1.0",
+    "metalsmith-layouts": "^2.3.1",
+    "metalsmith-metadata": "0.0.4",
+    "metalsmith-rootpath": "^1.0.4",
+    "metalsmith-static": "0.0.5",
+    "metalsmith-taxonomy": "^0.4.0",
+    "metalsmith-watch": "^1.0.3",
+    "route-parser": "0.0.5"
+  }
+}
