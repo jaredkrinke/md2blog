@@ -72,8 +72,12 @@ Metalsmith(siteRoot)
         {
             pattern: "posts/**/*.md",
 
-            // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
-            metadata: (file) => ({ tags: [...new Set([ file.category, ...(file.keywords ?? []) ])] }),
+            metadata: (file) => ({
+                layout: "post.hbs",
+
+                // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
+                tags: [...new Set([ file.category, ...(file.keywords ?? []) ])],
+            }),
         }
     ]))
     .use(metalsmithTaxonomy({
@@ -179,7 +183,7 @@ Metalsmith(siteRoot)
     .use(metalsmithLinkify())
     .use(metalsmithLayouts({
         directory: moduleTemplatesRelative,
-        default: "post.hbs",
+        default: "default.hbs",
         pattern: ["**/*.html", "feed.xml"],
     }))
     .use(serve ? metalsmithExpress({ host: "localhost" }) : noop)
