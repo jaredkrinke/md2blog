@@ -1,0 +1,14 @@
+<nav>
+<ul>
+{{#each tags}}
+{{#if (and (lookup .. "isTagIndex") (equal this (lookup .. "tag")))}}
+<li>{{this}}</li>
+{{else}}
+<li><a href="{{../rootPath}}posts/{{this}}/index.html">{{this}}</a></li>
+{{/if}}
+{{/each}}
+{{#if incomplete}}
+<li><a href="{{rootPath}}posts/index.html">&hellip;</a></li>
+{{/if}}
+</ul>
+</nav>

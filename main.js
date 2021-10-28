@@ -16,6 +16,7 @@ import metalsmithStatic from "metalsmith-static";
 import metalsmithTaxonomy from "metalsmith-taxonomy";
 import metalsmithWatch from "metalsmith-watch";
 import path from "path";
+import url from "url";
 import { createReplaceLinksOptions } from "./marked-replace-links.js";
 import metalsmithGraphvizDiagrams from "./metalsmith-graphviz-diagrams.js";
 import metalsmithInjectFiles from "./metalsmith-inject-files.js";
@@ -49,13 +50,19 @@ const noop = (files, metalsmith, done) => done();
 // Translate .md links to .html (with anchor support)
 const translateLink = link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2");
 
-Metalsmith(process.cwd())
+// Find templates and CSS
+const siteRoot = process.cwd();
+const moduleRootRelative = path.relative(siteRoot, path.dirname(url.fileURLToPath(import.meta.url)));
+const moduleStaticRelative = path.join(moduleRootRelative, "static");
+const moduleTemplatesRelative = path.join(moduleRootRelative, "templates");
+
+Metalsmith(siteRoot)
     .clean(clean)
     .source("./content")
     .destination("./out")
     .use(metalsmithMetadata({ site: "site.json" }))
     .use(metalsmithStatic({
-        src: "static",
+        src: moduleStaticRelative,
         dest: ".",
     }))
     .use(metalsmithNormalizeSlashes()) // Only needed due to this metalsmith-taxonomy issue: https://github.com/webketje/metalsmith-taxonomy/issues/14
@@ -168,10 +175,10 @@ Metalsmith(process.cwd())
     }))
     .use(metalsmithNormalizeSlashes({ usePlatformSeparators: true })) // Platform separators are needed to compute rootPath
     .use(metalsmithRootPath())
-    .use(metalsmithDiscoverPartials({ directory: "templates" }))
+    .use(metalsmithDiscoverPartials({ directory: moduleTemplatesRelative }))
     .use(metalsmithLinkify())
     .use(metalsmithLayouts({
-        directory: "templates",
+        directory: moduleTemplatesRelative,
         default: "default.hbs",
         pattern: ["**/*.html", "feed.xml"],
     }))
@@ -181,8 +188,8 @@ Metalsmith(process.cwd())
             paths: {
                 // Just rebuild everything (technically only the modified post and all index pages *need* to be rebuilt)
                 "${source}/**/*": "**/*",
-                "static/**/*": "**/*",
-                "templates/**/*": "**/*",
+                [path.join(moduleStaticRelative, "**/*")]: "**/*",
+                [path.join(moduleTemplatesRelative, "**/*")]: "**/*",
             },
             livereload: true,
         })

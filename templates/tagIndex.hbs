@@ -1,0 +1,7 @@
+{{#> basePartial navigationPartialName="navigationTagIndexPartial"}}
+<ul>
+{{#each postsWithTag}}
+<li>{{> articleSummaryPartial linkPrefix=../rootPath}}</li>
+{{/each}}
+</ul>
+{{/basePartial}}

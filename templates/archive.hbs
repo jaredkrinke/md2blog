@@ -1,0 +1,7 @@
+{{#> basePartial navigationPartialName="navigationTagIndexPartial" title="Archive of all posts since the beginning of time"}}
+<ul>
+{{#each posts}}
+<li>{{> articleSummaryPartial linkPrefix=../rootPath}}</li>
+{{/each}}
+</ul>
+{{/basePartial}}

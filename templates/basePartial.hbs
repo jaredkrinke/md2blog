@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>{{site.title}}{{#if title}}: {{title}}{{/if}}</title>
+{{#if description}}<meta name="description" content="{{description}}" />{{/if}}
+{{#if keywords}}<meta name="keywords" content="{{#each keywords}}{{this}}{{#unless @last}},{{/unless}}{{/each}}" />{{/if}}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="{{rootPath}}css/style.css" />
+{{#if isRoot}}<link rel="alternate" type="application/rss+xml" href="{{rootPath}}feed.xml" />{{/if}}
+</head>
+<body>
+<header>
+<h1><a href="{{rootPath}}index.html">{{site.title}}</a></h1>
+<p>{{site.description}}</p>
+{{#if navigationPartialName}}{{> (lookup . "navigationPartialName") }}{{/if}}
+</header>
+<main>
+{{> @partial-block }}
+</main>
+</body>
+</html>
