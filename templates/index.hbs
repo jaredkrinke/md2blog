@@ -1,10 +1,13 @@
-{{#> basePartial navigationPartialName="navigationRootPartial" isRoot=true description=site.description}}
+{{#*inline "indexNavigationPartial"}}
+{{> partialNavigation tags=tagsTop incomplete=(not (equal (lookup tagsAll "length") (lookup tagsTop "length"))) }}
+{{/inline}}
+{{#> partialBase navigationPartialName="indexNavigationPartial" isRoot=true description=site.description}}
 <ul>
 {{#each posts_recent}}
-<li>{{> articleSummaryPartial}}</li>
+<li>{{> partialArticleSummary}}</li>
 {{/each}}
 </ul>
 <footer>
 <p><a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>
-{{/basePartial}}
+{{/partialBase}}

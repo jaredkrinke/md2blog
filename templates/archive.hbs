@@ -1,7 +1,7 @@
-{{#> basePartial navigationPartialName="navigationTagIndexPartial" title="Archive of all posts since the beginning of time"}}
+{{#> partialBase navigationPartialName="partialTagIndexNavigation" title="Archive of all posts since the beginning of time"}}
 <ul>
 {{#each posts}}
-<li>{{> articleSummaryPartial linkPrefix=../rootPath}}</li>
+<li>{{> partialArticleSummary linkPrefix=../rootPath}}</li>
 {{/each}}
 </ul>
-{{/basePartial}}
+{{/partialBase}}

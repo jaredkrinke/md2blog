@@ -179,7 +179,7 @@ Metalsmith(siteRoot)
     .use(metalsmithLinkify())
     .use(metalsmithLayouts({
         directory: moduleTemplatesRelative,
-        default: "default.hbs",
+        default: "post.hbs",
         pattern: ["**/*.html", "feed.xml"],
     }))
     .use(serve ? metalsmithExpress({ host: "localhost" }) : noop)

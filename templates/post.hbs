@@ -1,0 +1,15 @@
+{{#*inline "postNavigationPartial"}}
+{{> partialNavigation tags=tags }}
+{{/inline}}
+{{#> partialBase navigationPartialName="postNavigationPartial"}}
+<article>
+<header>
+<h1><a href="index.html">{{title}}</a></h1>
+{{> partialDate}}
+</header>
+{{{contents}}}
+<footer>
+<p><a href="{{rootPath}}index.html">Back to home</a></p>
+</footer>
+</article>
+{{/partialBase}}
