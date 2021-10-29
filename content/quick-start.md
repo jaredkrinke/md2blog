@@ -1,0 +1,159 @@
+# Installation
+TODO
+
+# Concepts
+md2blog reads input from a single **input directory** named `content/` and writes out a static site to an **output directory** named `out/`.
+
+The input directory contains **posts**, **pages**, **site metadata**, and **static assets**:
+
+* **Posts** represent individual articles (stored under `posts/<category>/<post>.md`)
+* **Pages** are just additional (and optional) arbitrary pages on the site (e.g. `faq.md`)
+* **Site metadata** is information about the site (e.g. title and root URL, stored in `site.json`)
+* **Static assets** are non-Markdown files that are copied verbatim to the output directory (e.g. `favicon.ico`)
+
+Posts and pages are authored in plain text using [Markdown](https://guides.github.com/features/mastering-markdown/) (`.md` extension), with [YAML](https://en.wikipedia.org/wiki/YAML) front matter for specifying metadata (such as the date of the post).
+
+# Directory structure
+* `content/`: Root directory that contains all source content for the site
+  * `site.json`: Site-wide metadata
+  * `assets/`: Directory for static assets (e.g. images)
+  * `posts/`: Directory for all posts
+    * `category1/`: Directory for posts related to "category1"
+      * `post1.md`: Post related to "category1"
+      * `post2.md`: Another "category1" post
+    * `category2/`: Another category
+      * `post3.md`: "category2" post
+      * etc.
+
+# Example content
+TODO: Include a link to a repository with all this stuff. Or even instructions on how to use a repository as a template!
+
+## site.json
+Here's an example `site.json` file:
+
+```json
+{
+    "title": "My dev blog",
+    "url": "https://mydevblog.com/",
+    "description": "A very good dev blog indeed"
+}
+```
+
+Schema:
+
+| Field | Type | Required? | Note |
+| --- | --- | --- | --- |
+| `title` | string | Required | |
+| `url` | string | Recommended | Must end with "/" |
+| `description` | string | Optional | |
+
+Note that the site *will* generally work without specifying a URL, but the Atom feed will be forced to use relative links instead of absolute URLs.
+
+## Posts
+Posts are written in [Markdown](https://guides.github.com/features/mastering-markdown/) and use [YAML](https://en.wikipedia.org/wiki/YAML) for front matter (fenced above and below by three hyphens: `---`).
+
+### Front matter
+Here's an example showing all of the supported YAML front matter properties (`keywords` and `draft` are optional, the rest are required):
+
+```yaml
+---
+title: First post
+description: First post on my blog, with a relative link.
+date: 2021-10-26
+keywords: [additional-tag]
+draft: true
+---
+(Markdown content follows...)
+```
+
+Schema:
+
+| Field | Type | Required? | Note |
+| --- | --- | --- | --- |
+| `title` | string | Required | |
+| `description` | string | Required | This text is displayed on index pages |
+| `date` | YYYY-MM-DD | Required | |
+| `keywords` | string[] | Optional | Additional tags for categorizing the post |
+| `draft` | Boolean | Optional | If `true`, the post will only be built when serving locally |
+
+### Content
+Here's example Markdown content, demonstrating relative links (these links get translated to the corresponding HTML files and checked at build time; they also work in VS Code's and GitHub's Markdown previewers):
+
+```md
+# Relative links
+Here's a relative link to another post in this category: [link](post2.md)!
+
+And here's one to another category, with an anchor: [link 2](../category2/post3.md#some-section).
+
+# Image
+Here's an image:
+![test](../../assets/test.png)
+```
+
+Finally, here is an example of including a code block (specifying the language is recommended, but optional):
+
+````md
+# Code block
+Here's some code:
+
+```javascript
+const add = (a, b) => a + b;
+```
+````
+
+# Building and testing locally
+To build the site locally, use the following command (note: `--clean` is optional):
+
+```sh
+npx md2blog --clean
+```
+
+The file will be written to the `out/` directory.
+
+To test the site, simply open `out/index.html` directly from the file system.
+
+## Local web server with automatic reloading
+You can also test using a local web server that will automatically regenerate and reload pages when you save content files to disk using this command:
+
+```sh
+npx md2blog --serve
+```
+
+# Publishing
+md2blog doesn't have any built-in support for publishing sites, but all you have to do is simply copy everything from `out/` to your web root.
+
+## Publishing to GitHub pages
+If you're planning to publish to [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages), here's an example:
+
+1. Set up GitHub pages to publish from some branch, e.g. `web`
+1. Build your site with `npx md2blog --clean`
+1. Initialize Git in `out/` and upload for the first time:
+
+```sh
+cd out
+git init .
+git checkout -B web
+git remote add origin <your remote repository>
+git add .
+git commit -m "Upload site"
+git push -u origin web
+cd ..
+```
+
+To update your site in the future:
+
+```sh
+npx md2blog --clean
+cd out
+git add .
+git commit -m "Update site"
+git push
+cd ..
+```
+
+Note that if you want to use a custom domain, just follow [GitHub's custom domain directions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) and then plop your `CNAME` file in the `content/` directory prior to building your site.
+
+# Now go build your dev blog!
+That's all there is to md2blog. There's no need to worry about themes or plugins. Just start writing!
+
+If you have additional questions, consult the [FAQ](faq.md). If you don't see an answer there, feel free to post in the [md2blog discussion board](https://github.com/jaredkrinke/md2blog/discussions) (or [report an issue](https://github.com/jaredkrinke/md2blog/issues), if something is broken).
