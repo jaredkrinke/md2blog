@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build": "npx md2blog --clean",
+    "serve": "npx md2blog --serve"
+  },
+  "dependencies": {
+    "md2blog": "file:../md2blog"
+  }
+}
