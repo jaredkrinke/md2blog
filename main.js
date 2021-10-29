@@ -170,13 +170,13 @@ Metalsmith(siteRoot)
         cssClasses: true,
         useDefaultFonts: true,
     }))
-    .use(metalsmithMarked())
     .use(metalsmithInjectFiles({
         "index.html": { layout: "index.hbs" },
         "posts/index.html": { layout: "archive.hbs" },
         "404.html": { layout: "404.hbs" },
         "feed.xml": { layout: "feed.hbs" },
     }))
+    .use(metalsmithMarked())
     .use(metalsmithNormalizeSlashes({ usePlatformSeparators: true })) // Platform separators are needed to compute rootPath
     .use(metalsmithRootPath())
     .use(metalsmithDiscoverPartials({ directory: moduleTemplatesRelative }))
