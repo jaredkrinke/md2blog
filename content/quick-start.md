@@ -79,7 +79,7 @@ Schema:
 ### Content
 Here's example Markdown content, demonstrating relative links (these links get translated to the corresponding HTML files and checked at build time; they also work in VS Code's and GitHub's Markdown previewers):
 
-```md
+```markdown
 # Relative links
 Here's a relative link to another post in this category: [link](post2.md)!
 
@@ -92,7 +92,7 @@ Here's an image:
 
 Finally, here is an example of including a code block (specifying the language is recommended, but optional):
 
-````md
+````markdown
 # Code block
 Here's some code:
 
