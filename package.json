@@ -6,6 +6,9 @@
   "bin": {
     "md2blog": "./main.js"
   },
+  "scripts": {
+    "test": "npx mocha"
+  },
   "files": [
     "*.js",
     "static/**/*",
