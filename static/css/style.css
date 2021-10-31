@@ -70,7 +70,8 @@ h5 { font-size: 1rem; font-weight: normal; }
 body { background-color: #181818; }
 * { color: #c8c8c8; }
 main footer { border-top: 1px solid #444; }
-pre, tr:nth-child(even) { background-color: #282828;}
+code { background-color: #333; border-radius: 0.2em; }
+pre, pre code, tr:nth-child(even) { background-color: #282828;}
 th { background-color: #444; color: #ddd }
 pre, table, th, tr, td { border-color: #777; }
 
