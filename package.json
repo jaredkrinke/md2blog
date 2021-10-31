@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Builds a static dev blog from a categorized set of Markdown files",
   "type": "module",
-  "bin": { "md2blog": "./main.js" },
+  "bin": {
+    "md2blog": "./main.js"
+  },
   "files": [
     "*.js",
     "static/**/*",
@@ -28,5 +30,8 @@
     "metalsmith-taxonomy": "^0.4.0",
     "metalsmith-watch": "^1.0.3",
     "route-parser": "0.0.5"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.3"
   }
 }
