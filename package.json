@@ -35,6 +35,7 @@
     "route-parser": "0.0.5"
   },
   "devDependencies": {
+    "cheerio": "^1.0.0-rc.10",
     "mocha": "^9.1.3"
   }
 }

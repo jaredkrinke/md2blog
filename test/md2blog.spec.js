@@ -2,7 +2,9 @@ import assert from "assert";
 import { exec } from "child_process";
 import { promises } from "fs";
 import { describe, it } from "mocha";
+import path from "path";
 import { promisify } from "util";
+import cheerio from "cheerio";
 
 const execAsync = promisify(exec);
 
@@ -17,15 +19,41 @@ const testAsync = async (workingDirectory, commandLineArgumentsString, validate 
         cwd: workingDirectory,
         windowsHide: true,
         timeout: 10 * 1000, // ms
-    }));
+    }), workingDirectory);
 
     // TODO: Actually delete the output directory?
+};
+
+// Validate output, including selecting elements and verifying their text content
+const validateOutput = async (workingDirectory, files, outputDirectory = "out") => {
+    for (const file of files) {
+        const buffer = await promises.readFile(path.join(workingDirectory, outputDirectory, file.name));
+        if (file.tests) {
+            const doc = cheerio.load(buffer);
+            for (const test of file.tests) {
+                const element = doc(test[0]);
+                assert.equal(element.text(), test[1]);
+            }
+        }
+    }
 };
 
 
 describe("md2blog", () => {
     describe("Trivial site", () => {
-        it("Builds successfully", async () => testAsync("test/data/trivial-site", ""));
+        it("Builds successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
+                await assert.doesNotReject(execPromise);
+                await validateOutput(workingDirectory, [
+                    {
+                        name: "index.html",
+                        tests: [
+                            ["header > h1 > a", "Trivial site"],
+                        ],
+                    },
+                    { name: "404.html" },
+                ]);
+            })
+        );
     });
 
     describe("Command line arguments", () => {
