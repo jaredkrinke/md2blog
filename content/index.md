@@ -11,7 +11,8 @@ The key differentiator for md2blog is the "self-contained, organized" part. By t
 Additionally, the produced site is "minimal, but fully functional" in the following sense:
 
 * Page templates use **clean, semantic HTML** with only a few kilobytes of CSS (and no JavaScript)
-* **Relative links are used wherever possible**, so the site can be hosted anywhere (or even viewed directly from the file system)
+* **Relative links are used wherever possible**, so the site can be hosted anywhere
+  * The site can even be viewed directly from the file system (no web server required)
 * **Syntax highlighting** is automatically added to code blocks
 * An [Atom](https://validator.w3.org/feed/docs/atom.html)/RSS news feed is automatically generated
 
