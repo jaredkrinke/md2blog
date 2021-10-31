@@ -40,21 +40,22 @@ const validateOutput = async (workingDirectory, files, outputDirectory = "out") 
 
 
 describe("md2blog", () => {
-    describe("Trivial site", () => {
-        it("Builds successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
-                await assert.doesNotReject(execPromise);
-                await validateOutput(workingDirectory, [
-                    {
-                        name: "index.html",
-                        tests: [
-                            ["header > h1 > a", "Trivial site"],
-                        ],
-                    },
-                    { name: "404.html" },
-                ]);
-            })
-        );
-    });
+    it("Trivial site builds successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
+            await assert.doesNotReject(execPromise);
+            await validateOutput(workingDirectory, [
+                {
+                    name: "index.html",
+                    tests: [
+                        ["header > h1 > a", "Trivial site"],
+                    ],
+                },
+                { name: "404.html" },
+                { name: "feed.xml" },
+                { name: "posts/index.html" },
+                { name: "css/style.css" },
+            ]);
+        })
+    );
 
     describe("Command line arguments", () => {
         it("Input directory", async () => {
