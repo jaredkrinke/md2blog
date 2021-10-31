@@ -47,8 +47,10 @@ describe("md2blog", function () {
     this.timeout(30 * 1000); // In milliseconds (note: these tests are slow because they spin up new processes and do a lot of file IO)
 
     describe("Basic functionality", () => {
-        it("Trivial site builds successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
+        it("Builds trivial site successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
             await assert.doesNotReject(execPromise, "Builds successfully");
+
+            // Verify all expected files are produced
             await validateOutputAsync(workingDirectory, [
                 {
                     name: "index.html",
@@ -65,28 +67,32 @@ describe("md2blog", function () {
     });
 
     describe("Command line arguments", () => {
-        it("Input directory reads from different location", async () => testAsync("test/data/input-dir", "-i root", async (execPromise, workingDirectory) => {
+        it("Reads from specified input directory", async () => testAsync("test/data/input-dir", "-i root", async (execPromise, workingDirectory) => {
             await execPromise;
             await validateOutputAsync(workingDirectory, [ { name: "index.html" } ]);
         }));
     
-        it("Output directory writes to a different location", async () => testAsync("test/data/output-dir", "-o www", async (execPromise, workingDirectory) => {
+        it("Writes to specified output directory", async () => testAsync("test/data/output-dir", "-o www", async (execPromise, workingDirectory) => {
             await execPromise;
             await validateOutputAsync(workingDirectory, [ { name: "index.html" } ], "www");
         }));
 
-        it("Cleaning clears the output directory", async () => {
+        it("Clears the output directory when requested", async () => {
             const root = "test/data/trivial-site";
             const outputDirectory = path.join(root, "out");
             const extraFilePath = path.join(outputDirectory, "extra.txt");
+
+            // Add an extra file to the output directory
             try { await promises.mkdir(outputDirectory) } catch (err) {}
             await promises.writeFile(extraFilePath, "extra file");
 
+            // Build without cleaning and ensure file remains
             await testAsync(root, "", async (execPromise, workingDirectory) => {
                 await execPromise;
                 await assert.doesNotReject(promises.readFile(extraFilePath), "Extra file still exists");
             });
 
+            // Build with cleaning and ensure file is gone
             await testAsync(root, "--clean", async (execPromise, workingDirectory) => {
                 await execPromise;
                 await validateOutputAsync(workingDirectory, [{ name: "index.html" } ]);
@@ -94,18 +100,19 @@ describe("md2blog", function () {
             });
         });
 
-        it("Exclude drafts", async () => {
+        it("Excludes drafts when requested", async () => {
             const root = "test/data/example";
 
+            // By default, drafts are excluded
             await testAsync(root, "", async (execPromise, workingDirectory) => {
                 await execPromise;
                 await validateOutputAsync(workingDirectory, [{
                     name: "posts/category1/draft.html",
                     exists: false,
-                }])
-                await validateOutputAsync(workingDirectory, [{ name: "posts/category1/draft.html" }]);
+                }]);
             });
 
+            // Test both was of including drafts
             await testAsync(root, "-d", async (execPromise, workingDirectory) => {
                 await execPromise;
                 await validateOutputAsync(workingDirectory, [{ name: "posts/category1/draft.html" }]);
