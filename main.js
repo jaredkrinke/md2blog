@@ -32,7 +32,7 @@ import metalsmithSyntaxHighlighting from "./metalsmith-syntax-highlighting.js";
 const program = new Command()
     .option("-s, --serve", "serve web site, with automatic reloading")
     .option("-c, --clean", "clean output directory before processing")
-    .option("-d, --no-drafts", "exclude drafts from output")
+    .option("-d, --drafts", "include drafts in output")
     .option("-i, --input <dir>", "input directory", "content")
     .option("-o, --output <dir>", "output directory", "out")
     .parse();
@@ -40,7 +40,7 @@ const program = new Command()
 const commandLineOptions = program.opts();
 const serve = commandLineOptions.serve ?? false;
 const clean = commandLineOptions.clean ?? false;
-const drafts = commandLineOptions["exclude-drafts"];
+const drafts = commandLineOptions.drafts ?? false;
 const inputDirectory = commandLineOptions.input;
 const outputDirectory = commandLineOptions.output;
 
@@ -78,7 +78,7 @@ Metalsmith(siteRoot)
         dest: ".",
     }))
     .use(metalsmithNormalizeSlashes()) // Only needed due to this metalsmith-taxonomy issue: https://github.com/webketje/metalsmith-taxonomy/issues/14
-    .use((drafts || serve) ? noop : metalsmithDrafts()) // By default, exclude drafts when building, but include them when serving locally
+    .use(drafts ? noop : metalsmithDrafts()) // Note: this plugin *removes* drafts
     .use(metalsmithRouteMetadata({ "posts/(:category/):postName.md": { category: "misc" } }))
     .use(metalsmithFileMetadata([
         {
