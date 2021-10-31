@@ -155,11 +155,27 @@ describe("md2blog", function () {
                 },
             ]));
         
-            it("Inserts site metadata", () => {
-            });
+            it("Inserts site metadata", () => validateOutputAsync(root, [
+                {
+                    "name": "index.html",
+                    "tests": [
+                        { select: $ => $("head title").text(), expected: "md2blog example" },
+                        { select: $ => $("body > header > h1").text(), expected: "md2blog example" },
+                        { select: $ => $("meta[name='description']").attr("content"), expected: "Example site used for testing md2blog" },
+                        { select: $ => $("body > header > p").text(), expected: "Example site used for testing md2blog" },
+                    ]
+                },
+            ]));
         
-            it("Processes arbitrary non-post pages", () => {
-            });
+            it("Processes arbitrary non-post pages", () => validateOutputAsync(root, [
+                {
+                    "name": "page.html",
+                    "tests": [
+                        { select: $ => $("#big-heading").length, expected: 1 },
+                        { select: $ => $("article > p").text(), expected: "This is a page, not a post." },
+                    ]
+                },
+            ]));
 
             it("Processes posts", () => {
             });
