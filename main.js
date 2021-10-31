@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { Command } from "commander";
 import handlebars from "handlebars";
 import marked from "marked";
 import Metalsmith from "metalsmith";
@@ -28,9 +29,20 @@ import metalsmithRouteMetadata from "./metalsmith-route-metadata.js";
 import metalsmithSyntaxHighlighting from "./metalsmith-syntax-highlighting.js";
 
 // Command line arguments
-const serve = process.argv.includes("--serve");
-const drafts = process.argv.includes("--drafts");
-const clean = !serve && process.argv.includes("--clean");
+const program = new Command()
+    .option("-s, --serve", "serve web site, with automatic reloading")
+    .option("-c, --clean", "clean output directory before processing")
+    .option("-d, --no-drafts", "exclude drafts from output")
+    .option("-i, --input <dir>", "input directory", "content")
+    .option("-o, --output <dir>", "output directory", "out")
+    .parse();
+
+const commandLineOptions = program.opts();
+const serve = commandLineOptions.serve ?? false;
+const clean = commandLineOptions.clean ?? false;
+const drafts = commandLineOptions["exclude-drafts"];
+const inputDirectory = commandLineOptions.input;
+const outputDirectory = commandLineOptions.output;
 
 // Handlebars template custom helpers
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -58,8 +70,8 @@ const moduleTemplatesRelative = path.join(moduleRootRelative, "templates");
 
 Metalsmith(siteRoot)
     .clean(clean)
-    .source("./content")
-    .destination("./out")
+    .source(inputDirectory)
+    .destination(outputDirectory)
     .use(metalsmithMetadata({ site: "site.json" }))
     .use(metalsmithStatic({
         src: moduleStaticRelative,

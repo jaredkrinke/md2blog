@@ -1,18 +1,14 @@
 import assert from "assert";
+import cheerio from "cheerio";
 import { exec } from "child_process";
 import { promises } from "fs";
 import { describe, it } from "mocha";
 import path from "path";
 import { promisify } from "util";
-import cheerio from "cheerio";
 
 const execAsync = promisify(exec);
 
-const validateSuccessAsync = async (execPromise) => {
-    await assert.doesNotReject(execPromise);
-};
-
-const testAsync = async (workingDirectory, commandLineArgumentsString, validate = validateSuccessAsync) => {
+const testAsync = async (workingDirectory, commandLineArgumentsString, validate) => {
     const pathToModuleRoot = "../".repeat(Array.from(workingDirectory.matchAll(/[\\/]/g)).length + 1);
     const commandLine = `node ${pathToModuleRoot}main.js ${commandLineArgumentsString}`;
     await validate(execAsync(commandLine, {
@@ -40,7 +36,8 @@ const validateOutput = async (workingDirectory, files, outputDirectory = "out") 
 
 
 describe("md2blog", () => {
-    it("Trivial site builds successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
+    describe("Trivial site", () => {
+        it("Trivial site builds successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
             await assert.doesNotReject(execPromise);
             await validateOutput(workingDirectory, [
                 {
@@ -54,15 +51,19 @@ describe("md2blog", () => {
                 { name: "posts/index.html" },
                 { name: "css/style.css" },
             ]);
-        })
-    );
+        }));
+    });
 
     describe("Command line arguments", () => {
-        it("Input directory", async () => {
-        });
+        it("Input directory reads from different location", async () => testAsync("test/data/input-dir", "-i root", async (execPromise, workingDirectory) => {
+            await assert.doesNotReject(execPromise);
+            await validateOutput(workingDirectory, [ { name: "index.html" } ]);
+        }));
     
-        it("Output directory", async () => {
-        });
+        it("Output directory writes to a different location", async () => testAsync("test/data/output-dir", "-o www", async (execPromise, workingDirectory) => {
+            await assert.doesNotReject(execPromise);
+            await validateOutput(workingDirectory, [ { name: "index.html" } ], "www");
+        }));
 
         it("Clean output directory", async () => {
         });
