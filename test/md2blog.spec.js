@@ -350,13 +350,29 @@ describe("md2blog", function () {
                 }));
             });
         });
-    
-        describe("News feed", () => {
-            describe("Absolute links", () => {
-            });
-    
-            describe("Relative links", () => {
+    });
+
+    describe("Optional functionality", async () => {
+        const root = "test/data/example-without-url";
+        before(async () => {
+            await md2blogAsync({
+                root,
+                input: "content",
+                output: "out",
             });
         });
+
+        it("Creates an Atom feed with relative links if no URL supplied", () => validateOutputAsync(root, [
+            {
+                "name": "feed.xml",
+                "tests": [
+                    // Verify that no absolute links are present
+                    { select: $ => $("feed entry link").length, expected: 0 },
+
+                    // Verify that relative links are used in Atom feed entry content
+                    { select: $ => cheerio.load($("feed entry:nth-of-type(1) content").text())("p a").attr("href"), expected: "posts/category2/../category1/cat1post.html#source" },
+                ]
+            },
+        ]));
     });
 });
