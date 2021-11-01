@@ -36,7 +36,7 @@ const translateLink = link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.htm
 // Display formatting for dates
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 
-export const md2blog = (options) => {
+export const md2blogAsync = (options) => new Promise((resolve, reject) => {
     // Required
     const { input, output } = options;
 
@@ -206,6 +206,12 @@ export const md2blog = (options) => {
             })
             : noop)
         .use(ignoreBrokenLinks ? noop : metalsmithBrokenLinkChecker({ checkAnchors: true }))
-        .build(err => { if (err) throw err; });
-};
+        .build(err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+});
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import { md2blog } from "./md2blog.js";
+import { md2blogAsync } from "./md2blog.js";
 
 // Command line arguments
 const program = new Command()
@@ -13,4 +13,4 @@ const program = new Command()
     .option("--ignore-broken-links", "don't check for broken relative links")
     .parse();
 
-md2blog(program.opts());
+await md2blogAsync(program.opts());

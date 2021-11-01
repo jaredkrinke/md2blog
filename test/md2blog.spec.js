@@ -5,7 +5,7 @@ import { promises } from "fs";
 import { describe, it } from "mocha";
 import path from "path";
 import { promisify } from "util";
-import { md2blog } from "../md2blog.js";
+import { md2blogAsync } from "../md2blog.js";
 
 const execAsync = promisify(exec);
 
@@ -130,8 +130,8 @@ describe("md2blog", function () {
         const root = "test/data/example";
         const inputDirectory = path.join(root, "content");
         const outputDirectory = path.join(root, "out");
-        before(() => {
-            md2blog({
+        before(async () => {
+            await md2blogAsync({
                 root,
                 input: "content",
                 output: "out",
@@ -285,9 +285,29 @@ describe("md2blog", function () {
                     ]
                 },
             ]));
-    
-            describe("Broken links", () => {
-                // Page, anchor, and image
+
+            it("Fails on broken link", () => {
+                assert.rejects(md2blogAsync({
+                    root: "test/data/broken-link",
+                    input: "content",
+                    output: "out",
+                }));
+            });
+
+            it("Fails on broken link anchor", () => {
+                assert.rejects(md2blogAsync({
+                    root: "test/data/broken-anchor",
+                    input: "content",
+                    output: "out",
+                }));
+            });
+
+            it("Fails on broken image", () => {
+                assert.rejects(md2blogAsync({
+                    root: "test/data/broken-image",
+                    input: "content",
+                    output: "out",
+                }));
             });
         });
     
