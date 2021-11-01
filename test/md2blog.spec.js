@@ -5,10 +5,11 @@ import { promises } from "fs";
 import { describe, it } from "mocha";
 import path from "path";
 import { promisify } from "util";
+import { md2blog } from "../md2blog.js";
 
 const execAsync = promisify(exec);
 
-const runAsync = (workingDirectory, commandLineArgumentsString) => {
+const spawnAndRunAsync = (workingDirectory, commandLineArgumentsString) => {
     const pathToModuleRoot = "../".repeat(Array.from(workingDirectory.matchAll(/[\\/]/g)).length + 1);
     const commandLine = `node ${pathToModuleRoot}main.js ${commandLineArgumentsString}`;
     return execAsync(commandLine, {
@@ -19,7 +20,7 @@ const runAsync = (workingDirectory, commandLineArgumentsString) => {
 };
 
 const testAsync = async (workingDirectory, commandLineArgumentsString, validateAsync) => {
-    await validateAsync(runAsync(workingDirectory, commandLineArgumentsString), workingDirectory);
+    await validateAsync(spawnAndRunAsync(workingDirectory, commandLineArgumentsString), workingDirectory);
     // TODO: Actually delete the output directory?
 };
 
@@ -129,7 +130,13 @@ describe("md2blog", function () {
         const root = "test/data/example";
         const inputDirectory = path.join(root, "content");
         const outputDirectory = path.join(root, "out");
-        before(() => runAsync(root, "--clean"));
+        before(() => {
+            md2blog({
+                root,
+                input: "content",
+                output: "out",
+            });
+        });
 
         describe("Input types", async () => {
             it("Copies static assets verbatim", async () => {
@@ -268,9 +275,16 @@ describe("md2blog", function () {
                     ]
                 },
             ]));
-    
-            describe("Syntax highlighting", () => {
-            });
+
+            it("Adds syntax highlighting", () => validateOutputAsync(root, [
+                {
+                    // Verify in JavaScript fragment that "const" is highlighted as a language keyword
+                    "name": "posts/category1/cat1post.html",
+                    "tests": [
+                        { select: $ => $("#code-block ~ pre span.hljs-keyword").text(), expected: "const" },
+                    ]
+                },
+            ]));
     
             describe("Broken links", () => {
                 // Page, anchor, and image
