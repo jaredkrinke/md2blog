@@ -11,3 +11,6 @@ Let's link to [a post in another category](../category2/cat2post.md#target)!
 ```javascript
 const two = 2;
 ```
+
+# Image
+![Test image](../../assets/test.png)

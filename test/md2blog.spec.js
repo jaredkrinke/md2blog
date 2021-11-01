@@ -156,10 +156,13 @@ describe("md2blog", function () {
         
             it("Updates relative links, including anchors", () => validateOutputAsync(root, [
                 {
-                    // Check for relative link in cat1post content to cat2post
                     "name": "posts/category1/cat1post.html",
                     "tests": [
+                        // Check for relative link in cat1post content to cat2post
                         { select: $ => $("article > p > a").attr("href"), expected: "../category2/cat2post.html#target" },
+
+                        // Check for image with relative path
+                        { select: $ => $("article > p > img").attr("src"), expected: "../../assets/test.png" },
                     ]
                 },
                 {
@@ -169,6 +172,9 @@ describe("md2blog", function () {
                         { select: $ => $("#target").length, expected: 1 },
                     ]
                 },
+
+                // Verify image asset exists
+                { "name": "posts/category1/../../assets/test.png" },
             ]));
         
             it("Inserts site metadata", () => validateOutputAsync(root, [
@@ -322,6 +328,9 @@ describe("md2blog", function () {
 
                         // Verify that absolute links are used in Atom feed entry content
                         { select: $ => cheerio.load($("feed entry:nth-of-type(1) content").text())("p a").attr("href"), expected: "https://example.com/posts/category2/../category1/cat1post.html#source" },
+
+                        // Verify that absolute image links are used in Atom feed entry content
+                        { select: $ => cheerio.load($("feed entry:nth-of-type(2) content").text())("p img").attr("src"), expected: "https://example.com/posts/category1/../../assets/test.png" },
                     ]
                 },
             ]));
@@ -371,7 +380,10 @@ describe("md2blog", function () {
 
                     // Verify that relative links are used in Atom feed entry content
                     { select: $ => cheerio.load($("feed entry:nth-of-type(1) content").text())("p a").attr("href"), expected: "posts/category2/../category1/cat1post.html#source" },
-                ]
+
+                    // Verify that relative image links are used in Atom feed entry content
+                    { select: $ => cheerio.load($("feed entry:nth-of-type(2) content").text())("p img").attr("src"), expected: "posts/category1/../../assets/test.png" },
+                ],
             },
         ]));
     });
