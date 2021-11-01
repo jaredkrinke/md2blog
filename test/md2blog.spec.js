@@ -183,51 +183,63 @@ describe("md2blog", function () {
                     ]
                 },
             ]));
+        });
 
-            it("Processes posts", () => {
+        describe("Posts", () => {
+            describe("Uncategorized posts", () => {
+                it("Implicitly categorized as misc", () => validateOutputAsync(root, [
+                    {
+                        "name": "posts/misc/index.html",
+                        "tests": [
+                            { select: $ => $("article > header > h1 > a").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
+                            { select: $ => $("article > header a").attr("href"), expected: "../../posts/uncategorized.html" },
+                            { select: $ => $("article > p").text(), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
+                        ]
+                    },
+                    {
+                        "name": "posts/uncategorized.html",
+                        "tests": [
+                            { select: $ => $("main header h1").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
+                            { select: $ => $("meta[name='description']").attr("content"), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
+                            { select: $ => $("nav li").text(), expected: "misc" },
+                        ]
+                    },
+                ]));
+            });
+    
+            describe("Implicit categorization", () => {
+            });
+    
+            describe("Keywords", () => {
+            });
+    
+            describe("Tag navigation", () => {
+            });
+    
+            describe("Syntax highlighting", () => {
+            });
+    
+            describe("Broken links", () => {
             });
         });
-    });
-
-    describe("Posts", () => {
-        describe("Uncategorized posts", () => {
+    
+        describe("Tag indexes", () => {
         });
-
-        describe("Implicit categorization", () => {
+    
+        describe("Index page", () => {
+            describe("Top tags", () => {
+            });
         });
-
-        describe("Keywords", () => {
+    
+        describe("News archive", () => {
         });
-
-        describe("Tag navigation", () => {
+    
+        describe("News feed", () => {
+            describe("Absolute links", () => {
+            });
+    
+            describe("Relative links", () => {
+            });
         });
-
-        describe("Syntax highlighting", () => {
-        });
-
-        describe("Broken links", () => {
-        });
-    });
-
-    describe("Tag indexes", () => {
-    });
-
-    describe("Index page", () => {
-        describe("Top tags", () => {
-        });
-    });
-
-    describe("News archive", () => {
-    });
-
-    describe("News feed", () => {
-        describe("Absolute links", () => {
-        });
-
-        describe("Relative links", () => {
-        });
-    });
-
-    describe("Error page", () => {
     });
 });

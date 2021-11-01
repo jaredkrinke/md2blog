@@ -35,6 +35,7 @@ const program = new Command()
     .option("-d, --drafts", "include drafts in output")
     .option("-i, --input <dir>", "input directory", "content")
     .option("-o, --output <dir>", "output directory", "out")
+    .option("--ignore-broken-links", "don't check for broken relative links")
     .parse();
 
 const commandLineOptions = program.opts();
@@ -43,6 +44,7 @@ const clean = commandLineOptions.clean ?? false;
 const drafts = commandLineOptions.drafts ?? false;
 const inputDirectory = commandLineOptions.input;
 const outputDirectory = commandLineOptions.output;
+const ignoreBrokenLinks = commandLineOptions.ignoreBrokenLinks ?? false;
 
 // Handlebars template custom helpers
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
@@ -210,5 +212,5 @@ Metalsmith(siteRoot)
             livereload: true,
         })
         : noop)
-    .use(metalsmithBrokenLinkChecker({ checkAnchors: true }))
+    .use(ignoreBrokenLinks ? noop : metalsmithBrokenLinkChecker({ checkAnchors: true }))
     .build(err => { if (err) throw err; });
