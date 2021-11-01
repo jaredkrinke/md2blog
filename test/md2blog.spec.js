@@ -205,14 +205,54 @@ describe("md2blog", function () {
                 },
             ]));
     
-            describe("Implicit categorization", () => {
-            });
+            it("Implicitly categorizes posts using directory name", () => validateOutputAsync(root, [
+                {
+                    "name": "posts/category1/index.html",
+                    "tests": [
+                        { select: $ => $("article > header > h1 > a").text(), expected: "Category 1 post" },
+                        { select: $ => $("article > header a").attr("href"), expected: "../../posts/category1/cat1post.html" },
+                    ]
+                },
+                {
+                    "name": "posts/category1/cat1post.html",
+                    "tests": [
+                        { select: $ => $("main header h1").text(), expected: "Category 1 post" },
+                    ]
+                },
+                {
+                    "name": "posts/category2/index.html",
+                    "tests": [
+                        { select: $ => $("article > header > h1 > a").text(), expected: "Category 2 post" },
+                        { select: $ => $("article > header a").attr("href"), expected: "../../posts/category2/cat2post.html" },
+                    ]
+                },
+                {
+                    "name": "posts/category2/cat2post.html",
+                    "tests": [
+                        { select: $ => $("main header h1").text(), expected: "Category 2 post" },
+                    ]
+                },
+            ]));
     
-            describe("Keywords", () => {
-            });
+            it("Categorizes posts based on provided keywords", () => validateOutputAsync(root, [
+                {
+                    "name": "posts/random/index.html",
+                    "tests": [
+                        { select: $ => $("main ul li:nth-child(1) h1").text(), expected: "Category 2 post" },
+                        { select: $ => $("main ul li:nth-child(2) h1").text(), expected: "Category 1 post" },
+                    ]
+                },
+            ]));
     
-            describe("Tag navigation", () => {
-            });
+            it("Adds tag navigation links to posts", () => validateOutputAsync(root, [
+                {
+                    "name": "posts/category1/cat1post.html",
+                    "tests": [
+                        { select: $ => $("nav li:contains('category1')").length, expected: 1 },
+                        { select: $ => $("nav li:contains('random')").length, expected: 1 },
+                    ]
+                },
+            ]));
     
             describe("Syntax highlighting", () => {
             });
