@@ -12,9 +12,9 @@ Additionally, the produced site is "minimal, but fully functional" in the follow
 
 * Page templates use **clean, semantic HTML** with only a few kilobytes of CSS (and no JavaScript)
 * **Relative links are used wherever possible**, so the site can be hosted anywhere
-  * The site can even be viewed directly from the file system (no web server required)
+  * The site can even be viewed directly from the file system (**no web server required**)
 * **Syntax highlighting** is automatically added to code blocks
-* An [Atom](https://validator.w3.org/feed/docs/atom.html)/RSS news feed is automatically generated
+* An [Atom](https://validator.w3.org/feed/docs/atom.html) feed is automatically generated
 
 Note that "zero configuration" implies that md2blog is highly opinionated, to the point that there are no options to configure. **Instead of fiddling with options and themes, your focus is strictly on writing and publishing content.**
 

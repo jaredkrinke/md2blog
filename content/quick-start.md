@@ -2,13 +2,13 @@
 TODO
 
 # Concepts
-md2blog reads input from a single **input directory** named `content/` and writes out a static site to an **output directory** named `out/`.
+md2blog reads input from a single **input directory** (`content/`, by default) and writes out a static site to an **output directory** (`out/`, by default).
 
-The input directory contains **posts**, **pages**, **site metadata**, and **static assets**:
+The input directory contains **site metadata**, **posts**, **pages**, and **static assets**:
 
+* **Site metadata** is information about the site (e.g. title and root URL, stored in `site.json`)
 * **Posts** represent individual articles (stored under `posts/<category>/<post>.md`)
 * **Pages** are just additional (and optional) arbitrary pages on the site (e.g. `faq.md`)
-* **Site metadata** is information about the site (e.g. title and root URL, stored in `site.json`)
 * **Static assets** are non-Markdown files that are copied verbatim to the output directory (e.g. `favicon.ico`)
 
 Posts and pages are authored in plain text using [Markdown](https://guides.github.com/features/mastering-markdown/) (`.md` extension), with [YAML](https://en.wikipedia.org/wiki/YAML) front matter for specifying metadata (such as the date of the post).
@@ -53,7 +53,7 @@ Note that the site *will* generally work without specifying a URL, but the Atom 
 Posts are written in [Markdown](https://guides.github.com/features/mastering-markdown/) and use [YAML](https://en.wikipedia.org/wiki/YAML) for front matter (fenced above and below by three hyphens: `---`).
 
 ### Front matter
-Here's an example showing all of the supported YAML front matter properties (`keywords` and `draft` are optional, the rest are required):
+Here's an example showing all of the supported YAML front matter properties (`title`, `description`, and `date` are required):
 
 ```yaml
 ---
@@ -74,10 +74,10 @@ Schema:
 | `description` | string | Required | This text is displayed on index pages |
 | `date` | YYYY-MM-DD | Required | |
 | `keywords` | string[] | Optional | Additional tags for categorizing the post |
-| `draft` | Boolean | Optional | If `true`, the post will only be built when serving locally |
+| `draft` | Boolean | Optional | If `true`, the post will only be built if `--drafts` was specified on the command line |
 
 ### Content
-Here's example Markdown content, demonstrating relative links (these links get translated to the corresponding HTML files and checked at build time; they also work in VS Code's and GitHub's Markdown previewers):
+Here's example Markdown content, demonstrating relative links (these links get translated to the corresponding HTML files and the links are checked at build time; they also work in the VS Code and GitHub Markdown previewers):
 
 ```markdown
 # Relative links
@@ -90,7 +90,7 @@ Here's an image:
 ![test](../../assets/test.png)
 ```
 
-Finally, here is an example of including a code block (specifying the language is recommended, but optional):
+Finally, here is an example of a code block (specifying the language is recommended, but optional):
 
 ````markdown
 # Code block
@@ -120,7 +120,7 @@ npx md2blog --serve
 ```
 
 # Publishing
-md2blog doesn't have any built-in support for publishing sites, but all you have to do is simply copy everything from `out/` to your web root.
+md2blog doesn't have any built-in support for publishing sites, but all that's required is copying everything from `out/` to your web root.
 
 ## Publishing to GitHub pages
 If you're planning to publish to [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages), here's an example:
