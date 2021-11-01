@@ -148,13 +148,12 @@ describe("md2blog", function () {
                 assert.equal(await promises.readFile(outputPath, { encoding: "binary" }), await promises.readFile(inputPath, { encoding: "binary" }));
             });
 
-            // TODO: Bug that needs to be fixed
-            // it("Copies static HTML files verbatim", async () => {
-            //     const fileName = "static-asset.html";
-            //     const inputPath = path.join(inputDirectory, fileName);
-            //     const outputPath = path.join(outputDirectory, fileName);
-            //     assert.equal(await promises.readFile(outputPath), await promises.readFile(inputPath));
-            // });
+            it("Copies static HTML files verbatim", async () => {
+                const fileName = "static-asset.html";
+                const inputPath = path.join(inputDirectory, fileName);
+                const outputPath = path.join(outputDirectory, fileName);
+                assert.equal(await promises.readFile(outputPath, { encoding: "utf-8" }), await promises.readFile(inputPath, { encoding: "utf-8" }));
+            });
         
             it("Updates relative links, including anchors", () => validateOutputAsync(root, [
                 {
@@ -199,6 +198,7 @@ describe("md2blog", function () {
                     // Check for HTML file with processed Markdown
                     "name": "page.html",
                     "tests": [
+                        { select: $ => $("html").length, expected: 1 },
                         { select: $ => $("#big-heading").length, expected: 1 },
                         { select: $ => $("article > p").text(), expected: "This is a page, not a post." },
                     ]

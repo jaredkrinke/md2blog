@@ -87,6 +87,13 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
                 }),
             }
         ]))
+        .use(metalsmithFileMetadata([
+            {
+                // Opt HTML files out of layout/templates
+                pattern: "**/*.html",
+                metadata: { layout: false },
+            }
+        ]))
         .use(metalsmithTaxonomy({
             pattern: "posts/**/*.md",
             taxonomies: ["tags"],
