@@ -199,6 +199,31 @@ describe("md2blog", function () {
         });
 
         describe("Posts", () => {
+            it("Orders tags on index page by post count and date descending", () => validateOutputAsync(root, [
+                {
+                    // Verify tags are ordered by most posts, then by descending date
+                    "name": "index.html",
+                    "tests": [
+                        { select: $ => $("nav ul li:nth-child(1)").text(), expected: "random" },
+                        { select: $ => $("nav ul li:nth-child(2)").text(), expected: "category2" },
+                        { select: $ => $("nav ul li:nth-child(3)").text(), expected: "category1" },
+                        { select: $ => $("nav ul li:nth-child(4)").text(), expected: "misc" },
+                    ],
+                },
+            ]));
+
+            it("Creates post archive page", () => validateOutputAsync(root, [
+                {
+                    // Verify all posts are in descending date order on the post archive page
+                    "name": "posts/index.html",
+                    "tests": [
+                        { select: $ => $("main ul li:nth-child(1) h1").text(), expected: "Category 2 post" },
+                        { select: $ => $("main ul li:nth-child(2) h1").text(), expected: "Category 1 post" },
+                        { select: $ => $("main ul li:nth-child(3) h1").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
+                    ],
+                },
+            ]));
+
             it("Implicitly categorizes uncategorized posts as misc", () => validateOutputAsync(root, [
                 {
                     // Verify title, link, and description are in the "misc" tag index page
@@ -309,17 +334,6 @@ describe("md2blog", function () {
                     output: "out",
                 }));
             });
-        });
-    
-        describe("Tag indexes", () => {
-        });
-    
-        describe("Index page", () => {
-            describe("Top tags", () => {
-            });
-        });
-    
-        describe("News archive", () => {
         });
     
         describe("News feed", () => {
