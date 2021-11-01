@@ -112,7 +112,7 @@ describe("md2blog", function () {
                 }]);
             });
 
-            // Test both was of including drafts
+            // Test both ways of including drafts
             await testAsync(root, "-d", async (execPromise, workingDirectory) => {
                 await execPromise;
                 await validateOutputAsync(workingDirectory, [{ name: "posts/category1/draft.html" }]);
@@ -149,12 +149,14 @@ describe("md2blog", function () {
         
             it("Updates relative links, including anchors", () => validateOutputAsync(root, [
                 {
+                    // Check for relative link in cat1post content to cat2post
                     "name": "posts/category1/cat1post.html",
                     "tests": [
                         { select: $ => $("article > p > a").attr("href"), expected: "../category2/cat2post.html#target" },
                     ]
                 },
                 {
+                    // Verify target section is in cat2post
                     "name": "posts/category2/cat2post.html",
                     "tests": [
                         { select: $ => $("#target").length, expected: 1 },
@@ -166,8 +168,11 @@ describe("md2blog", function () {
                 {
                     "name": "index.html",
                     "tests": [
+                        // Verify site title in head and body
                         { select: $ => $("head title").text(), expected: "md2blog example" },
                         { select: $ => $("body > header > h1").text(), expected: "md2blog example" },
+
+                        // Verify site description in meta and body
                         { select: $ => $("meta[name='description']").attr("content"), expected: "Example site used for testing md2blog" },
                         { select: $ => $("body > header > p").text(), expected: "Example site used for testing md2blog" },
                     ]
@@ -176,6 +181,7 @@ describe("md2blog", function () {
         
             it("Processes arbitrary non-post pages", () => validateOutputAsync(root, [
                 {
+                    // Check for HTML file with processed Markdown
                     "name": "page.html",
                     "tests": [
                         { select: $ => $("#big-heading").length, expected: 1 },
@@ -188,6 +194,7 @@ describe("md2blog", function () {
         describe("Posts", () => {
             it("Implicitly categorizes uncategorized posts as misc", () => validateOutputAsync(root, [
                 {
+                    // Verify title, link, and description are in the "misc" tag index page
                     "name": "posts/misc/index.html",
                     "tests": [
                         { select: $ => $("article > header > h1 > a").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
@@ -198,8 +205,11 @@ describe("md2blog", function () {
                 {
                     "name": "posts/uncategorized.html",
                     "tests": [
+                        // Verify title and description
                         { select: $ => $("main header h1").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
                         { select: $ => $("meta[name='description']").attr("content"), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
+
+                        // Verify tag navigation link exists
                         { select: $ => $("nav li").text(), expected: "misc" },
                     ]
                 },
@@ -207,6 +217,7 @@ describe("md2blog", function () {
     
             it("Implicitly categorizes posts using directory name", () => validateOutputAsync(root, [
                 {
+                    // Verify title and link in "category1" index page
                     "name": "posts/category1/index.html",
                     "tests": [
                         { select: $ => $("article > header > h1 > a").text(), expected: "Category 1 post" },
@@ -214,12 +225,14 @@ describe("md2blog", function () {
                     ]
                 },
                 {
+                    // Verify title in cat1post output
                     "name": "posts/category1/cat1post.html",
                     "tests": [
                         { select: $ => $("main header h1").text(), expected: "Category 1 post" },
                     ]
                 },
                 {
+                    // Same tests for another category
                     "name": "posts/category2/index.html",
                     "tests": [
                         { select: $ => $("article > header > h1 > a").text(), expected: "Category 2 post" },
@@ -236,6 +249,7 @@ describe("md2blog", function () {
     
             it("Categorizes posts based on provided keywords", () => validateOutputAsync(root, [
                 {
+                    // Verify cat1post and cat2post are both in the "random" index page (ordered newest to oldest)
                     "name": "posts/random/index.html",
                     "tests": [
                         { select: $ => $("main ul li:nth-child(1) h1").text(), expected: "Category 2 post" },
@@ -246,6 +260,7 @@ describe("md2blog", function () {
     
             it("Adds tag navigation links to posts", () => validateOutputAsync(root, [
                 {
+                    // Check for both category and keyword links in navigation header
                     "name": "posts/category1/cat1post.html",
                     "tests": [
                         { select: $ => $("nav li:contains('category1')").length, expected: 1 },
