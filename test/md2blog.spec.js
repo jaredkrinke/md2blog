@@ -21,7 +21,9 @@ const spawnAndRunAsync = (workingDirectory, commandLineArgumentsString) => {
 
 const testAsync = async (workingDirectory, commandLineArgumentsString, validateAsync) => {
     await validateAsync(spawnAndRunAsync(workingDirectory, commandLineArgumentsString), workingDirectory);
-    // TODO: Actually delete the output directory?
+    
+    // The output directory could theoretically be deleted, but I'm leaving it around because it's not tracked in
+    // source control and it's helpful to be able to inspect the produced site
 };
 
 // Validate output, including selecting elements and verifying their text content
