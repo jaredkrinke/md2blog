@@ -1,4 +1,5 @@
 {
     "title": "md2blog example",
-    "description": "Example site used for testing md2blog"
+    "description": "Example site used for testing md2blog",
+    "url": "https://example.com/"
 }

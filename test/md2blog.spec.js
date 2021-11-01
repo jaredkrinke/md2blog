@@ -311,6 +311,21 @@ describe("md2blog", function () {
                 },
             ]));
 
+            it("Creates an Atom feed with absolute links", () => validateOutputAsync(root, [
+                {
+                    "name": "feed.xml",
+                    "tests": [
+                        // Verify that absolute links are used in the Atom feed entries
+                        { select: $ => $("feed entry:nth-of-type(1) link").attr("href"), expected: "https://example.com/posts/category2/cat2post.html" },
+                        { select: $ => $("feed entry:nth-of-type(2) link").attr("href"), expected: "https://example.com/posts/category1/cat1post.html" },
+                        { select: $ => $("feed entry:nth-of-type(3) link").attr("href"), expected: "https://example.com/posts/uncategorized.html" },
+
+                        // Verify that absolute links are used in Atom feed entry content
+                        { select: $ => cheerio.load($("feed entry:nth-of-type(1) content").text())("p a").attr("href"), expected: "https://example.com/posts/category2/../category1/cat1post.html#source" },
+                    ]
+                },
+            ]));
+
             it("Fails on broken link", () => {
                 assert.rejects(md2blogAsync({
                     root: "test/data/broken-link",
