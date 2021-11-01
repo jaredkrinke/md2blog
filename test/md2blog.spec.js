@@ -186,26 +186,24 @@ describe("md2blog", function () {
         });
 
         describe("Posts", () => {
-            describe("Uncategorized posts", () => {
-                it("Implicitly categorized as misc", () => validateOutputAsync(root, [
-                    {
-                        "name": "posts/misc/index.html",
-                        "tests": [
-                            { select: $ => $("article > header > h1 > a").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
-                            { select: $ => $("article > header a").attr("href"), expected: "../../posts/uncategorized.html" },
-                            { select: $ => $("article > p").text(), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
-                        ]
-                    },
-                    {
-                        "name": "posts/uncategorized.html",
-                        "tests": [
-                            { select: $ => $("main header h1").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
-                            { select: $ => $("meta[name='description']").attr("content"), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
-                            { select: $ => $("nav li").text(), expected: "misc" },
-                        ]
-                    },
-                ]));
-            });
+            it("Implicitly categorizes uncategorized posts as misc", () => validateOutputAsync(root, [
+                {
+                    "name": "posts/misc/index.html",
+                    "tests": [
+                        { select: $ => $("article > header > h1 > a").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
+                        { select: $ => $("article > header a").attr("href"), expected: "../../posts/uncategorized.html" },
+                        { select: $ => $("article > p").text(), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
+                    ]
+                },
+                {
+                    "name": "posts/uncategorized.html",
+                    "tests": [
+                        { select: $ => $("main header h1").text(), expected: "Uncategorized; test out escaping: \\<>&:'\"!`[]()^" },
+                        { select: $ => $("meta[name='description']").attr("content"), expected: "Test out escaping: \\<>&:'\"!`[]()^; 子曰：「學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？人不知而不慍，不亦君子乎？」" },
+                        { select: $ => $("nav li").text(), expected: "misc" },
+                    ]
+                },
+            ]));
     
             describe("Implicit categorization", () => {
             });
