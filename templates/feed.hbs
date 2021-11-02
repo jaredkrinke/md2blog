@@ -17,7 +17,7 @@
 <id>{{#if link.absolute}}{{link.absolute}}{{else}}urn:md2blog:{{{encodeURIComponent ../site.title}}}:{{{encodeURIComponent title}}}{{/if}}</id>
 {{#if link.absolute}}<link rel="alternate" href="{{link.absolute}}"/>{{/if}}
 <updated>{{formatDateISO date}}</updated>
-<summary type="text">{{description}}</summary>
+{{#if description}}<summary type="text">{{description}}</summary>{{/if}}
 <content type="html">{{htmlWithAbsoluteLinks}}</content>
 </entry>
 {{/each}}

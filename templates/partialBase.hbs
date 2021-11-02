@@ -12,7 +12,7 @@
 <body>
 <header>
 <h1><a href="{{rootPath}}index.html">{{site.title}}</a></h1>
-<p>{{site.description}}</p>
+{{#if site.description}}<p>{{site.description}}</p>{{/if}}
 {{#if navigationPartialName}}{{> (lookup . "navigationPartialName") }}{{/if}}
 </header>
 <main>
