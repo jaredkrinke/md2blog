@@ -1,3 +1,6 @@
+---
+title: A simple static site generator for dev blogs
+---
 # Summary
 Here's the purpose of md2blog:
 
@@ -31,7 +34,7 @@ Want to see an example site? Here are two web sites built with md2blog:
 
 # Additional resources
 
-* [FAQ](faq.md)
-* Template repository (TODO)
+* [FAQ](posts/faq/index.html)
+* [Template repository](https://github.com/jaredkrinke/md2blog-template-site) for creating your own dev blog (see [instructions](quick-start.md#setup))
 * [Example repository](https://github.com/jaredkrinke/log) for a real site using md2blog
 * [Source code](https://github.com/jaredkrinke/md2blog) for md2blog (TODO: license)

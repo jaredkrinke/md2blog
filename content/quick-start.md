@@ -1,4 +1,7 @@
-# Installation
+---
+title: Quick start
+---
+# Setup
 TODO
 
 # Concepts
@@ -53,13 +56,13 @@ Note that the site *will* generally work without specifying a URL, but the Atom 
 Posts are written in [Markdown](https://guides.github.com/features/mastering-markdown/) and use [YAML](https://en.wikipedia.org/wiki/YAML) for front matter (fenced above and below by three hyphens: `---`).
 
 ### Front matter
-Here's an example showing all of the supported YAML front matter properties (`title`, `description`, and `date` are required):
+Here's an example showing all of the supported YAML front matter properties (`title` and `date` are required):
 
 ```yaml
 ---
 title: First post
-description: First post on my blog, with a relative link.
 date: 2021-10-26
+description: First post on my blog, with a relative link.
 keywords: [additional-tag]
 draft: true
 ---
@@ -71,8 +74,8 @@ Schema:
 | Field | Type | Required? | Note |
 | --- | --- | --- | --- |
 | `title` | string | Required | |
-| `description` | string | Required | This text is displayed on index pages |
 | `date` | YYYY-MM-DD | Required | |
+| `description` | string | Optional | This text is displayed on index pages |
 | `keywords` | string[] | Optional | Additional tags for categorizing the post |
 | `draft` | Boolean | Optional | If `true`, the post will only be built if `--drafts` was specified on the command line |
 
@@ -156,4 +159,4 @@ Note that if you want to use a custom domain, just follow [GitHub's custom domai
 # Now go build your dev blog!
 That's all there is to md2blog. There's no need to worry about themes or plugins. Just start writing!
 
-If you have additional questions, consult the [FAQ](faq.md). If you don't see an answer there, feel free to post in the [md2blog discussion board](https://github.com/jaredkrinke/md2blog/discussions) (or [report an issue](https://github.com/jaredkrinke/md2blog/issues), if something is broken).
+If you have additional questions, consult the [FAQ](posts/faq/index.html). If you don't see an answer there, feel free to post in the [md2blog discussion board](https://github.com/jaredkrinke/md2blog/discussions) (or [report an issue](https://github.com/jaredkrinke/md2blog/issues), if something is broken).
