@@ -8,7 +8,7 @@ export default (options) => {
 
     return markdown.options({
         highlight: (code, language) => {
-            if (language) {
+            if (language && highlight.getLanguage(language)) {
                 return highlight.highlight(code, { language }).value;
             } else {
                 return highlight.highlightAuto(code).value;

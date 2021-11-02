@@ -319,6 +319,16 @@ describe("md2blog", function () {
                 },
             ]));
 
+            it("Syntax highlighting doesn't fail on an unknown language", () => validateOutputAsync(root, [
+                {
+                    // Verify in JavaScript fragment that "const" is highlighted as a language keyword
+                    "name": "posts/uncategorized.html",
+                    "tests": [
+                        { select: $ => $("#code-block-with-an-unknown-language ~ pre").text(), expected: "subleq 3, 3, 0\n" },
+                    ]
+                },
+            ]));
+
             it("Creates an Atom feed with absolute links", () => validateOutputAsync(root, [
                 {
                     "name": "feed.xml",

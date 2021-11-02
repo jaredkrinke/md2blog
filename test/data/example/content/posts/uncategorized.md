@@ -6,3 +6,8 @@ date: 2021-10-10
 # Here we go
 More testing out escaping! \<>&'"!`][)(^
 بِسْمِ ٱللّٰهِ ٱلرَّحْمـَبنِ ٱلرَّحِيمِ
+
+# Code block with an unknown language
+```sic1
+subleq 3, 3, 0
+```
