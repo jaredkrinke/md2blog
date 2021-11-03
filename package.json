@@ -1,7 +1,7 @@
 {
   "name": "md2blog",
   "version": "0.1.0",
-  "description": "Builds a static dev blog from a categorized set of Markdown files",
+  "description": "A zero-config static site generator for dev blogs",
   "type": "module",
   "bin": {
     "md2blog": "./main.js"
