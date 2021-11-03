@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
+import { promises } from "fs";
 import handlebars from "handlebars";
+import less from "less";
 import marked from "marked";
 import Metalsmith from "metalsmith";
 import metalsmithBrokenLinkChecker from "metalsmith-broken-link-checker";
@@ -12,7 +14,6 @@ import metalsmithFileMetadata from "metalsmith-filemetadata";
 import metalsmithLayouts from "metalsmith-layouts";
 import metalsmithMetadata from "metalsmith-metadata";
 import metalsmithRootPath from "metalsmith-rootpath";
-import metalsmithStatic from "metalsmith-static";
 import metalsmithTaxonomy from "metalsmith-taxonomy";
 import metalsmithWatch from "metalsmith-watch";
 import path from "path";
@@ -41,7 +42,8 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
     const { input, output } = options;
 
     // Optional
-    const siteRoot = options.root ?? process.cwd();
+    const cwd = process.cwd();
+    const siteRoot = options.root ?? cwd;
     const serve = options.serve ?? false;
     const clean = options.clean ?? false;
     const drafts = options.drafts ?? false;
@@ -59,19 +61,19 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
     ].forEach(row => handlebars.registerHelper(row[0], row[1]));
 
     // Find templates and CSS
-    const moduleRootRelative = path.relative(siteRoot, path.dirname(url.fileURLToPath(import.meta.url)));
-    const moduleStaticRelative = path.join(moduleRootRelative, "static");
-    const moduleTemplatesRelative = path.join(moduleRootRelative, "templates");
+    const moduleRoot = path.dirname(url.fileURLToPath(import.meta.url));
+    const moduleRootFromSiteRoot = path.relative(siteRoot, moduleRoot);
+    const moduleStaticFromSiteRoot = path.join(moduleRootFromSiteRoot, "static");
+    const moduleTemplatesFromSiteRoot = path.join(moduleRootFromSiteRoot, "templates");
+
+    const moduleRootFromCWD = path.relative(cwd, moduleRoot);
+    const moduleStaticFromCWD = path.join(moduleRootFromCWD, "static");
 
     Metalsmith(siteRoot)
         .clean(clean)
         .source(input)
         .destination(output)
         .use(metalsmithMetadata({ site: "site.json" }))
-        .use(metalsmithStatic({
-            src: moduleStaticRelative,
-            dest: ".",
-        }))
         .use(metalsmithNormalizeSlashes()) // Only needed due to this metalsmith-taxonomy issue: https://github.com/webketje/metalsmith-taxonomy/issues/14
         .use(drafts ? noop : metalsmithDrafts()) // Note: this plugin *removes* drafts
         .use(metalsmithRouteMetadata({ "posts/(:category/):postName.md": { category: "misc" } }))
@@ -190,13 +192,22 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
             "404.html": { layout: "404.hbs" },
             "feed.xml": { layout: "feed.hbs" },
         }))
+        .use(metalsmithInjectFiles({
+            "css/style.css": {
+                contents: async () => {
+                    const buffer = await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"));
+                    const output = await less.render(buffer.toString());
+                    return output.css;
+                }
+            },
+        }))
         .use(metalsmithMarked())
         .use(metalsmithNormalizeSlashes({ usePlatformSeparators: true })) // Platform separators are needed to compute rootPath
         .use(metalsmithRootPath())
-        .use(metalsmithDiscoverPartials({ directory: moduleTemplatesRelative }))
+        .use(metalsmithDiscoverPartials({ directory: moduleTemplatesFromSiteRoot }))
         .use(metalsmithLinkify())
         .use(metalsmithLayouts({
-            directory: moduleTemplatesRelative,
+            directory: moduleTemplatesFromSiteRoot,
             default: "default.hbs",
             pattern: ["**/*.html", "feed.xml"],
         }))
@@ -206,8 +217,8 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
                 paths: {
                     // Just rebuild everything (technically only the modified post and all index pages *need* to be rebuilt)
                     "${source}/**/*": "**/*",
-                    [path.join(moduleStaticRelative, "**/*")]: "**/*",
-                    [path.join(moduleTemplatesRelative, "**/*")]: "**/*",
+                    [path.join(moduleStaticFromSiteRoot, "**/*")]: "**/*",
+                    [path.join(moduleTemplatesFromSiteRoot, "**/*")]: "**/*",
                 },
                 livereload: true,
             })

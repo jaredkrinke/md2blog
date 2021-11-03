@@ -19,6 +19,7 @@
     "dot2svg-wasm": "git+https://github.com/jaredkrinke/modules.git#dot2svg-wasm-1.0.1",
     "highlight.js": "^11.2.0",
     "jstransformer-handlebars": "^1.1.0",
+    "less": "^4.1.2",
     "marked": "^3.0.7",
     "metalsmith": "^2.3.0",
     "metalsmith-broken-link-checker": "^1.0.2",
@@ -30,7 +31,6 @@
     "metalsmith-layouts": "^2.3.1",
     "metalsmith-metadata": "0.0.4",
     "metalsmith-rootpath": "^1.0.4",
-    "metalsmith-static": "0.0.5",
     "metalsmith-taxonomy": "^0.4.0",
     "metalsmith-watch": "^1.0.3",
     "route-parser": "0.0.5"

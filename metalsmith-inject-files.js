@@ -1,13 +1,35 @@
 import { Buffer } from "buffer";
 
-export default (options) => ((files, metalsmith, done) => {
-    Object.keys(options).forEach(key => {
-        const definition = options[key];
-        const file = Object.assign({}, definition);
-        file.contents = Buffer.from(definition.contents ?? "");
+export default (options) => (async (files, metalsmith, done) => {
+    // Note: this code could be modified to run promises in parallel
+    try {
+        for (const key of Object.keys(options)) {
+            const definition = options[key];
+            const file = Object.assign({}, definition);
 
-        files[key] = file;
-    });
+            // definition.contents can be a string, a function returning a string or promise, or undefined
+            const contents = definition.contents;
+            switch (typeof(contents)) {
+                case "string":
+                    file.contents = Buffer.from(contents);
+                    break;
 
-    done();
+                case "function":
+                    // Function returning a promise
+                    const result = contents();
+                    file.contents = result.then ? await result : result;
+                    break;
+
+                default:
+                    file.contents = Buffer.from("");
+                    break;
+            }
+
+            files[key] = file;
+        }
+
+        done();
+    } catch (err) {
+        done(err);
+    }
 });

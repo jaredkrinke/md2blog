@@ -50,7 +50,7 @@ describe("md2blog", function () {
     this.timeout(30 * 1000); // In milliseconds (note: these tests are slow because they spin up new processes and do a lot of file IO)
 
     describe("Basic functionality", () => {
-        it("Builds trivial site successfully", async () => testAsync("test/data/trivial-site", "", async (execPromise, workingDirectory) => {
+        it("Builds trivial site successfully", async () => testAsync("test/data/trivial-site", "--clean", async (execPromise, workingDirectory) => {
             await assert.doesNotReject(execPromise, "Builds successfully");
 
             // Verify all expected files are produced
@@ -137,6 +137,7 @@ describe("md2blog", function () {
                 root,
                 input: "content",
                 output: "out",
+                clean: true,
             });
         });
 
