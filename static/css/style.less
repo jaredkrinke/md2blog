@@ -1,21 +1,3 @@
-// Base colors
-@textTitle: #e6b95c;
-@textHeading: #d97c57;
-@textLink: #59c5ff;
-@background: #181818;
-@textDefault: #c8c8c8;
-
-// Derived colors
-@textDark: darken(@textDefault, 5%);
-@textLightest: lighten(@textDefault, 8%);
-@textLinkVisited: darken(@textLink, 8%);
-
-@backgroundLight: lighten(@background, 4%);
-@backgroundLighter: lighten(@background, 8%);
-@backgroundEvenLighter: lighten(@background, 10%);
-@backgroundLightest: lighten(@background, 18%);
-@border: lighten(@background, 35%);
-
 :root { color-scheme: dark; }
 html, body { margin: 0; }
 
@@ -47,11 +29,13 @@ nav { display: flex; flex-direction: row; justify-content: center; }
 nav > ul { margin: 0; padding: 0 0 0 0.5em; display: inline; }
 nav > ul > li { display: inline; }
 nav > ul > li:first-child:before { content: "Topics: "; }
+nav > ul > li:first-child:before { font-weight: bold; color: #d97c57; }
 nav > ul > li + li:before { content: " | "; }
 
 body > header > h1 > a {
     font-size: 1.75rem;
     text-decoration: inherit;
+    color: inherit;
 }
 
 article > header > h1 { margin-bottom: 0.25em; }
@@ -83,16 +67,16 @@ h5 { font-size: 1rem; font-weight: normal; }
 
 :is(h1, h2, h3, h4, h5) :is(a:link, a:visited) { color: inherit; }
 
-body { background-color: @background; }
-* { color: @textDefault; }
-main footer { border-top: 1px solid @backgroundLightest; }
-th { background-color: @backgroundLightest; color: @textLightest; }
-pre, table, th, tr, td { border-color: @border; }
-pre { background-color: @backgroundLighter; }
-tr:nth-child(even) { background-color: @backgroundLight; }
+body { background-color: #181818; }
+* { color: #c8c8c8; }
+main footer { border-top: 1px solid #444; }
+th { background-color: #444; color: #ddd }
+pre, table, th, tr, td { border-color: #777; }
+pre { background-color: #282828; }
+tr:nth-child(even) { background-color: #222; }
 
 code {
-    background-color: @backgroundEvenLighter;
+    background-color: #333;
     border-radius: 0.2em;
     padding: 0em 0.1em;
 }
@@ -103,17 +87,16 @@ pre code {
     padding: revert;
 }
 
-body > header > h1 { color: @textTitle; }
-nav > ul > li:first-child:before { font-weight: bold; color: @textHeading; }
-h1, h2, h3, h4, h5 { color: @textHeading; }
-a:link { color: @textLink; }
-a:visited { color: @textLinkVisited; }
+body > header > h1 { color: #e6b95c; }
+h1, h2, h3, h4, h5 { color: #d97c57; }
+a:link { color: #59c5ff; }
+a:visited { color: #66c9fe; }
 /* Also b5cea8 or 7dce52 or 7bbf56 */
 
 /* Diagrams */
-svg text { fill: @textLightest; }
+svg text { fill: #ddd; }
 .diagram-transparent-white { stroke: none; fill: none; }
-ellipse.diagram-black-none { stroke: @textDark; fill: #444; }
+ellipse.diagram-black-none { stroke: #ccc; fill: #444; }
 .diagram-black-none { stroke: #999; fill:none; }
 .diagram-black-black { stroke: #999; fill: #333; }
 
@@ -121,9 +104,9 @@ ellipse.diagram-black-none { stroke: @textDark; fill: #444; }
 .hljs-comment { color: #5a8c3f; }
 
 .hljs-tag,
-.hljs-punctuation { color: @textDark; }
+.hljs-punctuation { color: #ccc; }
 
-.hljs-literal { color: @textLinkVisited; }
+.hljs-literal { color: #66c9fe; }
 
 .hljs-title.class_,
 .hljs-tag .hljs-name,
@@ -135,7 +118,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: #444; }
 .hljs-template-variable,
 .hljs-link,
 .hljs-selector-attr,
-.hljs-selector-pseudo { color: @textLink; }
+.hljs-selector-pseudo { color: #59c5ff; }
 
 .hljs-keyword,
 .hljs-attribute,
@@ -152,7 +135,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: #444; }
 .hljs-deletion,
 .hljs-title,
 .hljs-section,
-.hljs-meta { color: @textHeading; }
+.hljs-meta { color: #d97c57; }
 
 .hljs-regexp,
 .hljs-meta .hljs-string { color: #b25947; }
@@ -163,4 +146,4 @@ ellipse.diagram-black-none { stroke: @textDark; fill: #444; }
 .hljs-code,
 .hljs-addition,
 .hljs-selector-id,
-.hljs-selector-class { color: @textTitle; }
+.hljs-selector-class { color: #e6b95c; }
