@@ -1,4 +1,4 @@
 {
     "title": "md2blog",
-    "description": "A simple static site generator for dev blogs"
+    "description": "A zero-config static site generator for dev blogs"
 }

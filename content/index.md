@@ -1,5 +1,5 @@
 ---
-title: A simple static site generator for dev blogs
+title: A zero-config static site generator for dev blogs
 ---
 # Summary
 Here's the purpose of md2blog:
