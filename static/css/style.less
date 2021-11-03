@@ -1,0 +1,166 @@
+// Base colors
+@textTitle: #e6b95c;
+@textHeading: #d97c57;
+@textLink: #59c5ff;
+@background: #181818;
+@textDefault: #c8c8c8;
+
+// Derived colors
+@textDark: darken(@textDefault, 5%);
+@textLightest: lighten(@textDefault, 8%);
+@textLinkVisited: darken(@textLink, 8%);
+
+@backgroundLight: lighten(@background, 4%);
+@backgroundLighter: lighten(@background, 8%);
+@backgroundEvenLighter: lighten(@background, 10%);
+@backgroundLightest: lighten(@background, 18%);
+@border: lighten(@background, 35%);
+
+:root { color-scheme: dark; }
+html, body { margin: 0; }
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+    overflow-y: scroll;
+}
+
+body > header, main { width: 40em; }
+body > header, main { padding: 0.5em; }
+
+@media screen and (max-width: 40em) {
+    body > header, main { width: calc(100% - 1em); }
+}
+
+body { line-height: 1.5; }
+pre code { line-height: 1.3; }
+h1, h2, h3, h4, h5 { line-height: 1.2; }
+td { line-height: 1.2; }
+
+body > header { text-align: center; }
+body > header > h1 { margin-bottom: 0.25em; }
+body > header > p { margin-top: 0.25em; }
+
+nav { display: flex; flex-direction: row; justify-content: center; }
+nav > ul { margin: 0; padding: 0 0 0 0.5em; display: inline; }
+nav > ul > li { display: inline; }
+nav > ul > li:first-child:before { content: "Topics: "; }
+nav > ul > li + li:before { content: " | "; }
+
+body > header > h1 > a {
+    font-size: 1.75rem;
+    text-decoration: inherit;
+}
+
+article > header > h1 { margin-bottom: 0.25em; }
+article > header > p { margin-top: 0em; }
+main footer { margin-top: 1em; }
+
+main { overflow: auto; }
+pre { overflow: auto; }
+article img, article svg { display: block; }
+
+code { font-size: 1rem; }
+pre code { font-size: 0.8125rem; }
+
+th, td { padding: 0.25em; }
+pre { border: solid 1px; padding: 0em 0.25em; }
+table, th, tr, td { border-collapse: collapse; border: solid 1px; }
+
+main > ul { padding-left: 0em; }
+main > ul > li { list-style: none; margin-bottom: 2em; }
+
+ul { padding-left: 1.5em; }
+li { margin-bottom: 0.5em; }
+
+h1 { font-size: 1.6rem; font-weight: bold; }
+h2 { font-size: 1.3rem; font-weight: bold; }
+h3 { font-size: 1.2rem; font-weight: normal; }
+h4 { font-size: 1rem; font-weight: bold; }
+h5 { font-size: 1rem; font-weight: normal; }
+
+:is(h1, h2, h3, h4, h5) :is(a:link, a:visited) { color: inherit; }
+
+body { background-color: @background; }
+* { color: @textDefault; }
+main footer { border-top: 1px solid @backgroundLightest; }
+th { background-color: @backgroundLightest; color: @textLightest; }
+pre, table, th, tr, td { border-color: @border; }
+pre { background-color: @backgroundLighter; }
+tr:nth-child(even) { background-color: @backgroundLight; }
+
+code {
+    background-color: @backgroundEvenLighter;
+    border-radius: 0.2em;
+    padding: 0em 0.1em;
+}
+
+pre code {
+    background-color: revert;
+    border-radius: revert;
+    padding: revert;
+}
+
+body > header > h1 { color: @textTitle; }
+nav > ul > li:first-child:before { font-weight: bold; color: @textHeading; }
+h1, h2, h3, h4, h5 { color: @textHeading; }
+a:link { color: @textLink; }
+a:visited { color: @textLinkVisited; }
+/* Also b5cea8 or 7dce52 or 7bbf56 */
+
+/* Diagrams */
+svg text { fill: @textLightest; }
+.diagram-transparent-white { stroke: none; fill: none; }
+ellipse.diagram-black-none { stroke: @textDark; fill: #444; }
+.diagram-black-none { stroke: #999; fill:none; }
+.diagram-black-black { stroke: #999; fill: #333; }
+
+/* Syntax highlighting */
+.hljs-comment { color: #5a8c3f; }
+
+.hljs-tag,
+.hljs-punctuation { color: @textDark; }
+
+.hljs-literal { color: @textLinkVisited; }
+
+.hljs-title.class_,
+.hljs-tag .hljs-name,
+.hljs-tag .hljs-attr { color: #7bbf56; }
+
+.hljs-attr,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-selector-pseudo { color: @textLink; }
+
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag,
+.hljs-name { color: #51a1cc; }
+
+.hljs-type,
+.hljs-string,
+.hljs-number,
+.hljs-quote,
+.hljs-template-tag,
+.hljs-deletion,
+.hljs-title,
+.hljs-section,
+.hljs-meta { color: @textHeading; }
+
+.hljs-regexp,
+.hljs-meta .hljs-string { color: #b25947; }
+
+.hljs-title.function_,
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition,
+.hljs-selector-id,
+.hljs-selector-class { color: @textTitle; }
