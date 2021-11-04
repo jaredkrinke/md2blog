@@ -353,6 +353,7 @@ describe("md2blog", function () {
                     root: "test/data/broken-link",
                     input: "content",
                     output: "out",
+                    clean: true,
                 }));
             });
 
@@ -361,6 +362,7 @@ describe("md2blog", function () {
                     root: "test/data/broken-anchor",
                     input: "content",
                     output: "out",
+                    clean: true,
                 }));
             });
 
@@ -369,6 +371,7 @@ describe("md2blog", function () {
                     root: "test/data/broken-image",
                     input: "content",
                     output: "out",
+                    clean: true,
                 }));
             });
         });
@@ -381,6 +384,7 @@ describe("md2blog", function () {
                 root,
                 input: "content",
                 output: "out",
+                clean: true,
             });
         });
 
@@ -399,5 +403,14 @@ describe("md2blog", function () {
                 ],
             },
         ]));
+
+        it("Uses custom colors", async () => {
+            const cssPath = path.join(root, "out", "css", "style.css");
+            const css = (await promises.readFile(cssPath)).toString();
+            assert.equal(css.indexOf("#ff0000") >= 0, true, "Title color used");
+            assert.equal(css.indexOf("#00ff00") >= 0, true, "Heading color used");
+            assert.equal(css.indexOf("#00ffff") >= 0, true, "Link color used");
+            assert.equal(css.indexOf("#ffff00") >= 0, true, "Comment color used");
+        });
     });
 });

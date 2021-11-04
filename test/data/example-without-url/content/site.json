@@ -1,4 +1,10 @@
 {
     "title": "md2blog example",
-    "description": "Example site used for testing md2blog (without a URL)"
+    "description": "Example site used for testing md2blog (without a URL)",
+    "colors": {
+        "title": "#ff0000",
+        "heading": "#00ff00",
+        "link": "#00ffff",
+        "comment": "#ffff00"
+    }
 }

@@ -194,9 +194,25 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
         }))
         .use(metalsmithInjectFiles({
             "css/style.css": {
-                contents: async () => {
-                    const buffer = await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"));
-                    const output = await less.render(buffer.toString());
+                contents: async (metadata) => {
+                    let source = (await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"))).toString();
+
+                    // Override default colors, if custom colors provided
+                    const customColors = metadata?.site?.colors ?? {};
+                    const colorRegExp = /^#[0-9a-fA-F]{3,6}$/;
+                    for (const mapping of [
+                        { key: "title", variable: "textTitle" },
+                        { key: "heading", variable: "textHeading" },
+                        { key: "link", variable: "textLink" },
+                        { key: "comment", variable: "textComment" },
+                    ]) {
+                        const value = customColors[mapping.key];
+                        if (value && colorRegExp.test(value)) {
+                            source = source.replace(new RegExp(`[@]${mapping.variable}:[^;]*;`), `@${mapping.variable}: ${value};`);
+                        }
+                    }
+
+                    const output = await less.render(source);
                     return output.css;
                 }
             },

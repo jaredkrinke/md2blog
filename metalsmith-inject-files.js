@@ -16,7 +16,7 @@ export default (options) => (async (files, metalsmith, done) => {
 
                 case "function":
                     // Function returning a promise
-                    const result = contents();
+                    const result = contents(metalsmith.metadata());
                     file.contents = result.then ? await result : result;
                     break;
 
