@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2blog: Why not just use X instead?</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="../../css/style.css" />
+
+</head>
+<body>
+<header>
+<h1><a href="../../index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+<nav>
+<ul>
+<li><a href="../../posts/faq/index.html">faq</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<article>
+<header>
+<h1><a href="../../posts/faq/alternatives.html">Why not just use X instead?</a></h1>
+<p><time datetime="2021-11-01">November 1, 2021</time></p>
+</header>
+<p>There are <a href="https://jamstack.org/generators/">hundreds of static site generators</a>. Why make yet another?</p>
+<p>The short answer is that none of the <a href="https://log.schemescape.com/posts/static-site-generators/comparison.html">static site generators I tested out</a> did what I wanted out of the box (or required too much setup).</p>
+<p>The most common issues were:</p>
+<ul>
+<li>No support for relative links between Markdown files (that get translated to corresponding HTML files at build time)</li>
+<li>No support for implicit categorization</li>
+<li>No relative link checking at build time</li>
+<li>Unintuitive template languages</li>
+<li>Requiring installing new language runtimes</li>
+</ul>
+<p>Here are some specific notes on popular SSGs:</p>
+<h1 id="jekyll">Jekyll</h1>
+<p><a href="https://jekyllrb.com/">Jekyll</a> is probably the closest to what I was looking for, but I had no interest in setting up a Ruby environment or learning about the language (in case I needed to author my own plugins). I also didn&#39;t like the verbose syntax of the <a href="https://shopify.github.io/liquid/">Liquid</a> template language.</p>
+<h1 id="hugo">Hugo</h1>
+<p>Given that <a href="https://gohugo.io/">Hugo</a> is broadly used and ships in a single binary, I thought I would end up using Hugo, but it was too general, and I wanted something with out-of-the-box support for a dev blog. Hugo&#39;s template language was also the most unintuitive template language I&#39;ve ever seen.</p>
+<h1 id="pelican">Pelican</h1>
+<p><a href="https://blog.getpelican.com/">Pelican</a> sounds like &quot;Jekyll in Python&quot;, but I honestly didn&#39;t seriously consider it because I&#39;ve had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I&#39;m in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.</p>
+<h1 id="eleventy">Eleventy</h1>
+<p>I actually started out using <a href="https://www.11ty.dev/">Eleventy</a> because it was very simple and easy to understand, but I ended up preferring <a href="https://metalsmith.io/">Metalsmith</a> (on which md2blog is now built) because Metalsmith was <em>even simpler</em>, to the point that I could easily understand everything it was doing, instead of having to guess.</p>
+<h1 id="gatsby">Gatsby</h1>
+<p>I hate <a href="https://www.gatsbyjs.com/">Gatsby</a>, and pretty much any other &quot;static&quot; site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Maybe I&#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.</p>
+<h1 id="hexo">Hexo</h1>
+<p><a href="https://hexo.io/">Hexo</a> sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn&#39;t investigate Hexo further. I realize this isn&#39;t a great reason for not exploring Hexo, but it&#39;s the honest truth.</p>
+
+<footer>
+<p><a href="../../index.html">Back to home</a></p>
+</footer>
+</article>
+</main>
+</body>
+</html>

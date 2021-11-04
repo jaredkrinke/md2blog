@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2blog: Why not use file system metadata for dates?</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="../../css/style.css" />
+
+</head>
+<body>
+<header>
+<h1><a href="../../index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+<nav>
+<ul>
+<li><a href="../../posts/faq/index.html">faq</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<article>
+<header>
+<h1><a href="../../posts/faq/file-system-metadata.html">Why not use file system metadata for dates?</a></h1>
+<p><time datetime="2021-10-24">October 24, 2021</time></p>
+</header>
+<p>Originally, I wanted to use file system metadata (e.g. date modified) to infer when a post was written, but unfortunately <a href="https://stackoverflow.com/questions/2179722/checking-out-old-files-with-original-create-modified-timestamps/2179825#2179825">Git doesn&#39;t preserve file system metadata</a>, and I wanted content to be able to be stored in Git.</p>
+<p>Even though I planned to use Git myself, I didn&#39;t want to integrate with Git (e.g. looking up the date of a commit that first introduced a file) because md2blog, while highly opinionated, should be storage agnostic.</p>
+
+<footer>
+<p><a href="../../index.html">Back to home</a></p>
+</footer>
+</article>
+</main>
+</body>
+</html>

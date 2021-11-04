@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2blog: Sample page</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="css/style.css" />
+
+</head>
+<body>
+<header>
+<h1><a href="index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+<nav>
+<ul>
+<li><a href="posts/faq/index.html">faq</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<article>
+<h1 id="paragraphs">Paragraphs</h1>
+<p>Posts and pages are authored in plain text using <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> (<code>.md</code> extension), with <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> front matter for specifying metadata (such as the date of the post).</p>
+<p>Additionally, the produced site is &quot;minimal, but fully functional&quot;.</p>
+<h1 id="code">Code</h1>
+<p>HTML/JavaScript:</p>
+<pre><code class="language-html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;en&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;utf-8&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Monaco Editor from CDN example, with automatic resizing<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Monaco Editor, loaded via CDN<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;editor&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript">
+<span class="hljs-built_in">require</span>([<span class="hljs-string">&quot;vs/editor/editor.main&quot;</span>], <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
+    <span class="hljs-comment">// Create the editor with some sample JavaScript code</span>
+    <span class="hljs-keyword">var</span> editor = monaco.<span class="hljs-property">editor</span>.<span class="hljs-title function_">create</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;editor&quot;</span>), {
+        <span class="hljs-attr">value</span>: <span class="hljs-string">&quot;// code goes here\n&quot;</span>,
+        <span class="hljs-attr">language</span>: <span class="hljs-string">&quot;javascript&quot;</span>
+    });
+
+    <span class="hljs-comment">// Resize the editor when the window size changes</span>
+    <span class="hljs-keyword">const</span> editorElement = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;editor&quot;</span>);
+    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;resize&quot;</span>, <span class="hljs-function">() =&gt;</span> editor.<span class="hljs-title function_">layout</span>({
+        <span class="hljs-attr">width</span>: editorElement.<span class="hljs-property">offsetWidth</span>,
+        <span class="hljs-attr">height</span>: editorElement.<span class="hljs-property">offsetHeight</span>
+    }));
+});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre>
+<p>C:</p>
+<pre><code class="language-c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;math.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> WASM_EXPORT_AS(name) __attribute__((export_name(name)))</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> WASM_EXPORT(symbol) WASM_EXPORT_AS(#symbol) symbol</span>
+
+<span class="hljs-type">double</span> <span class="hljs-title function_">WASM_EXPORT</span><span class="hljs-params">(sine)</span><span class="hljs-params">(<span class="hljs-type">double</span> theta)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sin</span>(theta);
+}
+</code></pre>
+<p>WebAssembly:</p>
+<pre><code class="language-wasm"><span class="hljs-punctuation">(</span><span class="hljs-keyword">module</span>
+  <span class="hljs-punctuation">(</span><span class="hljs-keyword">type</span> <span class="hljs-comment">(;0;)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">func</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-type">i32</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">result</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)))</span>
+  <span class="hljs-punctuation">(</span><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;env&quot;</span> <span class="hljs-string">&quot;__linear_memory&quot;</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">memory</span> <span class="hljs-comment">(;0;)</span> <span class="hljs-number">0</span><span class="hljs-punctuation">))</span>
+  <span class="hljs-punctuation">(</span><span class="hljs-keyword">func</span> <span class="hljs-title function_">$add</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">type</span> <span class="hljs-number">0</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">param</span> <span class="hljs-type">i32</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span> <span class="hljs-punctuation">(</span><span class="hljs-keyword">result</span> <span class="hljs-type">i32</span><span class="hljs-punctuation">)</span>
+    <span class="hljs-keyword">local.get</span> <span class="hljs-number">1</span>
+    <span class="hljs-keyword">local.get</span> <span class="hljs-number">0</span>
+    <span class="hljs-keyword">i32.add</span><span class="hljs-punctuation">))</span>
+</code></pre>
+<h1 id="table-with-code">Table, with code</h1>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>YYYY-MM-DD</td>
+<td>Required</td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="list-with-code">List, with code</h1>
+<ul>
+<li><code>content/</code>: Root directory that contains all source content for the site<ul>
+<li><code>site.json</code>: Site-wide metadata</li>
+<li><code>assets/</code>: Directory for static assets (e.g. images)</li>
+<li><code>posts/</code>: Directory for all posts<ul>
+<li><code>category1/</code>: Directory for posts related to &quot;category1&quot;<ul>
+<li><code>post1.md</code>: Post related to &quot;category1&quot;</li>
+<li><code>post2.md</code>: Another &quot;category1&quot; post</li>
+</ul>
+</li>
+<li><code>category2/</code>: Another category<ul>
+<li><code>post3.md</code>: &quot;category2&quot; post</li>
+<li>etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="block-quote">Block quote</h1>
+<p>Sample block quote:</p>
+<blockquote>
+<p>Convert a <em>self-contained, organized</em> set of <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> posts into a <em>minimal, but fully functional</em> static blog, requiring <em>zero configuration</em>.</p>
+</blockquote>
+<h1 id="diagram">Diagram</h1>
+<svg width="62pt" height="188pt"
+ viewBox="0.00 0.00 62.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<polygon class="diagram-transparent-white" points="-4,4 -4,-184 58,-184 58,4 -4,4"/>
+<g id="node1" class="node">
+<title>a</title>
+<ellipse class="diagram-black-none" cx="27" cy="-162" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-157.8" font-size="14.00">a</text>
+</g>
+<g id="node2" class="node">
+<title>b</title>
+<ellipse class="diagram-black-none" cx="27" cy="-90" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-85.8" font-size="14.00">b</text>
+</g>
+<g id="edge1" class="edge">
+<title>a&#45;&gt;b</title>
+<path class="diagram-black-none" d="M27,-143.7C27,-135.98 27,-126.71 27,-118.11"/>
+<polygon class="diagram-black-black" points="30.5,-118.1 27,-108.1 23.5,-118.1 30.5,-118.1"/>
+</g>
+<g id="node3" class="node">
+<title>c</title>
+<ellipse class="diagram-black-none" cx="27" cy="-18" rx="27" ry="18"/>
+<text text-anchor="middle" x="27" y="-13.8" font-size="14.00">c</text>
+</g>
+<g id="edge2" class="edge">
+<title>b&#45;&gt;c</title>
+<path class="diagram-black-none" d="M27,-71.7C27,-63.98 27,-54.71 27,-46.11"/>
+<polygon class="diagram-black-black" points="30.5,-46.1 27,-36.1 23.5,-46.1 30.5,-46.1"/>
+</g>
+</g>
+</svg>
+
+</article>
+</main>
+</body>
+</html>

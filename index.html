@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2blog: A zero-config static site generator for dev blogs</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="css/style.css" />
+
+</head>
+<body>
+<header>
+<h1><a href="index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+
+</header>
+<main>
+<article>
+<h1 id="summary">Summary</h1>
+<p>Here&#39;s the purpose of md2blog:</p>
+<blockquote>
+<p>Convert a <em>self-contained, organized</em> set of <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> posts into a <em>minimal, but fully functional</em> static blog, requiring <em>zero configuration</em>.</p>
+</blockquote>
+<p>The key differentiator for md2blog is the &quot;self-contained, organized&quot; part. By this, I mean:</p>
+<ul>
+<li><strong>Relative links between Markdown files (including anchors) &quot;just work&quot;</strong> (and are validated at build time)</li>
+<li>Posts are <strong>implicitly categorized based on directory structure</strong> (supplemental tags are also supported)</li>
+</ul>
+<p>Additionally, the produced site is &quot;minimal, but fully functional&quot; in the following sense:</p>
+<ul>
+<li>Page templates use <strong>clean, semantic HTML</strong> with only a few kilobytes of CSS (and no JavaScript)</li>
+<li><strong>Relative links are used wherever possible</strong>, so the site can be hosted anywhere<ul>
+<li>The site can even be viewed directly from the file system (<strong>no web server required</strong>)</li>
+</ul>
+</li>
+<li><strong>Syntax highlighting</strong> is automatically added to code blocks</li>
+<li>An <a href="https://validator.w3.org/feed/docs/atom.html">Atom</a> feed is automatically generated</li>
+</ul>
+<p>Note that &quot;zero configuration&quot; implies that md2blog is highly opinionated, to the point that there are (almost) no options to configure. <strong>Instead of fiddling with options and themes, your focus is strictly on writing and publishing content.</strong></p>
+<h1 id="interested">Interested?</h1>
+<p>If you&#39;ve got <a href="https://nodejs.org/en/download/">Node and NPM</a> installed already, here&#39;s how to get started:</p>
+<ul>
+<li><strong><a href="quick-start.html">Quick start</a></strong></li>
+</ul>
+<h1 id="samples">Samples</h1>
+<p>Want to see an example site? Here are two web sites built with md2blog:</p>
+<ul>
+<li><a href="https://log.schemescape.com/">My dev blog</a></li>
+<li><a href="index.html">The site you&#39;re currently reading</a> (which isn&#39;t a blog, so not the best example)</li>
+</ul>
+<h1 id="additional-resources">Additional resources</h1>
+<ul>
+<li><a href="posts/faq/index.html">FAQ</a> (e.g. <a href="posts/faq/themes.html">themes</a>, <a href="posts/faq/command-line.html">command line options</a>, <a href="posts/faq/support.html">support</a>)</li>
+<li><a href="https://github.com/jaredkrinke/md2blog-template-site">Template repository</a> for creating your own dev blog (see <a href="quick-start.html#setup">instructions</a>)</li>
+<li><a href="https://github.com/jaredkrinke/log">Example repository</a> for a real site using md2blog</li>
+<li><a href="https://github.com/jaredkrinke/md2blog">Source code</a> for md2blog (<a href="https://github.com/jaredkrinke/md2blog/blob/main/LICENSE">MIT Licensed</a>)</li>
+</ul>
+
+</article>
+</main>
+</body>
+</html>

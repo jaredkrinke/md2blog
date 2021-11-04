@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2blog: Quick start</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="css/style.css" />
+
+</head>
+<body>
+<header>
+<h1><a href="index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+
+</header>
+<main>
+<article>
+<h1 id="setup">Setup</h1>
+<p>TODO</p>
+<h1 id="concepts">Concepts</h1>
+<p>md2blog reads input from a single <strong>input directory</strong> (<code>content/</code>, by default) and writes a static site to an <strong>output directory</strong> (<code>out/</code>, by default).</p>
+<p>The input directory contains <strong>site metadata</strong>, <strong>posts</strong>, <strong>pages</strong>, and <strong>static assets</strong>:</p>
+<ul>
+<li><strong>Site metadata</strong> is information about the site (e.g. title and root URL, stored in <code>site.json</code>)</li>
+<li><strong>Posts</strong> represent individual articles (stored under <code>posts/&lt;category&gt;/&lt;post&gt;.md</code>)</li>
+<li><strong>Pages</strong> are just arbitrary pages on the site (e.g. <code>quick-start.md</code>)</li>
+<li><strong>Static assets</strong> are non-Markdown files that are copied verbatim to the output directory (e.g. <code>favicon.ico</code>)</li>
+</ul>
+<p>Posts and pages are authored in plain text using <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> (<code>.md</code> extension), with <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> front matter for specifying metadata (such as the date of the post).</p>
+<h1 id="directory-structure">Directory structure</h1>
+<ul>
+<li><code>content/</code>: Root directory that contains all source content for the site<ul>
+<li><code>site.json</code>: Site-wide metadata</li>
+<li><code>assets/</code>: Directory for static assets (e.g. images)</li>
+<li><code>posts/</code>: Directory for all posts<ul>
+<li><code>category1/</code>: Directory for posts related to &quot;category1&quot;<ul>
+<li><code>post1.md</code>: Post related to &quot;category1&quot;</li>
+<li><code>post2.md</code>: Another &quot;category1&quot; post</li>
+</ul>
+</li>
+<li><code>category2/</code>: Another category<ul>
+<li><code>post3.md</code>: &quot;category2&quot; post</li>
+<li>etc.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="example-content">Example content</h1>
+<p>See the <a href="https://github.com/jaredkrinke/md2blog-template-site">template repository</a> for a complete example.</p>
+<h2 id="sitejson">site.json</h2>
+<p>Here&#39;s an example <code>site.json</code> file:</p>
+<pre><code class="language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;My dev blog&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://mydevblog.com/&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A very good dev blog indeed&quot;</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>Schema:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td>Recommended</td>
+<td>Must end with &quot;/&quot;</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>colors</code></td>
+<td>object</td>
+<td>Optional</td>
+<td>See <a href="posts/faq/themes.html">theme FAQ</a> for details</td>
+</tr>
+</tbody></table>
+<p>Note that the site <em>will</em> generally work without specifying a URL, but the Atom feed may not work in all feed readers because it will be forced to use relative links instead of absolute URLs.</p>
+<h2 id="posts">Posts</h2>
+<p>Posts are written in <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> and use <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> for front matter (fenced above and below by three hyphens: <code>---</code>).</p>
+<h3 id="front-matter">Front matter</h3>
+<p>Here&#39;s an example showing all of the supported YAML front matter properties (<code>title</code> and <code>date</code> are required):</p>
+<pre><code class="language-yaml"><span class="hljs-meta">---</span>
+<span class="hljs-attr">title:</span> <span class="hljs-string">First</span> <span class="hljs-string">post</span>
+<span class="hljs-attr">date:</span> <span class="hljs-number">2021-10-26</span>
+<span class="hljs-attr">description:</span> <span class="hljs-string">First</span> <span class="hljs-string">post</span> <span class="hljs-string">on</span> <span class="hljs-string">my</span> <span class="hljs-string">blog,</span> <span class="hljs-string">with</span> <span class="hljs-string">a</span> <span class="hljs-string">relative</span> <span class="hljs-string">link.</span>
+<span class="hljs-attr">keywords:</span> [<span class="hljs-string">additional-tag</span>]
+<span class="hljs-attr">draft:</span> <span class="hljs-literal">true</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-string">(Markdown</span> <span class="hljs-string">content</span> <span class="hljs-string">follows...)</span>
+</code></pre>
+<p>Schema:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>YYYY-MM-DD</td>
+<td>Required</td>
+<td>Format: YYYY-MM-DD</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>Optional</td>
+<td>This text is displayed on index pages</td>
+</tr>
+<tr>
+<td><code>keywords</code></td>
+<td>string[]</td>
+<td>Optional</td>
+<td>Additional tags for categorizing the post</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td>Boolean</td>
+<td>Optional</td>
+<td>If <code>true</code>, the post will only be built if <code>--drafts</code> was specified on the command line</td>
+</tr>
+</tbody></table>
+<h3 id="content">Content</h3>
+<p>Here&#39;s example Markdown content, demonstrating relative links (these links get translated to the corresponding HTML files and the links are checked at build time; they also work in the VS Code and GitHub Markdown previewers):</p>
+<pre><code class="language-markdown"><span class="hljs-section"># Relative links</span>
+Here&#x27;s a relative link to another post in this category: [<span class="hljs-string">link</span>](<span class="hljs-link">post2.md</span>)!
+
+And here&#x27;s one to another category, with an anchor: [<span class="hljs-string">link 2</span>](<span class="hljs-link">../category2/post3.md#some-section</span>).
+
+<span class="hljs-section"># Image</span>
+Here&#x27;s an image:
+![<span class="hljs-string">test</span>](<span class="hljs-link">../../assets/test.png</span>)
+</code></pre>
+<p>Finally, here is an example of a code block (specifying the language is recommended, but optional):</p>
+<pre><code class="language-markdown"><span class="hljs-section"># Code block</span>
+Here&#x27;s some code:
+
+<span class="hljs-code">```javascript
+const add = (a, b) =&gt; a + b;
+```</span>
+</code></pre>
+<h1 id="building-and-testing-locally">Building and testing locally</h1>
+<p>To build the site locally, use the following command (note: <code>--clean</code> is optional):</p>
+<pre><code class="language-sh">npx md2blog --clean
+</code></pre>
+<p>The file will be written to the <code>out/</code> directory.</p>
+<p>To test the site, simply open <code>out/index.html</code> directly from the file system.</p>
+<h2 id="local-web-server-with-automatic-reloading">Local web server with automatic reloading</h2>
+<p>You can also test using a local web server that will automatically regenerate and reload pages when you save content files to disk using this command:</p>
+<pre><code class="language-sh">npx md2blog --serve
+</code></pre>
+<h1 id="publishing">Publishing</h1>
+<p>md2blog doesn&#39;t have any built-in support for publishing sites, but all that&#39;s required is copying everything from <code>out/</code> to your web root.</p>
+<h2 id="publishing-to-github-pages">Publishing to GitHub pages</h2>
+<p>If you&#39;re planning to publish to <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages">GitHub Pages</a>, here&#39;s an example:</p>
+<ol>
+<li>Set up GitHub pages to publish from some branch, e.g. <code>web</code></li>
+<li>Build your site with <code>npx md2blog --clean</code></li>
+<li>Initialize Git in <code>out/</code> and upload for the first time:</li>
+</ol>
+<pre><code class="language-sh"><span class="hljs-built_in">cd</span> out
+git init .
+git checkout -B web
+git remote add origin &lt;your remote repository&gt;
+git add .
+git commit -m <span class="hljs-string">&quot;Upload site&quot;</span>
+git push -u origin web
+<span class="hljs-built_in">cd</span> ..
+</code></pre>
+<p>To update your site in the future:</p>
+<pre><code class="language-sh">npx md2blog --clean
+<span class="hljs-built_in">cd</span> out
+git add .
+git commit -m <span class="hljs-string">&quot;Update site&quot;</span>
+git push
+<span class="hljs-built_in">cd</span> ..
+</code></pre>
+<p>Note that if you want to use a custom domain, just follow <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">GitHub&#39;s custom domain directions</a> and then plop your <code>CNAME</code> file in the <code>content/</code> directory prior to building your site.</p>
+<h1 id="now-go-build-your-dev-blog">Now go build your dev blog!</h1>
+<p>That&#39;s all there is to md2blog. There&#39;s no need to worry about themes or plugins. Just start writing!</p>
+<p>If you have additional questions, consult the <a href="posts/faq/index.html">FAQ</a>. If you don&#39;t see an answer there, feel free to post in the <a href="https://github.com/jaredkrinke/md2blog/discussions">md2blog discussion board</a> (or <a href="https://github.com/jaredkrinke/md2blog/issues">report an issue</a>, if something is broken).</p>
+
+</article>
+</main>
+</body>
+</html>

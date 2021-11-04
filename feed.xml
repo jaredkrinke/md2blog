@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>md2blog</title>
+<id>urn:md2blog:md2blog</id>
+<author>
+<name>md2blog</name>
+</author>
+<updated>2021-11-04T21:55:13.698Z</updated>
+
+<entry>
+<title>How do I get support or report bugs?</title>
+<id>urn:md2blog:md2blog:How%20do%20I%20get%20support%20or%20report%20bugs%3F</id>
+
+<updated>2021-11-02T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;If you run into trouble, consult the following:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href&#x3D;&quot;posts/faq/../../quick-start.html&quot;&gt;Quick start&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href&#x3D;&quot;posts/faq/../index.html&quot;&gt;FAQ&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you don&amp;#39;t find an answer:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href&#x3D;&quot;https://github.com/jaredkrinke/md2blog/discussions&quot;&gt;Post in the md2blog discussion board&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Or &lt;a href&#x3D;&quot;https://github.com/jaredkrinke/md2blog/issues&quot;&gt;report an issue&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+</entry>
+<entry>
+<title>Why not just use X instead?</title>
+<id>urn:md2blog:md2blog:Why%20not%20just%20use%20X%20instead%3F</id>
+
+<updated>2021-11-01T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;There are &lt;a href&#x3D;&quot;https://jamstack.org/generators/&quot;&gt;hundreds of static site generators&lt;/a&gt;. Why make yet another?&lt;/p&gt;
+&lt;p&gt;The short answer is that none of the &lt;a href&#x3D;&quot;https://log.schemescape.com/posts/static-site-generators/comparison.html&quot;&gt;static site generators I tested out&lt;/a&gt; did what I wanted out of the box (or required too much setup).&lt;/p&gt;
+&lt;p&gt;The most common issues were:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;No support for relative links between Markdown files (that get translated to corresponding HTML files at build time)&lt;/li&gt;
+&lt;li&gt;No support for implicit categorization&lt;/li&gt;
+&lt;li&gt;No relative link checking at build time&lt;/li&gt;
+&lt;li&gt;Unintuitive template languages&lt;/li&gt;
+&lt;li&gt;Requiring installing new language runtimes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here are some specific notes on popular SSGs:&lt;/p&gt;
+&lt;h1 id&#x3D;&quot;jekyll&quot;&gt;Jekyll&lt;/h1&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; is probably the closest to what I was looking for, but I had no interest in setting up a Ruby environment or learning about the language (in case I needed to author my own plugins). I also didn&amp;#39;t like the verbose syntax of the &lt;a href&#x3D;&quot;https://shopify.github.io/liquid/&quot;&gt;Liquid&lt;/a&gt; template language.&lt;/p&gt;
+&lt;h1 id&#x3D;&quot;hugo&quot;&gt;Hugo&lt;/h1&gt;
+&lt;p&gt;Given that &lt;a href&#x3D;&quot;https://gohugo.io/&quot;&gt;Hugo&lt;/a&gt; is broadly used and ships in a single binary, I thought I would end up using Hugo, but it was too general, and I wanted something with out-of-the-box support for a dev blog. Hugo&amp;#39;s template language was also the most unintuitive template language I&amp;#39;ve ever seen.&lt;/p&gt;
+&lt;h1 id&#x3D;&quot;pelican&quot;&gt;Pelican&lt;/h1&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://blog.getpelican.com/&quot;&gt;Pelican&lt;/a&gt; sounds like &amp;quot;Jekyll in Python&amp;quot;, but I honestly didn&amp;#39;t seriously consider it because I&amp;#39;ve had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I&amp;#39;m in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.&lt;/p&gt;
+&lt;h1 id&#x3D;&quot;eleventy&quot;&gt;Eleventy&lt;/h1&gt;
+&lt;p&gt;I actually started out using &lt;a href&#x3D;&quot;https://www.11ty.dev/&quot;&gt;Eleventy&lt;/a&gt; because it was very simple and easy to understand, but I ended up preferring &lt;a href&#x3D;&quot;https://metalsmith.io/&quot;&gt;Metalsmith&lt;/a&gt; (on which md2blog is now built) because Metalsmith was &lt;em&gt;even simpler&lt;/em&gt;, to the point that I could easily understand everything it was doing, instead of having to guess.&lt;/p&gt;
+&lt;h1 id&#x3D;&quot;gatsby&quot;&gt;Gatsby&lt;/h1&gt;
+&lt;p&gt;I hate &lt;a href&#x3D;&quot;https://www.gatsbyjs.com/&quot;&gt;Gatsby&lt;/a&gt;, and pretty much any other &amp;quot;static&amp;quot; site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Maybe I&amp;#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.&lt;/p&gt;
+&lt;h1 id&#x3D;&quot;hexo&quot;&gt;Hexo&lt;/h1&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt; sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn&amp;#39;t investigate Hexo further. I realize this isn&amp;#39;t a great reason for not exploring Hexo, but it&amp;#39;s the honest truth.&lt;/p&gt;
+</content>
+</entry>
+<entry>
+<title>How do I customize the theme?</title>
+<id>urn:md2blog:md2blog:How%20do%20I%20customize%20the%20theme%3F</id>
+
+<updated>2021-10-31T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;Originally, I hadn&amp;#39;t planned on making md2blog&amp;#39;s theme customizable because theming would readily provide an irresistible distraction from authoring content (and eliminating such distractions is one of the main motivations for md2blog).&lt;/p&gt;
+&lt;p&gt;But in the end, I decided to make a concession to customization and add support for theming through the following four colors (specified in CSS color names like &lt;code&gt;cyan&lt;/code&gt; or hex format, e.g. &lt;code&gt;#ffee88&lt;/code&gt;):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Title (used for the site title)&lt;/li&gt;
+&lt;li&gt;Heading (used for top headings)&lt;/li&gt;
+&lt;li&gt;Link (used for links)&lt;/li&gt;
+&lt;li&gt;Comment (used only in code blocks)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All 4 colors are reused for syntax highlighting in code blocks.&lt;/p&gt;
+&lt;p&gt;To customize colors, use the &lt;code&gt;colors.title&lt;/code&gt;, etc. properties in your &lt;code&gt;site.json&lt;/code&gt; file (defaults values are shown):&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-json&quot;&gt;{
+    &amp;quot;title&amp;quot;: &amp;quot;My blog&amp;quot;,
+// ...
+    &amp;quot;colors&amp;quot;: {
+        &amp;quot;title&amp;quot;: &amp;quot;#e6b95c&amp;quot;,
+        &amp;quot;heading&amp;quot;: &amp;quot;#d97c57&amp;quot;,
+        &amp;quot;link&amp;quot;: &amp;quot;#d97c57&amp;quot;,
+        &amp;quot;comment&amp;quot;: &amp;quot;#7bbf56&amp;quot;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I suggest serving the site locally with &lt;code&gt;npx md2blog --serve&lt;/code&gt; while you play with the values and watch the page automatically reload in your browser.&lt;/p&gt;
+</content>
+</entry>
+<entry>
+<title>What are all the command line options?</title>
+<id>urn:md2blog:md2blog:What%20are%20all%20the%20command%20line%20options%3F</id>
+
+<updated>2021-10-30T00:00:00.000Z</updated>
+
+<content type="html">&lt;pre&gt;&lt;code class&#x3D;&quot;language-txt&quot;&gt;$ npx md2blog --help
+
+...
+
+Options:
+  -s, --serve            serve web site, with automatic reloading
+  -c, --clean            clean output directory before processing
+  -d, --drafts           include drafts in output
+  -i, --input &amp;lt;dir&amp;gt;      input directory (default: &amp;quot;content&amp;quot;)
+  -o, --output &amp;lt;dir&amp;gt;     output directory (default: &amp;quot;out&amp;quot;)
+  --ignore-broken-links  don&amp;#39;t check for broken relative links
+  -h, --help             display help for command
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+</entry>
+<entry>
+<title>How do I add Google Analytics to my site?</title>
+<id>urn:md2blog:md2blog:How%20do%20I%20add%20Google%20Analytics%20to%20my%20site%3F</id>
+
+<updated>2021-10-26T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;md2blog has no built-in support for adding trackers to sites it generates, and there are no plans to add such support.&lt;/p&gt;
+&lt;p&gt;Frankly, as a reader, I&amp;#39;d prefer that you not add invasive tracking to your site. &lt;a href&#x3D;&quot;https://www.goatcounter.com/&quot;&gt;GoatCounter&lt;/a&gt; might be fine.&lt;/p&gt;
+</content>
+</entry>
+</feed>
