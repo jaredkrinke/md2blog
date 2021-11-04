@@ -10,6 +10,7 @@ The most common issues were:
 
 * No support for relative links between Markdown files (that get translated to corresponding HTML files at build time)
 * No support for implicit categorization
+* No relative link checking at build time
 * Unintuitive template languages
 * Requiring installing new language runtimes
 
