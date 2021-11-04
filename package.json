@@ -27,13 +27,13 @@
     "metalsmith-collections": "git+https://github.com/segmentio/metalsmith-collections.git#v1.0.0",
     "metalsmith-discover-partials": "^0.1.2",
     "metalsmith-drafts": "^1.0.0",
-    "metalsmith-express": "^0.1.0",
+    "metalsmith-express": "git+https://github.com/jaredkrinke/metalsmith-express.git#v0.1.2",
     "metalsmith-filemetadata": "^2.1.0",
     "metalsmith-layouts": "^2.3.1",
     "metalsmith-metadata": "0.0.4",
     "metalsmith-rootpath": "^1.0.4",
     "metalsmith-taxonomy": "^0.4.0",
-    "metalsmith-watch": "^1.0.3",
+    "metalsmith-watch": "git+https://github.com/jaredkrinke/modules.git#metalsmith-watch-1.0.4",
     "route-parser": "0.0.5"
   },
   "devDependencies": {
