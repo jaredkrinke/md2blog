@@ -19,7 +19,7 @@ Additionally, the produced site is "minimal, but fully functional" in the follow
 * **Syntax highlighting** is automatically added to code blocks
 * An [Atom](https://validator.w3.org/feed/docs/atom.html) feed is automatically generated
 
-Note that "zero configuration" implies that md2blog is highly opinionated, to the point that there are no options to configure. **Instead of fiddling with options and themes, your focus is strictly on writing and publishing content.**
+Note that "zero configuration" implies that md2blog is highly opinionated, to the point that there are (almost) no options to configure. **Instead of fiddling with options and themes, your focus is strictly on writing and publishing content.**
 
 # Interested?
 If you've got [Node and NPM](https://nodejs.org/en/download/) installed already, here's how to get started:
@@ -30,11 +30,11 @@ If you've got [Node and NPM](https://nodejs.org/en/download/) installed already,
 Want to see an example site? Here are two web sites built with md2blog:
 
 * [My dev blog](https://log.schemescape.com/)
-* [The site you're currently reading](index.md) (which isn't a blog, so not a great example)
+* [The site you're currently reading](index.md) (which isn't a blog, so not the best example)
 
 # Additional resources
 
-* [FAQ](posts/faq/index.html)
+* [FAQ](posts/faq/index.html) (e.g. [themes](posts/faq/themes.md), [alternatives](posts/faq/alternatives.md))
 * [Template repository](https://github.com/jaredkrinke/md2blog-template-site) for creating your own dev blog (see [instructions](quick-start.md#setup))
 * [Example repository](https://github.com/jaredkrinke/log) for a real site using md2blog
 * [Source code](https://github.com/jaredkrinke/md2blog) for md2blog (TODO: license)

@@ -5,13 +5,13 @@ title: Quick start
 TODO
 
 # Concepts
-md2blog reads input from a single **input directory** (`content/`, by default) and writes out a static site to an **output directory** (`out/`, by default).
+md2blog reads input from a single **input directory** (`content/`, by default) and writes a static site to an **output directory** (`out/`, by default).
 
 The input directory contains **site metadata**, **posts**, **pages**, and **static assets**:
 
 * **Site metadata** is information about the site (e.g. title and root URL, stored in `site.json`)
 * **Posts** represent individual articles (stored under `posts/<category>/<post>.md`)
-* **Pages** are just additional (and optional) arbitrary pages on the site (e.g. `faq.md`)
+* **Pages** are just arbitrary pages on the site (e.g. `quick-start.md`)
 * **Static assets** are non-Markdown files that are copied verbatim to the output directory (e.g. `favicon.ico`)
 
 Posts and pages are authored in plain text using [Markdown](https://guides.github.com/features/mastering-markdown/) (`.md` extension), with [YAML](https://en.wikipedia.org/wiki/YAML) front matter for specifying metadata (such as the date of the post).
@@ -29,7 +29,7 @@ Posts and pages are authored in plain text using [Markdown](https://guides.githu
       * etc.
 
 # Example content
-TODO: Include a link to a repository with all this stuff. Or even instructions on how to use a repository as a template!
+See the [template repository](https://github.com/jaredkrinke/md2blog-template-site) for a complete example.
 
 ## site.json
 Here's an example `site.json` file:
@@ -49,9 +49,9 @@ Schema:
 | `title` | string | Required | |
 | `url` | string | Recommended | Must end with "/" |
 | `description` | string | Optional | |
-| `colors` | object | Optional | See [FAQ](posts/faq/themes.md) for details |
+| `colors` | object | Optional | See [theme FAQ](posts/faq/themes.md) for details |
 
-Note that the site *will* generally work without specifying a URL, but the Atom feed will be forced to use relative links instead of absolute URLs.
+Note that the site *will* generally work without specifying a URL, but the Atom feed may not work in all feed readers because it will be forced to use relative links instead of absolute URLs.
 
 ## Posts
 Posts are written in [Markdown](https://guides.github.com/features/mastering-markdown/) and use [YAML](https://en.wikipedia.org/wiki/YAML) for front matter (fenced above and below by three hyphens: `---`).
@@ -75,7 +75,7 @@ Schema:
 | Field | Type | Required? | Note |
 | --- | --- | --- | --- |
 | `title` | string | Required | |
-| `date` | YYYY-MM-DD | Required | |
+| `date` | YYYY-MM-DD | Required | Format: YYYY-MM-DD |
 | `description` | string | Optional | This text is displayed on index pages |
 | `keywords` | string[] | Optional | Additional tags for categorizing the post |
 | `draft` | Boolean | Optional | If `true`, the post will only be built if `--drafts` was specified on the command line |
