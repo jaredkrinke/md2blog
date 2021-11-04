@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A zero-config static site generator for dev blogs",
   "type": "module",
+  "license": "MIT",
   "bin": {
     "md2blog": "./main.js"
   },
