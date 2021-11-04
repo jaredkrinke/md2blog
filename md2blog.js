@@ -199,7 +199,7 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
 
                     // Override default colors, if custom colors provided
                     const customColors = metadata?.site?.colors ?? {};
-                    const colorRegExp = /^#[0-9a-fA-F]{3,6}$/;
+                    const colorRegExp = /^(#[0-9a-fA-F]{3,6})|([a-z]{3,30})$/;
                     for (const mapping of [
                         { key: "title", variable: "textTitle" },
                         { key: "heading", variable: "textHeading" },
