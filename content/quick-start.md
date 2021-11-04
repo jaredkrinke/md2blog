@@ -49,6 +49,7 @@ Schema:
 | `title` | string | Required | |
 | `url` | string | Recommended | Must end with "/" |
 | `description` | string | Optional | |
+| `colors` | object | Optional | See [FAQ](posts/faq/themes.md) for details |
 
 Note that the site *will* generally work without specifying a URL, but the Atom feed will be forced to use relative links instead of absolute URLs.
 
