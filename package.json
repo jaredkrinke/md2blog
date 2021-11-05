@@ -17,7 +17,6 @@
   ],
   "dependencies": {
     "commander": "^8.3.0",
-    "dot2svg-wasm": "git+https://github.com/jaredkrinke/modules.git#dot2svg-wasm-1.0.1",
     "highlight.js": "^11.2.0",
     "jstransformer-handlebars": "^1.1.0",
     "less": "^4.1.2",

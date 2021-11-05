@@ -19,7 +19,6 @@ import metalsmithWatch from "metalsmith-watch";
 import path from "path";
 import url from "url";
 import { createReplaceLinksOptions } from "./marked-replace-links.js";
-import metalsmithGraphvizDiagrams from "./metalsmith-graphviz-diagrams.js";
 import metalsmithInjectFiles from "./metalsmith-inject-files.js";
 import metalsmithLinkify from "./metalsmith-linkify.js";
 import metalsmithMarked from "./metalsmith-marked.js";
@@ -181,10 +180,6 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
             aliases: [
                 { tag: "dot", language: "c" },
             ],
-        }))
-        .use(metalsmithGraphvizDiagrams({
-            cssClasses: true,
-            useDefaultFonts: true,
         }))
         .use(metalsmithInjectFiles({
             "index.html": { layout: "index.hbs" },
