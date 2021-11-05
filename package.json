@@ -1,5 +1,5 @@
 {
-  "name": "md2blog",
+  "name": "@jaredkrinke/md2blog",
   "version": "0.1.0",
   "description": "A zero-config static site generator for dev blogs",
   "type": "module",
