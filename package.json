@@ -24,7 +24,7 @@
     "marked": "^3.0.7",
     "metalsmith": "^2.3.0",
     "metalsmith-broken-link-checker": "^1.0.2",
-    "metalsmith-collections": "git+https://github.com/segmentio/metalsmith-collections.git#v1.0.0",
+    "metalsmith-collections": "^0.9.0",
     "metalsmith-discover-partials": "^0.1.2",
     "metalsmith-drafts": "^1.0.0",
     "metalsmith-express": "git+https://github.com/jaredkrinke/metalsmith-express.git#v0.1.2",
