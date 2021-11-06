@@ -19,22 +19,35 @@ const logFiles: Plugin = (files, _metadata) => {
     console.log(fileInfo);
 };
 
-// const readMetadata: (path: string) => Plugin = (path) => {
-//     const textDecoder = new TextDecoder();
-//     return async (files, metadata) => {
+interface ReadMetadataOptions {
+    path: string;
+    propertyName?: string;
+};
 
-//     };
-// };
+function readMetadata(options: ReadMetadataOptions): Plugin {
+    const textDecoder = new TextDecoder();
+    const path = options.path;
+    const propertyName = options.propertyName;
+    return (files, metadata) => {
+        const file = files[path];
+        delete files[path];
+        let destination = metadata;
+        if (propertyName) {
+            destination = {};
+            metadata[propertyName] = destination;
+        }
+        Object.assign(destination, JSON.parse(textDecoder.decode(file.data)));
+    };
+}
 
 await Goldsmith()
-    .metadata({
-        site: {
-            title: "Hi there",
-        },
-    })
     .source(input)
     .destination(output)
     .clean(true)
+    .use(readMetadata({
+        path: "site.json",
+        propertyName: "site",
+    }))
     .use(logMetadata)
     .use(logFiles)
     .build();

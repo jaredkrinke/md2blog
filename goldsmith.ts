@@ -95,7 +95,9 @@ class GoldsmithObject {
         const inputFilePaths = await enumerateFiles(inputDirectory);
         const files: Files = {};
         await Promise.all(inputFilePaths.map(async (path) => {
-            files[path] = { data: await Deno.readFile(path) };
+            // TODO: Is there a better way to strip off the input directory name (plus slash)? path.relative requires additional permissions
+            const pathFromInputDirectory = path.slice(inputDirectory.length + 1);
+            files[pathFromInputDirectory] = { data: await Deno.readFile(path) };
         }));
 
         // Process plugins
