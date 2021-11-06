@@ -1,4 +1,7 @@
-import { join, dirname } from "https://deno.land/std@0.113.0/path/mod.ts";
+import { posix } from "https://deno.land/std@0.113.0/path/mod.ts";
+
+// Normalize to POSIX/web (forward) slashes
+const { join, dirname } = posix;
 
 type Metadata = {
     // TODO: Plugins can add arbitrary properties -- is there any way for plugins to advertise what they produce?
@@ -7,11 +10,14 @@ type Metadata = {
 };
 
 export type File = Metadata & {
-    path: string,
     data: Uint8Array,
 };
 
-export type Plugin = (files: File[], metadata: Metadata) => (Promise<void> | void);
+export type Files = {
+    [key: string]: File,
+};
+
+export type Plugin = (files: Files, metadata: Metadata) => (Promise<void> | void);
 
 function isPromise<T>(value: void | Promise<T>): value is Promise<T> {
     return !!(value && value.then);
@@ -74,15 +80,23 @@ class GoldsmithObject {
         const outputDirectory: string = this.outputDirectory;
 
         if (this.cleanOutputDirectory) {
-            await Deno.remove(outputDirectory, { recursive: true });
+            try {
+                await Deno.remove(outputDirectory, { recursive: true });
+            } catch (e) {
+                if (e instanceof Deno.errors.NotFound) {
+                    // Nothing to cleanup
+                } else {
+                    throw e;
+                }
+            }
         }
 
         // Read files
         const inputFilePaths = await enumerateFiles(inputDirectory);
-        const files: File[] = await Promise.all(inputFilePaths.map(async (path) => ({
-            path,
-            data: await Deno.readFile(path),
-        })));
+        const files: Files = {};
+        await Promise.all(inputFilePaths.map(async (path) => {
+            files[path] = { data: await Deno.readFile(path) };
+        }));
 
         // Process plugins
         for (const plugin of this.plugins) {
@@ -93,12 +107,12 @@ class GoldsmithObject {
         }
 
         // Output files by creating directories first and then writing files in parallel
-        for (const file of files) {
-            const dir = join(outputDirectory, dirname(file.path));
+        for (const key of Object.keys(files)) {
+            const dir = join(outputDirectory, dirname(key));
             await Deno.mkdir(dir, { recursive: true });
         }
 
-        await Promise.all(files.map(file => Deno.writeFile(join(outputDirectory, file.path), file.data)));
+        await Promise.all(Object.keys(files).map(key => Deno.writeFile(join(outputDirectory, key), files[key].data)));
     }
 }
 

@@ -6,11 +6,25 @@ const output = "out";
 // Logging plugins
 const logMetadata: Plugin = (_files, metadata) => console.log(metadata);
 const logFiles: Plugin = (files, _metadata) => {
-    console.log(files.map(file => {
-        const { data, ...rest } = file;
-        return { ...rest, ["data.length"]: data.length };
-    }));
+    // deno-lint-ignore no-explicit-any
+    const fileInfo: { [path: string]: { [prop: string]: any } } = {};
+    Object.keys(files).forEach(key => {
+        const { data, ...rest } = files[key];
+        fileInfo[key] = {
+            ...rest,
+            ["data.length"]: data.length,
+        };
+    });
+
+    console.log(fileInfo);
 };
+
+// const readMetadata: (path: string) => Plugin = (path) => {
+//     const textDecoder = new TextDecoder();
+//     return async (files, metadata) => {
+
+//     };
+// };
 
 await Goldsmith()
     .metadata({
