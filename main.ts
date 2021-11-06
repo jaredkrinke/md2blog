@@ -1,6 +1,7 @@
-import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
+import { join, dirname } from "https://deno.land/std@0.113.0/path/mod.ts";
 
 type Metadata = {
+    // Plugins can add arbitrary properties -- is there any way for plugins to advertise what they produce?
     // deno-lint-ignore no-explicit-any
     [propertyName: string]: any,
 };
@@ -10,7 +11,11 @@ type File = Metadata & {
     data: Uint8Array,
 };
 
-type Plugin = (files: File[], metadata: Metadata) => Promise<void>;
+type Plugin = (files: File[], metadata: Metadata) => (Promise<void> | void);
+
+function isPromise<T>(value: void | Promise<T>): value is Promise<T> {
+    return !!(value && value.then);
+}
 
 async function enumerateFiles(directoryName: string): Promise<string[]> {
     const filePaths: string[] = [];
@@ -58,25 +63,42 @@ class GoldsmithObject {
     }
 
     async build() {
+        // Check options
         if (!this.inputDirectory) {
             throw "Input directory must be specified using: .source(\"something\")";
         } else if (!this.outputDirectory) {
             throw "Output directory must be specified using: .destination(\"something\")";
         }
 
-        const inputFilePaths = await enumerateFiles(this.inputDirectory);
+        const inputDirectory: string = this.inputDirectory;
+        const outputDirectory: string = this.outputDirectory;
+
+        if (this.cleanOutputDirectory) {
+            await Deno.remove(outputDirectory, { recursive: true });
+        }
+
+        // Read files
+        const inputFilePaths = await enumerateFiles(inputDirectory);
         const files: File[] = await Promise.all(inputFilePaths.map(async (path) => ({
             path,
             data: await Deno.readFile(path),
         })));
 
-        console.log("Site:");
-        console.log(this.properties);
-        console.log(`Copying from ${this.inputDirectory} to ${this.outputDirectory}:`);
-        console.log(files.map(file => ({
-            path: file.path,
-            bytes: file.data.byteLength,
-        })));
+        // Process plugins
+        for (const plugin of this.plugins) {
+            const result = plugin(files, this.properties);
+            if (isPromise(result)) {
+                await result;
+            }
+        }
+
+        // Output files by creating directories first and then writing files in parallel
+        for (const file of files) {
+            const dir = join(outputDirectory, dirname(file.path));
+            await Deno.mkdir(dir, { recursive: true });
+        }
+
+        await Promise.all(files.map(file => Deno.writeFile(join(outputDirectory, file.path), file.data)));
     }
 }
 
@@ -86,6 +108,15 @@ const Goldsmith = () => new GoldsmithObject();
 const input = "content";
 const output = "out";
 
+// Logging plugins
+const logMetadata: Plugin = (_files, metadata) => console.log(metadata);
+const logFiles: Plugin = (files, _metadata) => {
+    console.log(files.map(file => {
+        const { data, ...rest } = file;
+        return { ...rest, ["data.length"]: data.length };
+    }));
+};
+
 await Goldsmith()
     .metadata({
         site: {
@@ -94,5 +125,7 @@ await Goldsmith()
     })
     .source(input)
     .destination(output)
-    // .clean(true)
+    .clean(true)
+    .use(logMetadata)
+    .use(logFiles)
     .build();
