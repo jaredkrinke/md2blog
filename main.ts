@@ -78,6 +78,21 @@ function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): Plugin {
     };
 }
 
+// Plugin to exclude drafts
+function goldsmithExcludeDrafts(exclude?: boolean): Plugin {
+    const excludeDrafts = exclude ?? true;
+    return (files) => {
+        if (excludeDrafts) {
+            for (const key of Object.keys(files)) {
+                const file = files[key];
+                if (file.draft) {
+                    delete files[key];
+                }
+            }
+        }
+    };
+}
+
 await Goldsmith()
     .metadata({ metadataWorks: true })
     .source(input)
@@ -85,5 +100,6 @@ await Goldsmith()
     .clean(true)
     .use(goldsmithMetadata({ site: "site.json" }))
     .use(goldsmithFrontMatter())
+    .use(goldsmithExcludeDrafts())
     .use(goldsmithLog)
     .build();
