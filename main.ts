@@ -1,13 +1,16 @@
 import { join } from "https://deno.land/std@0.113.0/path/mod.ts";
 
-const input = "content";
-// const output = "out";
+type Metadata = {
+    // deno-lint-ignore no-explicit-any
+    [propertyName: string]: any,
+};
 
-// type File = {
-//     path: string,
-//     data: Uint8Array,
-//     [propertyName: string]: any,
-// };
+type File = Metadata & {
+    path: string,
+    data: Uint8Array,
+};
+
+type Plugin = (files: File[], metadata: Metadata) => Promise<void>;
 
 async function enumerateFiles(directoryName: string): Promise<string[]> {
     const filePaths: string[] = [];
@@ -22,12 +25,74 @@ async function enumerateFiles(directoryName: string): Promise<string[]> {
     return filePaths;
 }
 
-console.log(await enumerateFiles(input));
+class GoldsmithObject {
+    properties: Metadata = {};
+    cleanOutputDirectory = false;
+    inputDirectory?: string;
+    outputDirectory?: string;
+    plugins: Plugin[] = [];
 
-// async function readDirectoryEntry(path: string, dirEntry: Deno.DirEntry) {
+    metadata(properties: Metadata): GoldsmithObject {
+        Object.assign(this.properties, properties);
+        return this;
+    }
 
-// }
+    source(directoryName: string): GoldsmithObject {
+        this.inputDirectory = directoryName;
+        return this;
+    }
 
-// async function readDirectory(path: string, directoryName: string) {
-//     for await (const dirEntry of Deno.readDir(join(input)))
-// }
+    destination(directoryName: string): GoldsmithObject {
+        this.outputDirectory = directoryName;
+        return this;
+    }
+
+    clean(clean: boolean) {
+        this.cleanOutputDirectory = clean;
+        return this;
+    }
+
+    use(plugin: Plugin): GoldsmithObject {
+        this.plugins.push(plugin);
+        return this;
+    }
+
+    async build() {
+        if (!this.inputDirectory) {
+            throw "Input directory must be specified using: .source(\"something\")";
+        } else if (!this.outputDirectory) {
+            throw "Output directory must be specified using: .destination(\"something\")";
+        }
+
+        const inputFilePaths = await enumerateFiles(this.inputDirectory);
+        const files: File[] = await Promise.all(inputFilePaths.map(async (path) => ({
+            path,
+            data: await Deno.readFile(path),
+        })));
+
+        console.log("Site:");
+        console.log(this.properties);
+        console.log(`Copying from ${this.inputDirectory} to ${this.outputDirectory}:`);
+        console.log(files.map(file => ({
+            path: file.path,
+            bytes: file.data.byteLength,
+        })));
+    }
+}
+
+const Goldsmith = () => new GoldsmithObject();
+
+// TODO: This is just a test
+const input = "content";
+const output = "out";
+
+await Goldsmith()
+    .metadata({
+        site: {
+            title: "Hi there",
+        },
+    })
+    .source(input)
+    .destination(output)
+    // .clean(true)
+    .build();
