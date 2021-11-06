@@ -5,8 +5,7 @@ const input = "content";
 const output = "out";
 
 // Logging plugins
-const logMetadata: Plugin = (_files, goldsmith) => console.log(goldsmith.metadata());
-const logFiles: Plugin = (files) => {
+const goldsmithLog: Plugin = (files, goldsmith) => {
     // deno-lint-ignore no-explicit-any
     const fileInfo: { [path: string]: { [prop: string]: any } } = {};
     Object.keys(files).forEach(key => {
@@ -17,37 +16,45 @@ const logFiles: Plugin = (files) => {
         };
     });
 
+    console.log(goldsmith.metadata())
     console.log(fileInfo);
 };
 
-// Plugin for reading global metadata
-interface ReadMetadataOptions {
-    path: string;
-    propertyName?: string;
-}
+// Plugin for reading global metadata from files
+type GoldsmithMetadataOptions = string | { [property: string]: string };
 
-function readMetadata(options: ReadMetadataOptions): Plugin {
+function goldsmithMetadata(options: GoldsmithMetadataOptions): Plugin {
     const textDecoder = new TextDecoder();
-    const path = options.path;
-    const propertyName = options.propertyName;
+    const rows: { path: string, propertyName?: string }[] = [];
+    if (typeof(options) === "string") {
+        rows.push({ path: options });
+    } else {
+        rows.push(...Object.keys(options).map(key => ({
+            path: options[key],
+            propertyName: key,
+        })));
+    }
+
     return (files, goldsmith) => {
-        const file = files[path];
-        delete files[path];
-        const parsedObject = JSON.parse(textDecoder.decode(file.data));
-        if (propertyName) {
-            goldsmith.metadata({ [propertyName]: parsedObject});
-        } else {
-            goldsmith.metadata(parsedObject);
+        for (const { path, propertyName } of rows) {
+            const file = files[path];
+            delete files[path];
+            const parsedObject = JSON.parse(textDecoder.decode(file.data));
+            if (propertyName) {
+                goldsmith.metadata({ [propertyName]: parsedObject});
+            } else {
+                goldsmith.metadata(parsedObject);
+            }
         }
     };
 }
 
 // Plugin for reading YAML front matter
-interface FrontmatterOptions {
+interface GoldsmithFrontMatterOptions {
     pattern?: RegExp;
 }
 
-function frontmatter(options?: FrontmatterOptions): Plugin {
+function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): Plugin {
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
     const pattern = options?.pattern ?? /\.md$/;
@@ -76,11 +83,7 @@ await Goldsmith()
     .source(input)
     .destination(output)
     .clean(true)
-    .use(readMetadata({
-        path: "site.json",
-        propertyName: "site",
-    }))
-    .use(frontmatter())
-    .use(logMetadata)
-    .use(logFiles)
+    .use(goldsmithMetadata({ site: "site.json" }))
+    .use(goldsmithFrontMatter())
+    .use(goldsmithLog)
     .build();
