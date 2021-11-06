@@ -74,17 +74,38 @@ class GoldsmithObject {
         return this;
     }
 
+    async run() {
+        // Read files
+        const files: Files = {};
+        if (this.inputDirectory) {
+            const inputDirectory = this.inputDirectory;
+            const inputFilePaths = await enumerateFiles(inputDirectory);
+            await Promise.all(inputFilePaths.map(async (path) => {
+                // TODO: Is there a better way to strip off the input directory name (plus slash)? path.relative requires additional permissions
+                const pathFromInputDirectory = path.slice(inputDirectory.length + 1);
+                files[pathFromInputDirectory] = { data: await Deno.readFile(path) };
+            }));
+        }
+
+        // Process plugins
+        for (const plugin of this.plugins) {
+            const result = plugin(files, this);
+            if (isPromise(result)) {
+                await result;
+            }
+        }
+
+        return files;
+    }
+
     async build() {
         // Check options
-        if (!this.inputDirectory) {
-            throw "Input directory must be specified using: .source(\"something\")";
-        } else if (!this.outputDirectory) {
+        if (!this.outputDirectory) {
             throw "Output directory must be specified using: .destination(\"something\")";
         }
 
-        const inputDirectory: string = this.inputDirectory;
+        // Clean, if requested
         const outputDirectory: string = this.outputDirectory;
-
         if (this.cleanOutputDirectory) {
             try {
                 await Deno.remove(outputDirectory, { recursive: true });
@@ -97,22 +118,8 @@ class GoldsmithObject {
             }
         }
 
-        // Read files
-        const inputFilePaths = await enumerateFiles(inputDirectory);
-        const files: Files = {};
-        await Promise.all(inputFilePaths.map(async (path) => {
-            // TODO: Is there a better way to strip off the input directory name (plus slash)? path.relative requires additional permissions
-            const pathFromInputDirectory = path.slice(inputDirectory.length + 1);
-            files[pathFromInputDirectory] = { data: await Deno.readFile(path) };
-        }));
-
-        // Process plugins
-        for (const plugin of this.plugins) {
-            const result = plugin(files, this);
-            if (isPromise(result)) {
-                await result;
-            }
-        }
+        // Read files and process plugins
+        const files = await this.run();
 
         // Output files by creating directories first and then writing files in parallel
         for (const key of Object.keys(files)) {
