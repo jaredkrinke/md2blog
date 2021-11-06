@@ -102,4 +102,5 @@ class GoldsmithObject {
     }
 }
 
+// TODO: Allow changing root directory
 export const Goldsmith = () => new GoldsmithObject();
