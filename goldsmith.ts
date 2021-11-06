@@ -17,7 +17,7 @@ export type Files = {
     [key: string]: File,
 };
 
-export type Plugin = (files: Files, metadata: Metadata) => (Promise<void> | void);
+export type Plugin = (files: Files, goldsmith: GoldsmithObject) => (Promise<void> | void);
 
 function isPromise<T>(value: void | Promise<T>): value is Promise<T> {
     return !!(value && value.then);
@@ -43,9 +43,15 @@ class GoldsmithObject {
     outputDirectory?: string;
     plugins: Plugin[] = [];
 
-    metadata(properties: Metadata): GoldsmithObject {
-        Object.assign(this.properties, properties);
-        return this;
+    metadata(properties: Metadata): GoldsmithObject;
+    metadata(): Metadata;
+    metadata(properties?: Metadata): GoldsmithObject | Metadata {
+        if (properties) {
+            Object.assign(this.properties, properties);
+            return this;
+        } else {
+            return this.properties;
+        }
     }
 
     source(directoryName: string): GoldsmithObject {
@@ -102,7 +108,7 @@ class GoldsmithObject {
 
         // Process plugins
         for (const plugin of this.plugins) {
-            const result = plugin(files, this.properties);
+            const result = plugin(files, this);
             if (isPromise(result)) {
                 await result;
             }
