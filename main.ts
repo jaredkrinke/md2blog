@@ -50,7 +50,7 @@ interface FrontmatterOptions {
 function frontmatter(options?: FrontmatterOptions): Plugin {
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
-    const pattern = options?.pattern ?? /^.*\.md$/;
+    const pattern = options?.pattern ?? /\.md$/;
     const frontmatterPattern = /^---\r?\n(.*?)\r?\n---\r?\n/ms;
     return (files) => {
         for (const key of Object.keys(files)) {
