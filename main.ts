@@ -1,4 +1,5 @@
 import { Goldsmith, Plugin } from "./goldsmith.ts"
+import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 
 const input = "content";
 const output = "out";
@@ -42,14 +43,33 @@ function readMetadata(options: ReadMetadataOptions): Plugin {
 }
 
 // Plugin for reading YAML front matter
-// interface FrontmatterOptions {
-//     pattern?: RegExp;
-// }
+interface FrontmatterOptions {
+    pattern?: RegExp;
+}
 
-// function frontmatter(options: FrontmatterOptions): Plugin {
-//     const pattern = options.pattern ?? /\.md$/;
-//     return (files)
-// }
+function frontmatter(options?: FrontmatterOptions): Plugin {
+    const textDecoder = new TextDecoder();
+    const textEncoder = new TextEncoder();
+    const pattern = options?.pattern ?? /^.*\.md$/;
+    const frontmatterPattern = /^---\r?\n(.*?)\r?\n---\r?\n/ms;
+    return (files) => {
+        for (const key of Object.keys(files)) {
+            if (pattern.test(key)) {
+                const file = files[key];
+                const text = textDecoder.decode(file.data);
+                const matches = frontmatterPattern.exec(text);
+                if (matches) {
+                    const yamlText = matches[1];
+                    const yaml = parseYAML(yamlText);
+                    Object.assign(file, yaml);
+
+                    const body = text.slice(matches[0].length);
+                    file.data = textEncoder.encode(body);
+                }
+            }
+        }
+    };
+}
 
 await Goldsmith()
     .metadata({ metadataWorks: true })
@@ -60,6 +80,7 @@ await Goldsmith()
         path: "site.json",
         propertyName: "site",
     }))
+    .use(frontmatter())
     .use(logMetadata)
     .use(logFiles)
     .build();
