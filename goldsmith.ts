@@ -64,7 +64,7 @@ class GoldsmithObject {
         return this;
     }
 
-    clean(clean: boolean) {
+    clean(clean: boolean): GoldsmithObject {
         this.cleanOutputDirectory = clean;
         return this;
     }
@@ -74,7 +74,7 @@ class GoldsmithObject {
         return this;
     }
 
-    async run() {
+    async run(): Promise<Files> {
         // Read files
         const files: Files = {};
         if (this.inputDirectory) {
@@ -98,7 +98,7 @@ class GoldsmithObject {
         return files;
     }
 
-    async build() {
+    async build(): Promise<void> {
         // Check options
         if (!this.outputDirectory) {
             throw "Output directory must be specified using: .destination(\"something\")";
