@@ -96,17 +96,20 @@ function goldsmithExcludeDrafts(exclude?: boolean): Plugin {
 // Plugin for adding metadata based on regular expressions
 type GoldsmithFileCreateMetadataCallback = (file: File, matches: RegExpMatchArray) => Metadata;
 
-function goldsmithFileMetadata(pattern: RegExp, createMetadata: GoldsmithFileCreateMetadataCallback): Plugin {
+function goldsmithFileMetadata(options: { pattern: RegExp, metadata: Metadata | GoldsmithFileCreateMetadataCallback }): Plugin {
+    const { pattern, metadata } = options;
     return (files, _goldsmith) => {
         for (const key of Object.keys(files)) {
             const matches = pattern.exec(key);
             if (matches) {
                 const file = files[key];
-                Object.assign(file, createMetadata(file, matches));
+                Object.assign(file, (typeof(metadata) === "function") ? metadata(file, matches) : metadata);
             }
         }
     };
 }
+
+const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
 await Goldsmith()
     .metadata({ metadataWorks: true })
@@ -116,6 +119,18 @@ await Goldsmith()
     .use(goldsmithMetadata({ site: "site.json" }))
     .use(goldsmithFrontMatter())
     .use(goldsmithExcludeDrafts())
-    .use(goldsmithFileMetadata(/^posts(\/([^/]+))?\/[^/]+.md$/, (_file, matches) => ({ category: matches[2] ?? "misc" })))
+    .use(goldsmithFileMetadata({
+        pattern: postPathPattern,
+        metadata: (_file, matches) => ({ category: matches[2] ?? "misc" }),
+    }))
+    .use(goldsmithFileMetadata({
+        pattern: postPathPattern,
+        metadata: (file) => ({
+            layout: "post.hbs",
+
+            // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
+            tags: [...new Set([ file.category, ...(file.keywords ?? []) ])],
+        }),
+    }))
     .use(goldsmithLog)
     .build();
