@@ -109,10 +109,12 @@ function goldsmithFileMetadata(options: { pattern: RegExp, metadata: Metadata | 
     };
 }
 
+// Path format for posts: posts/(:category/)postName.md
+// Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
 await Goldsmith()
-    .metadata({ metadataWorks: true })
+    .metadata({ metadataWorks: true }) // TODO: Move to test only
     .source(input)
     .destination(output)
     .clean(true)
