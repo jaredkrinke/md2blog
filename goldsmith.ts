@@ -3,7 +3,7 @@ import { posix } from "https://deno.land/std@0.113.0/path/mod.ts";
 // Normalize to POSIX/web (forward) slashes
 const { join, dirname } = posix;
 
-type Metadata = {
+export type Metadata = {
     // TODO: Plugins can add arbitrary properties -- is there any way for plugins to advertise what they produce?
     // deno-lint-ignore no-explicit-any
     [propertyName: string]: any,

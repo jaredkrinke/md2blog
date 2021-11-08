@@ -1,4 +1,4 @@
-import { Goldsmith, Plugin } from "./goldsmith.ts"
+import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts"
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 
 const input = "content";
@@ -93,6 +93,21 @@ function goldsmithExcludeDrafts(exclude?: boolean): Plugin {
     };
 }
 
+// Plugin for adding metadata based on regular expressions
+type GoldsmithFileCreateMetadataCallback = (file: File, matches: RegExpMatchArray) => Metadata;
+
+function goldsmithFileMetadata(pattern: RegExp, createMetadata: GoldsmithFileCreateMetadataCallback): Plugin {
+    return (files, _goldsmith) => {
+        for (const key of Object.keys(files)) {
+            const matches = pattern.exec(key);
+            if (matches) {
+                const file = files[key];
+                Object.assign(file, createMetadata(file, matches));
+            }
+        }
+    };
+}
+
 await Goldsmith()
     .metadata({ metadataWorks: true })
     .source(input)
@@ -101,5 +116,6 @@ await Goldsmith()
     .use(goldsmithMetadata({ site: "site.json" }))
     .use(goldsmithFrontMatter())
     .use(goldsmithExcludeDrafts())
+    .use(goldsmithFileMetadata(/^posts(\/([^/]+))?\/[^/]+.md$/, (_file, matches) => ({ category: matches[2] ?? "misc" })))
     .use(goldsmithLog)
     .build();
