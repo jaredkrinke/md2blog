@@ -94,16 +94,56 @@ function goldsmithExcludeDrafts(exclude?: boolean): Plugin {
 }
 
 // Plugin for adding metadata based on regular expressions
-type GoldsmithFileCreateMetadataCallback = (file: File, matches: RegExpMatchArray) => Metadata;
+type GoldsmithFileCreateMetadataCallback = (file: File, matches: RegExpMatchArray, metadata: Metadata) => Metadata;
 
 function goldsmithFileMetadata(options: { pattern: RegExp, metadata: Metadata | GoldsmithFileCreateMetadataCallback }): Plugin {
     const { pattern, metadata } = options;
-    return (files, _goldsmith) => {
+    return (files, goldsmith) => {
         for (const key of Object.keys(files)) {
             const matches = pattern.exec(key);
             if (matches) {
                 const file = files[key];
-                Object.assign(file, (typeof(metadata) === "function") ? metadata(file, matches) : metadata);
+                Object.assign(file, (typeof(metadata) === "function") ? metadata(file, matches, goldsmith.metadata()) : metadata);
+            }
+        }
+    };
+}
+
+// Plugin for creating indexes on properties
+interface GoldsmithIndexOptions {
+    pattern: RegExp;
+    property: string;
+    createTermPagePath?: (term: string) => string;
+    // indexPagePath?: string; // TODO
+}
+
+function goldsmithIndex(options: GoldsmithIndexOptions): Plugin {
+    const { pattern, createTermPagePath } = options;
+    const propertyName = options.property;
+    return (files, goldsmith) => {
+        const index: { [term: string]: File[] } = {};
+        for (const key of Object.keys(files)) {
+            if (pattern.test(key)) {
+                const file = files[key];
+                const termOrTerms = file[propertyName];
+                const terms = Array.isArray(termOrTerms) ? termOrTerms : [termOrTerms];
+                for (const term of terms) {
+                    const list = index[term] ?? [];
+                    index[term] = [...list, file];
+                }
+            }
+        }
+
+        const metadata = goldsmith.metadata();
+        const { ...rest } = metadata.indexes ?? {};
+        metadata.indexes = { [propertyName]: index, ...rest };
+
+        if (createTermPagePath) {
+            for (const term of Object.keys(index)) {
+                files[createTermPagePath(term)] = {
+                    term,
+                    data: new Uint8Array(0),
+                };
             }
         }
     };
@@ -132,6 +172,21 @@ await Goldsmith()
 
             // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
             tags: [...new Set([ file.category, ...(file.keywords ?? []) ])],
+        }),
+    }))
+    .use(goldsmithIndex({
+        pattern: postPathPattern,
+        property: "tags",
+        createTermPagePath: term => `posts/${term}/index.html`,
+    }))
+    .use(goldsmithFileMetadata({
+        pattern: /^posts\/[^/]+?\/index.html$/,
+        metadata: (file, _matches, metadata) => ({
+            title: file.term,
+            tag: file.term,
+            // layout: "tagIndex.hbs", // TODO
+            // isTagIndex: true, // TODO: Needed?
+            postsWithTag: metadata.indexes.tags[file.term].slice().sort((a: File, b: File) => (b.date - a.date)),
         }),
     }))
     .use(goldsmithLog)
