@@ -248,10 +248,12 @@ function goldsmithMarked(_options?: goldsmithMarkedOptions): Plugin {
     };
 }
 
-// Plugin for computing root path
-const goldsmithRootPath: Plugin = (files) => {
+// Plugin for computing root paths
+const goldsmithRootPaths: Plugin = (files) => {
     for (const key of Object.keys(files)) {
-        files[key].rootPath = "../".repeat(Array.from(key.matchAll(/[/]/g)).length);
+        const file = files[key];
+        file.pathToRoot = "../".repeat(Array.from(key.matchAll(/[/]/g)).length);
+        file.pathFromRoot = key;
     }
 };
 
@@ -319,12 +321,12 @@ html`<!DOCTYPE html>
 ${{verbatim: m.description ? html`<meta name="description" content="${m.description}" />` : ""}}
 ${{verbatim: m.keywords ? html`<meta name="keywords" content="${m.keywords.join(",")}" />` : ""}}
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-<link rel="stylesheet" href="${m.rootPath}css/style.css" />
-${{verbatim: m.isRoot ? html`<link rel="alternate" type="application/rss+xml" href="${m.rootPath}feed.xml" />` : ""}}
+<link rel="stylesheet" href="${m.pathToRoot}css/style.css" />
+${{verbatim: m.isRoot ? html`<link rel="alternate" type="application/rss+xml" href="${m.pathToRoot}feed.xml" />` : ""}}
 </head>
 <body>
 <header>
-<h1><a href="${m.rootPath}index.html">${m.site.title}</a></h1>
+<h1><a href="${m.pathToRoot}index.html">${m.site.title}</a></h1>
 ${{verbatim: m.site.description ? html`<p>${m.site.description}</p>` : ""}}
 ${{verbatim: navigationVerbatim ? navigationVerbatim : ""}}
 </header>
@@ -335,12 +337,11 @@ ${{verbatim: mainVerbatim}}
 </html>
 `;
 
-function partialNavigation(m: Metadata, tags: string[], incomplete: boolean, isTagIndex?: boolean, tag?: string): string {
+function partialNavigation(m: Metadata, tags: string[], incomplete?: boolean, isTagIndex?: boolean, tag?: string): string {
     return tags ? html`<nav>
 <ul>
-${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.rootPath}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
-${{verbatim: incomplete ? html`<li><a href="${m.rootPath}posts/index.html">&hellip;</a></li>` : ""}}
-</ul>
+${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.pathToRoot}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
+${{verbatim: incomplete ? html`<li><a href="${m.pathToRoot}posts/index.html">&hellip;</a></li>` : ""}}</ul>
 </nav>` : "";
 }
 
@@ -354,7 +355,7 @@ function partialDate(date: Date): string {
 const partialArticleSummary: (m: Metadata, post: Metadata) => string = (m, post) => {
     return html`<article>
 <header>
-<h1><a href="${m.linkPrefix}${post.path}">${post.title}</a></h1>
+<h1><a href="${m.pathToRoot}${post.pathFromRoot}">${post.title}</a></h1>
 ${{verbatim: partialDate(post.date)}}
 </header>
 ${{verbatim: post.description ? html`<p>${post.description}</p>` : ""}}
@@ -362,34 +363,49 @@ ${{verbatim: post.description ? html`<p>${post.description}</p>` : ""}}
 `;
 };
 
-const templateNotFound: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(m,
+function partialArticleSummaryList(m: Metadata, posts: Metadata[]): string {
+    return html`<ul>
+${{verbatim: posts.map((post: Metadata) => html`<li>${{verbatim: partialArticleSummary(m, post)}}</li>`).join("\n")}}
+</ul>`;
+}
+
+const template404: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(m,
 `<h1>Not found</h1>
 <p>The requested page does not exist.</p>
 <p><a href="index.html">Click here</a> to go to the home page.</p>
 `);
 
-const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase({
-    isRoot: true,
-    description: m.site.description,
-    ...m,
-},
-html`<ul>
-${{verbatim: m.posts_recent.map((post: Metadata) => html`<li>${{verbatim: partialArticleSummary(m, post)}}</li>`).join("\n")}}
-</ul>
+const templateArchive: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
+    {
+        title: "Archive of all posts since the beginning of time",
+        ...m
+    },
+    partialArticleSummaryList(m, m.posts),
+    partialNavigation(m, m.tagsAll)
+);
+
+const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
+    {
+        isRoot: true,
+        description: m.site.description,
+        ...m,
+    },
+    html`${{verbatim: partialArticleSummaryList(m, m.posts_recent)}}
 <footer>
 <p><a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>`,
-partialNavigation(m, m.tagsTop, m.tagsTop.length !== m.tagsAll.length));
+    partialNavigation(m, m.tagsTop, m.tagsTop.length !== m.tagsAll.length)
+);
 
 const trivialLayout: GoldsmithLitesTemplarLayoutCallback = (source, metadata) => `{${Object.keys(metadata).join(", ")}}\n${source}`;
 const templates: GoldsmithLitesTemplarLayoutMap = {
-    "post": trivialLayout,
-    "tagIndex": trivialLayout,
-    "index": templateRoot,
-    "archive": trivialLayout,
-    "404": templateNotFound,
+    "404": template404,
+    "archive": templateArchive,
     "default": trivialLayout,
     // "feed": trivialLayout, // TODO
+    "index": templateRoot,
+    "post": trivialLayout,
+    "tagIndex": trivialLayout,
 };
 
 await Goldsmith()
@@ -425,7 +441,7 @@ await Goldsmith()
             tag: file.term,
             layout: "tagIndex",
             isTagIndex: true, // TODO: Needed?
-            postsWithTag: metadata.indexes.tags[file.term].slice().sort((a: File, b: File) => (b.date - a.date)),
+            postsWithTag: metadata.indexes.tags[file.term].sort((a: File, b: File) => (b.date - a.date)), // Note: Sorts the array in place!
         }),
     }))
     .use(goldsmithCollections({
@@ -495,7 +511,7 @@ await Goldsmith()
         },
     }))
     .use(goldsmithMarked())
-    .use(goldsmithRootPath)
+    .use(goldsmithRootPaths)
     .use(goldsmithLayout({
         pattern: /.+\.html$/,
         layout: goldsmithLayoutLitesTemplar({
