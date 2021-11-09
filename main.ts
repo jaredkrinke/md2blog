@@ -1,6 +1,7 @@
 import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { marked } from "./node_modules/marked/lib/marked.esm.js"; // TODO: Is the module for Marked on any CDN?
+import { html } from "../lites-templar/mod.ts";
 
 const input = "content";
 const output = "out";
@@ -309,13 +310,44 @@ function goldsmithLayoutLitesTemplar(options: GoldsmithLitesTemplarOptions): Gol
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
 // TODO: Move and fill in
+const partialBase = (m: Metadata, mainVerbatim: string) => 
+html`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>${m.site.title}${m.title ? `: ${m.title}` : ""}</title>
+${/*${m.#if description}<meta name="description" content="${m.description}" />${m./if}
+${m.#if keywords}<meta name="keywords" content="${m.#each keywords}${m.this}${m.#unless @last},${m./unless}${m./each}" />${m./if}*/""}
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="${m.rootPath}css/style.css" />
+${/*${m.#if isRoot}<link rel="alternate" type="application/rss+xml" href="${m.rootPath}feed.xml" />${m./if}*/""}
+</head>
+<body>
+<header>
+<h1><a href="${m.rootPath}index.html">${m.site.title}</a></h1>
+${/*${m.site.description}<p>${m.site.description}</p>${m./if}*/""}
+${/*${m.#if navigationPartialName}${m.> (lookup . "navigationPartialName") }${m./if}*/""}
+</header>
+<main>
+${{verbatim: mainVerbatim}}
+</main>
+</body>
+</html>
+`;
+
+const templateNotFound: GoldsmithLitesTemplarLayoutCallback = (content, m) => partialBase(m,
+`<h1>Not found</h1>
+<p>The requested page does not exist.</p>
+<p><a href="index.html">Click here</a> to go to the home page.</p>
+`)
+
 const trivialLayout: GoldsmithLitesTemplarLayoutCallback = (source, metadata) => `{${Object.keys(metadata).join(", ")}}\n${source}`;
 const templates: GoldsmithLitesTemplarLayoutMap = {
     "post": trivialLayout,
     "tagIndex": trivialLayout,
     "index": trivialLayout,
     "archive": trivialLayout,
-    "404": trivialLayout,
+    "404": templateNotFound,
     "default": trivialLayout,
     // "feed": trivialLayout, // TODO
 };
