@@ -239,5 +239,24 @@ await Goldsmith()
             limit: 5,
         },
     }))
+    .use((_files, goldsmith) => {
+        // Create index and archive tag lists
+        const metadata = goldsmith.metadata();
+
+        // Sort "all tags" list alphabetically
+        metadata.tagsAll = Object.keys(metadata.indexes.tags).sort((a, b) => (a < b ? -1 : 1));
+
+        // Sort "top tags" list by most posts, and then most recent post if there's a tie
+        metadata.tagsTop = Object.keys(metadata.indexes.tags).sort((a, b) => {
+            const postsA = metadata.indexes.tags[a];
+            const postsB = metadata.indexes.tags[b];
+            return (postsB.length - postsA.length) || (postsB[0].date - postsA[0].date);
+        }).slice(0, 4);
+
+        // Also include the current time
+        metadata.now = new Date();
+
+        // TODO: Consider using  absolute links for content in the Atom feed
+    })
     .use(goldsmithLog)
     .build();
