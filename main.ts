@@ -8,6 +8,7 @@ import { html, xml } from "../lites-templar/mod.ts";
 // deno-lint-ignore no-explicit-any
 const highlightJS: any = HighlightJS;
 
+// TODO: Command line interface
 const input = "content";
 const output = "out";
 
@@ -331,7 +332,7 @@ function goldsmithLayoutLitesTemplar(options: GoldsmithLitesTemplarOptions): Gol
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
-// TODO: Move and fill in
+// TODO: Move
 const partialBase = (m: Metadata, mainVerbatim: string, navigationVerbatim?: string) => 
 html`<!DOCTYPE html>
 <html lang="en">
@@ -515,7 +516,7 @@ await Goldsmith()
             title: file.term,
             tag: file.term,
             layout: "tagIndex",
-            isTagIndex: true, // TODO: Needed?
+            isTagIndex: true,
             postsWithTag: metadata.indexes.tags[file.term].sort((a: File, b: File) => (b.date - a.date)), // Note: Sorts the array in place!
         }),
     }))
@@ -551,7 +552,6 @@ await Goldsmith()
 
         // TODO: Consider using  absolute links for content in the Atom feed
     })
-    // TODO: Syntax highlighting
     .use(goldsmithInjectFiles({
         "index.html": { layout: "index" },
         "posts/index.html": { layout: "archive" },
@@ -847,7 +847,7 @@ ellipse.diagram-black-none {
   color: #ffffff;
 }
 `
-            // // TODO
+            // // TODO: Custom colors
             // data: () => {
             //     // let source = (await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"))).toString();
 
@@ -889,6 +889,8 @@ ellipse.diagram-black-none {
             defaultTemplate: "default",
         })
     }))
+    // TODO: Local web server with automatic reloading
+    // TODO: Broken link checker
     // TODO: Only for testing
     .use((files) => {
         const textDecoder = new TextDecoder();
