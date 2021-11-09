@@ -149,6 +149,43 @@ function goldsmithIndex(options: GoldsmithIndexOptions): Plugin {
     };
 }
 
+// Plugin for creating collections of files
+interface GoldsmithCollection {
+    pattern: RegExp;
+    sortBy: string;
+    reverse?: boolean;
+    limit?: number;
+}
+
+function goldsmithCollections(options: { [collectionName: string]: GoldsmithCollection}): Plugin {
+    return (files, goldsmith) => {
+        for (const collectionKey of Object.keys(options)) {
+            const collection = options[collectionKey];
+
+            const { pattern, sortBy } = collection;
+            const reverse = collection.reverse ?? false;
+            const limit = collection.limit;
+
+            const list = [];
+            for (const key of Object.keys(files)) {
+                if (pattern.test(key)) {
+                    list.push(files[key]);
+                }
+            }
+    
+            list.sort((a, b) => a[sortBy] - b[sortBy]);
+            if (reverse) {
+                list.reverse();
+            }
+            if (limit !== undefined) {
+                list.splice(limit);
+            }
+
+            goldsmith.metadata({ [collectionKey]: list});
+        }
+    };
+}
+
 // Path format for posts: posts/(:category/)postName.md
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
@@ -188,6 +225,19 @@ await Goldsmith()
             // isTagIndex: true, // TODO: Needed?
             postsWithTag: metadata.indexes.tags[file.term].slice().sort((a: File, b: File) => (b.date - a.date)),
         }),
+    }))
+    .use(goldsmithCollections({
+        posts: {
+            pattern: postPathPattern,
+            sortBy: "date",
+            reverse: true,
+        },
+        posts_recent: {
+            pattern: postPathPattern,
+            sortBy: "date",
+            reverse: true,
+            limit: 5,
+        },
     }))
     .use(goldsmithLog)
     .build();
