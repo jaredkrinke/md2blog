@@ -108,7 +108,14 @@ class GoldsmithObject {
         const outputDirectory: string = this.outputDirectory;
         if (this.cleanOutputDirectory) {
             try {
-                await Deno.remove(outputDirectory, { recursive: true });
+                const tasks = [];
+                for await (const dirEntry of Deno.readDir(outputDirectory)) {
+                    // Ignore files that start with ".", e.g. ".git"
+                    if (!dirEntry.name.startsWith(".")) {
+                        tasks.push(Deno.remove(join(outputDirectory, dirEntry.name), { recursive: true }));
+                    }
+                }
+                await Promise.all(tasks);
             } catch (e) {
                 if (e instanceof Deno.errors.NotFound) {
                     // Nothing to cleanup
