@@ -133,6 +133,7 @@ export const md2blogAsync = (options) => new Promise((resolve, reject) => {
             metadata.tagsAll = Object.keys(metadata.taxonomies.tags).sort((a, b) => (a < b ? -1 : 1));
 
             // Sort "top tags" list by most posts, and then most recent post if there's a tie
+            // TODO: This actually has a bug -- I should mutate/sort the array in a previous plugin to make this logic sound again
             metadata.tagsTop = Object.keys(metadata.taxonomies.tags).sort((a, b) => {
                 const postsA = metadata.taxonomies.tags[a];
                 const postsB = metadata.taxonomies.tags[b];
