@@ -332,14 +332,12 @@ ${/*${m.#if navigationPartialName}${m.> (lookup . "navigationPartialName") }${m.
 ${{verbatim: mainVerbatim}}
 </main>
 </body>
-</html>
-`;
+</html>`;
 
-const templateNotFound: GoldsmithLitesTemplarLayoutCallback = (content, m) => partialBase(m,
+const templateNotFound: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(m,
 `<h1>Not found</h1>
 <p>The requested page does not exist.</p>
-<p><a href="index.html">Click here</a> to go to the home page.</p>
-`)
+<p><a href="index.html">Click here</a> to go to the home page.</p>`)
 
 const trivialLayout: GoldsmithLitesTemplarLayoutCallback = (source, metadata) => `{${Object.keys(metadata).join(", ")}}\n${source}`;
 const templates: GoldsmithLitesTemplarLayoutMap = {
