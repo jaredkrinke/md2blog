@@ -341,7 +341,7 @@ function partialNavigation(m: Metadata, tags: string[], incomplete?: boolean, is
     return tags ? html`<nav>
 <ul>
 ${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.pathToRoot}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
-${{verbatim: incomplete ? html`<li><a href="${m.pathToRoot}posts/index.html">&hellip;</a></li>` : ""}}</ul>
+${{verbatim: incomplete ? html`<li><a href="${m.pathToRoot}posts/index.html">&hellip;</a></li>\n` : ""}}</ul>
 </nav>` : "";
 }
 
@@ -384,6 +384,29 @@ const templateArchive: GoldsmithLitesTemplarLayoutCallback = (_content, m) => pa
     partialNavigation(m, m.tagsAll)
 );
 
+const templateDefault: GoldsmithLitesTemplarLayoutCallback = (content, m) => partialBase(
+    m,
+    html`<article>
+${{verbatim: content}}
+</article>`,
+    partialNavigation(m, m.tags)
+);
+
+const templatePost: GoldsmithLitesTemplarLayoutCallback = (content, m) => partialBase(
+    m,
+    html`<article>
+<header>
+<h1><a href="${m.pathToRoot}${m.pathFromRoot}">${m.title}</a></h1>
+${{verbatim: partialDate(m.date)}}
+</header>
+${{verbatim: content}}
+<footer>
+<p><a href="${m.pathToRoot}index.html">Back to home</a></p>
+</footer>
+</article>`,
+    partialNavigation(m, m.tags)
+);
+
 const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
     {
         isRoot: true,
@@ -397,15 +420,23 @@ const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => parti
     partialNavigation(m, m.tagsTop, m.tagsTop.length !== m.tagsAll.length)
 );
 
-const trivialLayout: GoldsmithLitesTemplarLayoutCallback = (source, metadata) => `{${Object.keys(metadata).join(", ")}}\n${source}`;
+const templateTagIndex: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
+    {
+        title: "Archive of all posts since the beginning of time",
+        ...m
+    },
+    partialArticleSummaryList(m, m.postsWithTag),
+    partialNavigation(m, m.tagsAll, false, true, m.tag)
+);
+
 const templates: GoldsmithLitesTemplarLayoutMap = {
     "404": template404,
     "archive": templateArchive,
-    "default": trivialLayout,
+    "default": templateDefault,
     // "feed": trivialLayout, // TODO
     "index": templateRoot,
-    "post": trivialLayout,
-    "tagIndex": trivialLayout,
+    "post": templatePost,
+    "tagIndex": templateTagIndex,
 };
 
 await Goldsmith()
@@ -519,4 +550,19 @@ await Goldsmith()
             defaultTemplate: "default",
         })
     }))
+    // TODO: Only for testing
+    .use((files) => {
+        const textDecoder = new TextDecoder();
+        const textEncoder = new TextEncoder();
+        const pattern = /.+\.html$/;
+        for (const key of Object.keys(files)) {
+            if (pattern.test(key)) {
+                const file = files[key];
+                const content = textDecoder.decode(file.data);
+                file.data = textEncoder.encode(content
+                    .replace(/&apos;/g, "&#x27;")
+                    .replace(/\n/g, "\r\n"));
+            }
+        }
+    })
     .build();
