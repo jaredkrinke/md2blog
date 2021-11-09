@@ -889,8 +889,8 @@ ellipse.diagram-black-none {
             defaultTemplate: "default",
         })
     }))
-    // TODO: Local web server with automatic reloading
     // TODO: Broken link checker
+    // TODO: Local web server with automatic reloading
     // TODO: Only for testing
     .use((files) => {
         const textDecoder = new TextDecoder();
