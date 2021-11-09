@@ -247,6 +247,13 @@ function goldsmithMarked(_options?: goldsmithMarkedOptions): Plugin {
     };
 }
 
+// Plugin for computing root path
+const goldsmithRootPath: Plugin = (files) => {
+    for (const key of Object.keys(files)) {
+        files[key].rootPath = "../".repeat(Array.from(key.matchAll(/[/]/g)).length);
+    }
+};
+
 // Path format for posts: posts/(:category/)postName.md
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
@@ -354,5 +361,6 @@ await Goldsmith()
         },
     }))
     .use(goldsmithMarked())
+    .use(goldsmithRootPath)
     .use(goldsmithLog)
     .build();
