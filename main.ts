@@ -1,6 +1,6 @@
 import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
-import { marked } from "./node_modules/marked/lib/marked.esm.js"; // TODO: Is the module for Marked on any CDN?
+import { marked, Renderer } from "./node_modules/marked/lib/marked.esm.js"; // TODO: Is the module for Marked on any CDN?
 import { html } from "../lites-templar/mod.ts";
 
 const input = "content";
@@ -229,10 +229,21 @@ interface goldsmithMarkedOptions {
 }
 
 const markdownPattern = /(.+)\.md$/;
-function goldsmithMarked(_options?: goldsmithMarkedOptions): Plugin {
+function goldsmithMarked(options?: goldsmithMarkedOptions): Plugin {
+    const replaceLinks = options?.replaceLinks;
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
     return (files, _goldsmith) => {
+        marked.setOptions(marked.getDefaults());
+        if (replaceLinks) {
+            const renderer = new Renderer();
+            const base = renderer.link;
+            renderer.link = function (href: string, title: string, text: string) {
+                return base.call(this, replaceLinks(href), title, text);
+            };
+            marked.use({ renderer });
+        }
+
         // TODO: Link replacing and highlighting
         for (const key of Object.keys(files)) {
             const matches = markdownPattern.exec(key);
@@ -541,7 +552,9 @@ await Goldsmith()
             }
         },
     }))
-    .use(goldsmithMarked())
+    .use(goldsmithMarked({
+        replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2"),
+    }))
     .use(goldsmithRootPaths)
     .use(goldsmithLayout({
         pattern: /.+\.html$/,
