@@ -58,13 +58,13 @@ function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): Plugin {
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
     const pattern = options?.pattern ?? /\.md$/;
-    const frontmatterPattern = /^---\r?\n(.*?)\r?\n---\r?\n/ms;
+    const frontMatterPattern = /^---\r?\n(.*?)\r?\n---\r?\n/ms;
     return (files) => {
         for (const key of Object.keys(files)) {
             if (pattern.test(key)) {
                 const file = files[key];
                 const text = textDecoder.decode(file.data);
-                const matches = frontmatterPattern.exec(text);
+                const matches = frontMatterPattern.exec(text);
                 if (matches) {
                     const yamlText = matches[1];
                     const yaml = parseYAML(yamlText);
