@@ -254,9 +254,68 @@ const goldsmithRootPath: Plugin = (files) => {
     }
 };
 
+// Plugin for layouts
+// TODO: Support other layout engines
+type GoldsmithLayoutCallback = (file: File, metadata: Metadata) => Uint8Array;
+
+interface GoldsmithLayoutOptions {
+    layout: GoldsmithLayoutCallback;
+}
+
+function goldsmithLayout(options: GoldsmithLayoutOptions): Plugin {
+    const { layout } = options;
+    return (files, goldsmith) => {
+        const metadata = goldsmith.metadata(); 
+        for (const key of Object.keys(files)) {
+            const file = files[key];
+            if (file.layout) {
+                file.data = layout(file, metadata);
+            }
+        }
+    };
+}
+
+// Lites Templar template handler
+type GoldsmithLitesTemplarLayoutCallback = (content: string, metadata: Metadata) => string;
+type GoldsmithLitesTemplarLayoutMap = {
+    [name: string]: GoldsmithLitesTemplarLayoutCallback;
+};
+
+interface GoldsmithLitesTemplarOptions {
+    templates: GoldsmithLitesTemplarLayoutMap;
+}
+
+function goldsmithLayoutLitesTemplar(options: GoldsmithLitesTemplarOptions): GoldsmithLayoutCallback {
+    const { templates } = options;
+    const textEncoder = new TextEncoder();
+    const textDecoder = new TextDecoder();
+    return (file, metadata) => {
+        const layout = templates[file.layout];
+        if (!layout) {
+            throw `Unknown layout: ${layout} (available layouts: ${Object.keys(templates).join(", ")})`;
+        }
+
+        const source = textDecoder.decode(file.data);
+        const context = { ...metadata, ...file };
+        const result = layout(source, context);
+        return textEncoder.encode(result);
+    };
+}
+
 // Path format for posts: posts/(:category/)postName.md
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
+
+// TODO: Move and fill in
+const trivialLayout: GoldsmithLitesTemplarLayoutCallback = (source, metadata) => `{${Object.keys(metadata).join(", ")}}\n${source}`;
+const templates: GoldsmithLitesTemplarLayoutMap = {
+    "post": trivialLayout,
+    "tagIndex": trivialLayout,
+    "index": trivialLayout,
+    "archive": trivialLayout,
+    "404": trivialLayout,
+    // "feed": trivialLayout, // TODO
+};
 
 await Goldsmith()
     .metadata({ metadataWorks: true }) // TODO: Move to test only
@@ -273,7 +332,7 @@ await Goldsmith()
     .use(goldsmithFileMetadata({
         pattern: postPathPattern,
         metadata: (file) => ({
-            // layout: "post.hbs", // TODO
+            layout: "post",
 
             // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
             tags: [...new Set([ file.category, ...(file.keywords ?? []) ])],
@@ -289,8 +348,8 @@ await Goldsmith()
         metadata: (file, _matches, metadata) => ({
             title: file.term,
             tag: file.term,
-            // layout: "tagIndex.hbs", // TODO
-            // isTagIndex: true, // TODO: Needed?
+            layout: "tagIndex",
+            isTagIndex: true, // TODO: Needed?
             postsWithTag: metadata.indexes.tags[file.term].slice().sort((a: File, b: File) => (b.date - a.date)),
         }),
     }))
@@ -328,10 +387,10 @@ await Goldsmith()
     })
     // TODO: Syntax highlighting
     .use(goldsmithInjectFiles({
-        "index.html": { /*layout: "index.hbs"*/ }, // TODO
-        "posts/index.html": { /*layout: "archive.hbs"*/ },
-        "404.html": { /*layout: "404.hbs"*/ },
-        "feed.xml": { /*layout: "feed.hbs"*/ },
+        "index.html": { layout: "index" },
+        "posts/index.html": { layout: "archive" },
+        "404.html": { layout: "404" },
+        // "feed.xml": { layout: "feed" }, // TODO
     }))
     .use(goldsmithInjectFiles({
         "css/style.css": {
@@ -362,5 +421,8 @@ await Goldsmith()
     }))
     .use(goldsmithMarked())
     .use(goldsmithRootPath)
+    .use(goldsmithLayout({
+        layout: goldsmithLayoutLitesTemplar({ templates })
+    }))
     .use(goldsmithLog)
     .build();
