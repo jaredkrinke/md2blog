@@ -1,7 +1,7 @@
 import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import highlightJS from "https://esm.sh/highlight.js@11.3.1";
-import { marked, Renderer } from "./node_modules/marked/lib/marked.esm.js"; // TODO: Is the module for Marked on any CDN?
+import { marked, Renderer } from "https://esm.sh/marked@4.0.0";
 import { html } from "../lites-templar/mod.ts";
 
 const input = "content";
