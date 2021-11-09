@@ -536,29 +536,315 @@ await Goldsmith()
     }))
     .use(goldsmithInjectFiles({
         "css/style.css": {
-            data: () => {
-                // let source = (await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"))).toString();
+            data: `:root {
+  color-scheme: dark;
+}
+html,
+body {
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  overflow-y: scroll;
+}
+body > header,
+main {
+  width: 40em;
+}
+body > header,
+main {
+  padding: 0.5em;
+}
+@media screen and (max-width: 40em) {
+  body > header,
+  main {
+    width: calc(100% - 1em);
+  }
+}
+body {
+  line-height: 1.5;
+}
+pre code {
+  line-height: 1.3;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  line-height: 1.2;
+}
+td {
+  line-height: 1.2;
+}
+body > header {
+  text-align: center;
+}
+body > header > h1 {
+  margin-bottom: 0.25em;
+}
+body > header > p {
+  margin-top: 0.25em;
+}
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+nav > ul {
+  margin: 0;
+  padding: 0 0 0 0.5em;
+  display: inline;
+}
+nav > ul > li {
+  display: inline;
+}
+nav > ul > li:first-child:before {
+  content: "Topics: ";
+}
+nav > ul > li + li:before {
+  content: " | ";
+}
+body > header > h1 > a {
+  font-size: 1.75rem;
+  text-decoration: inherit;
+}
+article > header > h1 {
+  margin-bottom: 0.25em;
+}
+article > header > p {
+  margin-top: 0em;
+}
+main footer {
+  margin-top: 1em;
+}
+main {
+  overflow: auto;
+}
+pre {
+  overflow: auto;
+}
+article img,
+article svg {
+  display: block;
+}
+code {
+  font-size: 1rem;
+}
+pre code {
+  font-size: 0.8125rem;
+}
+th,
+td {
+  padding: 0.25em;
+}
+pre {
+  border: solid 1px;
+  padding: 0em 0.25em;
+}
+table,
+th,
+tr,
+td {
+  border-collapse: collapse;
+  border: solid 1px;
+}
+main > ul {
+  padding-left: 0em;
+}
+main > ul > li {
+  list-style: none;
+  margin-bottom: 2em;
+}
+ul {
+  padding-left: 1.5em;
+}
+li {
+  margin-bottom: 0.5em;
+}
+h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+h2 {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+h3 {
+  font-size: 1.2rem;
+  font-weight: normal;
+}
+h4 {
+  font-size: 1rem;
+  font-weight: bold;
+}
+h5 {
+  font-size: 1rem;
+  font-weight: normal;
+}
+:is(h1, h2, h3, h4, h5) :is(a:link, a:visited) {
+  color: inherit;
+}
+body {
+  background-color: #181818;
+}
+* {
+  color: #c8c8c8;
+}
+main footer {
+  border-top: 1px solid #4b4b4b;
+}
+th {
+  background-color: #4b4b4b;
+  color: #dcdcdc;
+}
+pre,
+table,
+th,
+tr,
+td {
+  border-color: #5f5f5f;
+}
+pre {
+  background-color: #2c2c2c;
+}
+tr:nth-child(even) {
+  background-color: #222222;
+}
+code {
+  background-color: #373737;
+  border-radius: 0.2em;
+  padding: 0em 0.1em;
+}
+pre code {
+  background-color: revert;
+  border-radius: revert;
+  padding: revert;
+}
+body > header > h1 {
+  color: #ffffff;
+}
+nav > ul > li:first-child:before {
+  font-weight: bold;
+  color: #ff80ff;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #ff80ff;
+}
+a:link {
+  color: #55ffff;
+}
+a:visited {
+  color: #4af0f0;
+}
+/* Also b5cea8 or 7dce52 or 7bbf56 */
+/* Diagrams */
+svg text {
+  fill: #dcdcdc;
+}
+.diagram-transparent-white {
+  stroke: none;
+  fill: none;
+}
+ellipse.diagram-black-none {
+  stroke: #a2a2a2;
+  fill: #373737;
+}
+.diagram-black-none {
+  stroke: #a2a2a2;
+  fill: none;
+}
+.diagram-black-black {
+  stroke: #a2a2a2;
+  fill: #2c2c2c;
+}
+/* Syntax highlighting */
+.hljs-comment {
+  color: #41c741;
+}
+.hljs-tag,
+.hljs-punctuation {
+  color: #a2a2a2;
+}
+.hljs-literal {
+  color: #4af0f0;
+}
+.hljs-title.class_,
+.hljs-tag .hljs-name,
+.hljs-tag .hljs-attr {
+  color: #4d4;
+}
+.hljs-attr,
+.hljs-symbol,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-link,
+.hljs-selector-attr,
+.hljs-selector-pseudo {
+  color: #55ffff;
+}
+.hljs-keyword,
+.hljs-attribute,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag,
+.hljs-name {
+  color: #4af0f0;
+}
+.hljs-type,
+.hljs-string,
+.hljs-number,
+.hljs-quote,
+.hljs-template-tag,
+.hljs-deletion,
+.hljs-title,
+.hljs-section,
+.hljs-meta {
+  color: #ff80ff;
+}
+.hljs-regexp,
+.hljs-meta .hljs-string {
+  color: #f472f4;
+}
+.hljs-title.function_,
+.hljs-built_in,
+.hljs-bullet,
+.hljs-code,
+.hljs-addition,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #ffffff;
+}
+`
+            // // TODO
+            // data: () => {
+            //     // let source = (await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"))).toString();
 
-                // // Override default colors, if custom colors provided
-                // const customColors = metadata?.site?.colors ?? {};
-                // const colorRegExp = /^(#[0-9a-fA-F]{3,6})|([a-z]{3,30})$/;
-                // for (const mapping of [
-                //     { key: "title", variable: "textTitle" },
-                //     { key: "heading", variable: "textHeading" },
-                //     { key: "link", variable: "textLink" },
-                //     { key: "comment", variable: "textComment" },
-                // ]) {
-                //     const value = customColors[mapping.key];
-                //     if (value && colorRegExp.test(value)) {
-                //         source = source.replace(new RegExp(`[@]${mapping.variable}:[^;]*;`), `@${mapping.variable}: ${value};`);
-                //     }
-                // }
+            //     // // Override default colors, if custom colors provided
+            //     // const customColors = metadata?.site?.colors ?? {};
+            //     // const colorRegExp = /^(#[0-9a-fA-F]{3,6})|([a-z]{3,30})$/;
+            //     // for (const mapping of [
+            //     //     { key: "title", variable: "textTitle" },
+            //     //     { key: "heading", variable: "textHeading" },
+            //     //     { key: "link", variable: "textLink" },
+            //     //     { key: "comment", variable: "textComment" },
+            //     // ]) {
+            //     //     const value = customColors[mapping.key];
+            //     //     if (value && colorRegExp.test(value)) {
+            //     //         source = source.replace(new RegExp(`[@]${mapping.variable}:[^;]*;`), `@${mapping.variable}: ${value};`);
+            //     //     }
+            //     // }
 
-                // const output = await less.render(source);
-                // return output.css;
-                // TODO
-                return new Uint8Array(0);
-            }
+            //     // const output = await less.render(source);
+            //     // return output.css;
+            // }
         },
     }))
     .use(goldsmithMarked({
@@ -583,7 +869,7 @@ await Goldsmith()
     .use((files) => {
         const textDecoder = new TextDecoder();
         const textEncoder = new TextEncoder();
-        const pattern = /.+\.html$/;
+        const pattern = /.+\.(html|css)$/;
         for (const key of Object.keys(files)) {
             if (pattern.test(key)) {
                 const file = files[key];
