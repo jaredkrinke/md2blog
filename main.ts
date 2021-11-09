@@ -1,5 +1,6 @@
-import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts"
+import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
+import { marked } from "./node_modules/marked/lib/marked.esm.js"; // TODO: Is the module for Marked on any CDN?
 
 const input = "content";
 const output = "out";
@@ -186,6 +187,66 @@ function goldsmithCollections(options: { [collectionName: string]: GoldsmithColl
     };
 }
 
+// Plugin for injecting files
+type GoldsmithInjectedFile = Metadata & {
+    data?: string | Uint8Array | ((metadata: Metadata) => Uint8Array);
+};
+
+function goldsmithInjectFiles(options: { [path: string]: GoldsmithInjectedFile }): Plugin {
+    const textEncoder = new TextEncoder();
+    return (files, goldsmith) => {
+        for (const key of Object.keys(options)) {
+            const { data: stringOrDataOrCallback, ...rest } = options[key];
+            let data: Uint8Array;
+            switch (typeof(stringOrDataOrCallback)) {
+                case "undefined":
+                    data = new Uint8Array(0);
+                    break;
+
+                case "string":
+                    data = textEncoder.encode(stringOrDataOrCallback);
+                    break;
+                
+                case "function":
+                    data = stringOrDataOrCallback(goldsmith.metadata());
+                    break;
+
+                default:
+                    data = stringOrDataOrCallback;
+                    break;
+            }
+
+            files[key] = { data, ...rest };
+        }
+    };
+}
+
+// Plugin for processing Markdown using Marked
+interface goldsmithMarkedOptions {
+    replaceLinks?: (link: string) => string;
+    highlight?: (code: string, language: string) => string;
+}
+
+const markdownPattern = /(.+)\.md$/;
+function goldsmithMarked(_options?: goldsmithMarkedOptions): Plugin {
+    const textDecoder = new TextDecoder();
+    const textEncoder = new TextEncoder();
+    return (files, _goldsmith) => {
+        // TODO: Link replacing and highlighting
+        for (const key of Object.keys(files)) {
+            const matches = markdownPattern.exec(key);
+            if (matches) {
+                const file = files[key];
+                const markdown = textDecoder.decode(file.data);
+                const html = marked(markdown);
+                file.data = textEncoder.encode(html);
+                delete files[key];
+                files[`${matches[1]}.html`] = file;
+            }
+        }
+    };
+}
+
 // Path format for posts: posts/(:category/)postName.md
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
@@ -205,7 +266,7 @@ await Goldsmith()
     .use(goldsmithFileMetadata({
         pattern: postPathPattern,
         metadata: (file) => ({
-            layout: "post.hbs",
+            // layout: "post.hbs", // TODO
 
             // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
             tags: [...new Set([ file.category, ...(file.keywords ?? []) ])],
@@ -258,5 +319,40 @@ await Goldsmith()
 
         // TODO: Consider using  absolute links for content in the Atom feed
     })
+    // TODO: Syntax highlighting
+    .use(goldsmithInjectFiles({
+        "index.html": { /*layout: "index.hbs"*/ }, // TODO
+        "posts/index.html": { /*layout: "archive.hbs"*/ },
+        "404.html": { /*layout: "404.hbs"*/ },
+        "feed.xml": { /*layout: "feed.hbs"*/ },
+    }))
+    .use(goldsmithInjectFiles({
+        "css/style.css": {
+            data: () => {
+                // let source = (await promises.readFile(path.join(moduleStaticFromCWD, "css", "style.less"))).toString();
+
+                // // Override default colors, if custom colors provided
+                // const customColors = metadata?.site?.colors ?? {};
+                // const colorRegExp = /^(#[0-9a-fA-F]{3,6})|([a-z]{3,30})$/;
+                // for (const mapping of [
+                //     { key: "title", variable: "textTitle" },
+                //     { key: "heading", variable: "textHeading" },
+                //     { key: "link", variable: "textLink" },
+                //     { key: "comment", variable: "textComment" },
+                // ]) {
+                //     const value = customColors[mapping.key];
+                //     if (value && colorRegExp.test(value)) {
+                //         source = source.replace(new RegExp(`[@]${mapping.variable}:[^;]*;`), `@${mapping.variable}: ${value};`);
+                //     }
+                // }
+
+                // const output = await less.render(source);
+                // return output.css;
+                // TODO
+                return new Uint8Array(0);
+            }
+        },
+    }))
+    .use(goldsmithMarked())
     .use(goldsmithLog)
     .build();
