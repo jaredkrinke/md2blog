@@ -2,7 +2,7 @@ import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
-import { html } from "../lites-templar/mod.ts";
+import { html, xml } from "../lites-templar/mod.ts";
 
 // TODO: Types from JSPM don't work
 // deno-lint-ignore no-explicit-any
@@ -449,11 +449,35 @@ const templateTagIndex: GoldsmithLitesTemplarLayoutCallback = (_content, m) => p
     partialNavigation(m, m.tagsAll, false, true, m.tag)
 );
 
+// TODO: Test with a URL with ampersand, etc.
+const textDecoder = new TextDecoder();
+const templateFeed: GoldsmithLitesTemplarLayoutCallback = (_content, m) => xml`<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>${m.site.title}</title>
+<id>${{verbatim: m.site.url ? xml`${m.site.url}` : xml`urn:md2blog:${{param: m.site.title}}`}}</id>
+${{verbatim: m.site.url ? xml`<link rel="self" href="${m.site.url}feed.xml"/>
+<link rel="alternate" href="${m.site.url}"/>` : ""}}
+<author>
+<name>${m.site.title}</name>
+</author>
+<updated>${m.now.toISOString()}</updated>
+
+${{verbatim: m.posts_recent.map((post: Metadata) => xml`<entry>
+<title>${post.title}}</title>
+<id>${{verbatim: m.site.url ? xml`${m.site.url}${post.pathFromRoot}` : xml`urn:md2blog:${{param: m.site.title}}:${{param: post.title}}`}}</id>
+${{verbatim: m.site.url ? xml`<link rel="alternate" href="${m.site.url}${post.pathFromRoot}"/>` : ""}}
+<updated>${post.date.toISOString()}</updated>
+${{verbatim: post.description ? xml`<summary type="text">${post.description}</summary>` : ""}}
+<content type="html">${textDecoder.decode(post.data)}</content>
+</entry>`).join("\n")}}
+</feed>
+`;
+
 const templates: GoldsmithLitesTemplarLayoutMap = {
     "404": template404,
     "archive": templateArchive,
     "default": templateDefault,
-    // "feed": trivialLayout, // TODO
+    "feed": templateFeed,
     "index": templateRoot,
     "post": templatePost,
     "tagIndex": templateTagIndex,
@@ -532,7 +556,7 @@ await Goldsmith()
         "index.html": { layout: "index" },
         "posts/index.html": { layout: "archive" },
         "404.html": { layout: "404" },
-        // "feed.xml": { layout: "feed" }, // TODO
+        "feed.xml": { layout: "feed" },
     }))
     .use(goldsmithInjectFiles({
         "css/style.css": {
@@ -859,7 +883,7 @@ ellipse.diagram-black-none {
     }))
     .use(goldsmithRootPaths)
     .use(goldsmithLayout({
-        pattern: /.+\.html$/,
+        pattern: /.+\.html$|^feed.xml$/,
         layout: goldsmithLayoutLitesTemplar({
             templates,
             defaultTemplate: "default",
