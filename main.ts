@@ -259,16 +259,17 @@ const goldsmithRootPath: Plugin = (files) => {
 type GoldsmithLayoutCallback = (file: File, metadata: Metadata) => Uint8Array;
 
 interface GoldsmithLayoutOptions {
+    pattern: RegExp;
     layout: GoldsmithLayoutCallback;
 }
 
 function goldsmithLayout(options: GoldsmithLayoutOptions): Plugin {
-    const { layout } = options;
+    const { pattern, layout } = options;
     return (files, goldsmith) => {
         const metadata = goldsmith.metadata(); 
         for (const key of Object.keys(files)) {
-            const file = files[key];
-            if (file.layout) {
+            if (pattern.test(key)) {
+                const file = files[key];
                 file.data = layout(file, metadata);
             }
         }
@@ -283,14 +284,15 @@ type GoldsmithLitesTemplarLayoutMap = {
 
 interface GoldsmithLitesTemplarOptions {
     templates: GoldsmithLitesTemplarLayoutMap;
+    defaultTemplate?: string;
 }
 
 function goldsmithLayoutLitesTemplar(options: GoldsmithLitesTemplarOptions): GoldsmithLayoutCallback {
-    const { templates } = options;
+    const { templates, defaultTemplate } = options;
     const textEncoder = new TextEncoder();
     const textDecoder = new TextDecoder();
     return (file, metadata) => {
-        const layout = templates[file.layout];
+        const layout = templates[file.layout ?? defaultTemplate];
         if (!layout) {
             throw `Unknown layout: ${layout} (available layouts: ${Object.keys(templates).join(", ")})`;
         }
@@ -314,6 +316,7 @@ const templates: GoldsmithLitesTemplarLayoutMap = {
     "index": trivialLayout,
     "archive": trivialLayout,
     "404": trivialLayout,
+    "default": trivialLayout,
     // "feed": trivialLayout, // TODO
 };
 
@@ -422,7 +425,11 @@ await Goldsmith()
     .use(goldsmithMarked())
     .use(goldsmithRootPath)
     .use(goldsmithLayout({
-        layout: goldsmithLayoutLitesTemplar({ templates })
+        pattern: /.+\.html$/,
+        layout: goldsmithLayoutLitesTemplar({
+            templates,
+            defaultTemplate: "default",
+        })
     }))
     .use(goldsmithLog)
     .build();
