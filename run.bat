@@ -1,1 +1,1 @@
-deno run --allow-read=content --allow-write=out main.ts
+deno run --allow-read=content,out --allow-write=out main.ts

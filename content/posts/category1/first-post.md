@@ -5,3 +5,4 @@ keywords: [stuff]
 ---
 # Hello, world!
 It's good to be here.
+[anchor link](#hello-world)
