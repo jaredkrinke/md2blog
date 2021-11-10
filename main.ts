@@ -408,6 +408,7 @@ function goldsmithBrokenLinkChecker(): Plugin {
                                 ? getOrLoadDocument(targetPathFromRoot)
                                 : sourceDocument;
 
+                            // TODO: Validate anchor format first
                             if (targetDocument(`#${targetAnchor}`).length <= 0) {
                                 broken = true;
                             }
