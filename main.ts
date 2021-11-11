@@ -893,19 +893,4 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
     }))
     .use(goldsmithBrokenLinkChecker())
     // TODO: Local web server with automatic reloading
-    // TODO: Only for testing
-    .use((files) => {
-        const textDecoder = new TextDecoder();
-        const textEncoder = new TextEncoder();
-        const pattern = /.+\.(html|css)$/;
-        for (const key of Object.keys(files)) {
-            if (pattern.test(key)) {
-                const file = files[key];
-                const content = textDecoder.decode(file.data);
-                file.data = textEncoder.encode(content
-                    .replace(/&apos;/g, "&#x27;")
-                    .replace(/\n/g, "\r\n"));
-            }
-        }
-    })
     .build();
