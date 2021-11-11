@@ -275,7 +275,7 @@ function goldsmithMarked(options?: goldsmithMarkedOptions): Plugin {
 const goldsmithRootPaths: Plugin = (files) => {
     for (const key of Object.keys(files)) {
         const file = files[key];
-        file.pathToRoot = "../".repeat(Array.from(key.matchAll(/[/]/g)).length);
+        file.pathToRoot = pathToRoot(key);
         file.pathFromRoot = key;
     }
 };
@@ -283,7 +283,15 @@ const goldsmithRootPaths: Plugin = (files) => {
 // Plugin for creating an Atom feed
 interface GoldsmithFeedOptions {
     path?: string;
-    collectionKey: string;
+    collectionKey: string; // TODO: Function
+}
+
+interface GoldsmithFeedEntry {
+    pathFromRoot: string;
+    title: string;
+    date: Date;
+    description?: string;
+    html: string;
 }
 
 function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
@@ -291,34 +299,57 @@ function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
     const feedPath = options.path ?? "feed.xml";
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
+    const relativeLinkPattern = /^[^/][^:]*$/;
     return (files, goldsmith) => {
         const collection: File[] = goldsmith.metadata()[collectionKey];
-        const feed: File = { data: new Uint8Array(0) };
-        files[feedPath] = feed;
-
-        // Reuse some other plugins to generate the feed
-
-        // First, compute path to and from root for all files, including the feed
-        goldsmithRootPaths(files, goldsmith);
-
-        // Now create a mock "files" object just for this collection
-        const collectionFiles: Files = {};
-        for (const file of collection) {
-            const { data: _data, ...properties } = file;
-            collectionFiles[file.pathFromRoot] = {
-                data: file.data.slice(),
-                ...properties,
-            };
-        }
-
-        // And render the Markdown with a custom link replacer
+        const list: GoldsmithFeedEntry[] = [];
         const m = goldsmith.metadata();
-        const siteURL: string = m?.site?.url;
-        const prefix: string = siteURL ? (siteURL.endsWith("/") ? siteURL : siteURL + "/") : feed.pathToRoot;
-        goldsmithMarked({
-            replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, `${prefix}$1.html$2`),
-        })(collectionFiles, goldsmith);
-        goldsmithRootPaths(collectionFiles, goldsmith);
+        const siteURL = m.site?.url;
+        const feedPathToRoot = pathToRoot(feedPath);
+        const prefix = (siteURL ? (siteURL.endsWith("/") ? siteURL : (siteURL + "/")) :feedPathToRoot);
+        for (const file of collection) {
+            // Find path (TODO: make this not O(n^2)?)
+            let pathFromRoot: string | undefined;
+            for (const key of Object.keys(files)) {
+                if (files[key] === file) {
+                    pathFromRoot = key;
+                    break;
+                }
+            }
+
+            if (!pathFromRoot) {
+                const { data: _, ...rest } = file;
+                throw `Could not determine path for file: ${JSON.stringify({ ...rest })}`;
+            }
+
+            // Update relatvie links
+            const document = cheerio.load(textDecoder.decode(file.data));
+            for (const row of [
+                { element: "a", attribute: "href" },
+                { element: "link", attribute: "href" },
+                { element: "img", attribute: "src" },
+            ]) {
+                // TODO: Path helper for getting directory path?
+                const documentLinkPrefix = `${prefix}${pathUp(`/${pathFromRoot}`).substr(1)}/`;
+
+                // TODO: Types aren't right!
+                // deno-lint-ignore no-explicit-any
+                (document(`${row.element}[${row.attribute}]`) as any)
+                    .attr(row.attribute, (_: number, href: string) => relativeLinkPattern.test(href) ? (documentLinkPrefix + href) : href);
+            }
+
+            // TODO: Types aren't right!
+            // deno-lint-ignore no-explicit-any
+            const html = (document("body") as any).html();
+            const { title, date, description } = file;
+            list.push({
+                pathFromRoot,
+                title,
+                date,
+                description,
+                html,
+            });
+        }
 
         // Build the feed
         // TODO: Test with a URL with ampersand, etc.
@@ -326,25 +357,25 @@ function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
 <feed xmlns="http://www.w3.org/2005/Atom">
 <title>${m.site.title}</title>
 <id>${{verbatim: m.site.url ? xml`${m.site.url}` : xml`urn:md2blog:${{param: m.site.title}}`}}</id>
-${{verbatim: m.site.url ? xml`<link rel="self" href="${m.site.url}feed.xml"/>
+${{verbatim: m.site.url ? xml`<link rel="self" href="${prefix}${feedPath}"/>
 <link rel="alternate" href="${m.site.url}"/>` : ""}}
 <author>
 <name>${m.site.title}</name>
 </author>
 <updated>${(new Date()).toISOString()}</updated>
 
-${{verbatim: Object.values(collectionFiles).map(post => xml`<entry>
+${{verbatim: list.map(post => xml`<entry>
 <title>${post.title}}</title>
 <id>${{verbatim: m.site.url ? xml`${m.site.url}${post.pathFromRoot}` : xml`urn:md2blog:${{param: m.site.title}}:${{param: post.title}}`}}</id>
 <link rel="alternate" href="${prefix}${post.pathFromRoot}"/>
 <updated>${post.date.toISOString()}</updated>
 ${{verbatim: post.description ? xml`<summary type="text">${post.description}</summary>` : ""}}
-<content type="html">${textDecoder.decode(post.data)}</content>
+<content type="html">${post.html}</content>
 </entry>`).join("\n")}}
 </feed>
 `;
 
-        feed.data = textEncoder.encode(feedXML);
+        files[feedPath] = { data: textEncoder.encode(feedXML) };
     };
 }
 
@@ -405,6 +436,10 @@ interface BrokenLink {
 }
 
 // TODO: Tests for these, and maybe publish in its own module
+function pathToRoot(path: string): string {
+    return "../".repeat(Array.from(path.matchAll(/[/]/g)).length);
+}
+
 function pathUp(path: string): string {
     const lastIndexOfSlash = path.lastIndexOf("/");
     if (lastIndexOfSlash < 0) {
@@ -910,7 +945,6 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
             }
         },
     }))
-    .use(goldsmithFeed({ collectionKey: "posts_recent" }))
     .use(goldsmithMarked({
         replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2"),
         highlight: (code, language) => {
@@ -922,6 +956,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
         },
     }))
     .use(goldsmithRootPaths)
+    .use(goldsmithFeed({ collectionKey: "posts_recent" }))
     .use(goldsmithLayout({
         pattern: /.+\.html$/,
         layout: goldsmithLayoutLitesTemplar({
