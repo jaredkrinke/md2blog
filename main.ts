@@ -283,7 +283,7 @@ const goldsmithRootPaths: Plugin = (files) => {
 // Plugin for creating an Atom feed
 interface GoldsmithFeedOptions {
     path?: string;
-    collectionKey: string; // TODO: Function
+    getCollection: (metadata: Metadata) => File[];
 }
 
 interface GoldsmithFeedEntry {
@@ -295,13 +295,12 @@ interface GoldsmithFeedEntry {
 }
 
 function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
-    const { collectionKey } = options;
     const feedPath = options.path ?? "feed.xml";
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
     const relativeLinkPattern = /^[^/][^:]*$/;
     return (files, goldsmith) => {
-        const collection: File[] = goldsmith.metadata()[collectionKey];
+        const collection = options.getCollection(goldsmith.metadata());
         const list: GoldsmithFeedEntry[] = [];
         const m = goldsmith.metadata();
         const siteURL = m.site?.url;
@@ -322,7 +321,7 @@ function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
                 throw `Could not determine path for file: ${JSON.stringify({ ...rest })}`;
             }
 
-            // Update relatvie links
+            // Update relative links
             const document = cheerio.load(textDecoder.decode(file.data));
             for (const row of [
                 { element: "a", attribute: "href" },
@@ -639,7 +638,7 @@ const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => parti
         description: m.site.description,
         ...m,
     },
-    html`${{verbatim: partialArticleSummaryList(m, m.posts_recent)}}
+    html`${{verbatim: partialArticleSummaryList(m, m.postsRecent)}}
 <footer>
 <p><a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>`,
@@ -706,7 +705,7 @@ await Goldsmith()
             sortBy: "date",
             reverse: true,
         },
-        posts_recent: {
+        postsRecent: {
             pattern: postPathPattern,
             sortBy: "date",
             reverse: true,
@@ -956,7 +955,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
         },
     }))
     .use(goldsmithRootPaths)
-    .use(goldsmithFeed({ collectionKey: "posts_recent" }))
+    .use(goldsmithFeed({ getCollection: (metadata) => metadata.postsRecent }))
     .use(goldsmithLayout({
         pattern: /.+\.html$/,
         layout: goldsmithLayoutLitesTemplar({
