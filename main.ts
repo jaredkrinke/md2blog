@@ -1,4 +1,4 @@
-import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
+import { Goldsmith, Plugin, File, Files, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
@@ -280,6 +280,74 @@ const goldsmithRootPaths: Plugin = (files) => {
     }
 };
 
+// Plugin for creating an Atom feed
+interface GoldsmithFeedOptions {
+    path?: string;
+    collectionKey: string;
+}
+
+function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
+    const { collectionKey } = options;
+    const feedPath = options.path ?? "feed.xml";
+    const textDecoder = new TextDecoder();
+    const textEncoder = new TextEncoder();
+    return (files, goldsmith) => {
+        const collection: File[] = goldsmith.metadata()[collectionKey];
+        const feed: File = { data: new Uint8Array(0) };
+        files[feedPath] = feed;
+
+        // Reuse some other plugins to generate the feed
+
+        // First, compute path to and from root for all files, including the feed
+        goldsmithRootPaths(files, goldsmith);
+
+        // Now create a mock "files" object just for this collection
+        const collectionFiles: Files = {};
+        for (const file of collection) {
+            const { data: _data, ...properties } = file;
+            collectionFiles[file.pathFromRoot] = {
+                data: file.data.slice(),
+                ...properties,
+            };
+        }
+
+        // And render the Markdown with a custom link replacer
+        const m = goldsmith.metadata();
+        const siteURL: string = m?.site?.url;
+        const prefix: string = siteURL ? (siteURL.endsWith("/") ? siteURL : siteURL + "/") : feed.pathToRoot;
+        goldsmithMarked({
+            replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, `${prefix}$1.html$2`),
+        })(collectionFiles, goldsmith);
+        goldsmithRootPaths(collectionFiles, goldsmith);
+
+        // Build the feed
+        // TODO: Test with a URL with ampersand, etc.
+        const feedXML = xml`<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>${m.site.title}</title>
+<id>${{verbatim: m.site.url ? xml`${m.site.url}` : xml`urn:md2blog:${{param: m.site.title}}`}}</id>
+${{verbatim: m.site.url ? xml`<link rel="self" href="${m.site.url}feed.xml"/>
+<link rel="alternate" href="${m.site.url}"/>` : ""}}
+<author>
+<name>${m.site.title}</name>
+</author>
+<updated>${(new Date()).toISOString()}</updated>
+
+${{verbatim: Object.values(collectionFiles).map(post => xml`<entry>
+<title>${post.title}}</title>
+<id>${{verbatim: m.site.url ? xml`${m.site.url}${post.pathFromRoot}` : xml`urn:md2blog:${{param: m.site.title}}:${{param: post.title}}`}}</id>
+<link rel="alternate" href="${prefix}${post.pathFromRoot}"/>
+<updated>${post.date.toISOString()}</updated>
+${{verbatim: post.description ? xml`<summary type="text">${post.description}</summary>` : ""}}
+<content type="html">${textDecoder.decode(post.data)}</content>
+</entry>`).join("\n")}}
+</feed>
+`;
+
+        feed.data = textEncoder.encode(feedXML);
+    };
+}
+
 // Plugin for layouts
 // TODO: Support other layout engines
 type GoldsmithLayoutCallback = (file: File, metadata: Metadata) => Uint8Array;
@@ -552,35 +620,10 @@ const templateTagIndex: GoldsmithLitesTemplarLayoutCallback = (_content, m) => p
     partialNavigation(m, m.tagsAll, false, true, m.tag)
 );
 
-// TODO: Test with a URL with ampersand, etc.
-const textDecoder = new TextDecoder();
-const templateFeed: GoldsmithLitesTemplarLayoutCallback = (_content, m) => xml`<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-<title>${m.site.title}</title>
-<id>${{verbatim: m.site.url ? xml`${m.site.url}` : xml`urn:md2blog:${{param: m.site.title}}`}}</id>
-${{verbatim: m.site.url ? xml`<link rel="self" href="${m.site.url}feed.xml"/>
-<link rel="alternate" href="${m.site.url}"/>` : ""}}
-<author>
-<name>${m.site.title}</name>
-</author>
-<updated>${m.now.toISOString()}</updated>
-
-${{verbatim: m.posts_recent.map((post: Metadata) => xml`<entry>
-<title>${post.title}}</title>
-<id>${{verbatim: m.site.url ? xml`${m.site.url}${post.pathFromRoot}` : xml`urn:md2blog:${{param: m.site.title}}:${{param: post.title}}`}}</id>
-<link rel="alternate" href="${m.site.url ? m.site.url : ""}${post.pathFromRoot}"/>
-<updated>${post.date.toISOString()}</updated>
-${{verbatim: post.description ? xml`<summary type="text">${post.description}</summary>` : ""}}
-<content type="html">${textDecoder.decode(post.data)}</content>
-</entry>`).join("\n")}}
-</feed>
-`;
-
 const templates: GoldsmithLitesTemplarLayoutMap = {
     "404": template404,
     "archive": templateArchive,
     "default": templateDefault,
-    "feed": templateFeed,
     "index": templateRoot,
     "post": templatePost,
     "tagIndex": templateTagIndex,
@@ -648,17 +691,11 @@ await Goldsmith()
             const postsB = metadata.indexes.tags[b];
             return (postsB.length - postsA.length) || (postsB[0].date - postsA[0].date);
         }).slice(0, 4);
-
-        // Also include the current time
-        metadata.now = new Date();
-
-        // TODO: Consider using  absolute links for content in the Atom feed
     })
     .use(goldsmithInjectFiles({
         "index.html": { layout: "index" },
         "posts/index.html": { layout: "archive" },
         "404.html": { layout: "404" },
-        "feed.xml": { layout: "feed" },
     }))
     .use(goldsmithInjectFiles({
         "css/style.css": {
@@ -873,6 +910,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
             }
         },
     }))
+    .use(goldsmithFeed({ collectionKey: "posts_recent" }))
     .use(goldsmithMarked({
         replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2"),
         highlight: (code, language) => {
@@ -885,7 +923,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
     }))
     .use(goldsmithRootPaths)
     .use(goldsmithLayout({
-        pattern: /.+\.html$|^feed.xml$/,
+        pattern: /.+\.html$/,
         layout: goldsmithLayoutLitesTemplar({
             templates,
             defaultTemplate: "default",
