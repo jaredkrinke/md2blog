@@ -2,7 +2,7 @@ import { Goldsmith, Plugin, File, Files, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
-import { html, xml } from "../lites-templar/mod.ts";
+import { html, xml } from "../literal-html/mod.ts";
 import { cheerio, Root, Cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
 import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
 
@@ -328,7 +328,7 @@ function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
                 { element: "link", attribute: "href" },
                 { element: "img", attribute: "src" },
             ]) {
-                // TODO: Path helper for getting directory path?
+                // TODO: Path helper for getting directory path? Can I use the standard library one?
                 const documentLinkPrefix = `${prefix}${pathUp(`/${pathFromRoot}`).substr(1)}/`;
 
                 // TODO: Types aren't right!
@@ -400,18 +400,18 @@ function goldsmithLayout(options: GoldsmithLayoutOptions): Plugin {
     };
 }
 
-// Lites Templar template handler
-type GoldsmithLitesTemplarLayoutCallback = (content: string, metadata: Metadata) => string;
-type GoldsmithLitesTemplarLayoutMap = {
-    [name: string]: GoldsmithLitesTemplarLayoutCallback;
+// literal-html template handler
+type GoldsmithLiteralHTMLLayoutCallback = (content: string, metadata: Metadata) => string;
+type GoldsmithLiteralHTMLLayoutMap = {
+    [name: string]: GoldsmithLiteralHTMLLayoutCallback;
 };
 
-interface GoldsmithLitesTemplarOptions {
-    templates: GoldsmithLitesTemplarLayoutMap;
+interface GoldsmithLiteralHTMLOptions {
+    templates: GoldsmithLiteralHTMLLayoutMap;
     defaultTemplate?: string;
 }
 
-function goldsmithLayoutLitesTemplar(options: GoldsmithLitesTemplarOptions): GoldsmithLayoutCallback {
+function goldsmithLayoutLiteralHTML(options: GoldsmithLiteralHTMLOptions): GoldsmithLayoutCallback {
     const { templates, defaultTemplate } = options;
     const textEncoder = new TextEncoder();
     const textDecoder = new TextDecoder();
@@ -594,13 +594,13 @@ ${{verbatim: posts.map((post: Metadata) => html`<li>${{verbatim: partialArticleS
 </ul>`;
 }
 
-const template404: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(m,
+const template404: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(m,
 `<h1>Not found</h1>
 <p>The requested page does not exist.</p>
 <p><a href="index.html">Click here</a> to go to the home page.</p>
 `);
 
-const templateArchive: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
+const templateArchive: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
     {
         title: "Archive of all posts since the beginning of time",
         ...m
@@ -609,7 +609,7 @@ const templateArchive: GoldsmithLitesTemplarLayoutCallback = (_content, m) => pa
     partialNavigation(m, m.tagsAll)
 );
 
-const templateDefault: GoldsmithLitesTemplarLayoutCallback = (content, m) => partialBase(
+const templateDefault: GoldsmithLiteralHTMLLayoutCallback = (content, m) => partialBase(
     m,
     html`<article>
 ${{verbatim: content}}
@@ -617,7 +617,7 @@ ${{verbatim: content}}
     partialNavigation(m, m.tags)
 );
 
-const templatePost: GoldsmithLitesTemplarLayoutCallback = (content, m) => partialBase(
+const templatePost: GoldsmithLiteralHTMLLayoutCallback = (content, m) => partialBase(
     m,
     html`<article>
 <header>
@@ -632,7 +632,7 @@ ${{verbatim: content}}
     partialNavigation(m, m.tags)
 );
 
-const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
+const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
     {
         isRoot: true,
         description: m.site.description,
@@ -645,7 +645,7 @@ const templateRoot: GoldsmithLitesTemplarLayoutCallback = (_content, m) => parti
     partialNavigation(m, m.tagsTop, m.tagsTop.length !== m.tagsAll.length)
 );
 
-const templateTagIndex: GoldsmithLitesTemplarLayoutCallback = (_content, m) => partialBase(
+const templateTagIndex: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
     {
         title: "Archive of all posts since the beginning of time",
         ...m
@@ -654,7 +654,7 @@ const templateTagIndex: GoldsmithLitesTemplarLayoutCallback = (_content, m) => p
     partialNavigation(m, m.tagsAll, false, true, m.tag)
 );
 
-const templates: GoldsmithLitesTemplarLayoutMap = {
+const templates: GoldsmithLiteralHTMLLayoutMap = {
     "404": template404,
     "archive": templateArchive,
     "default": templateDefault,
@@ -958,7 +958,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
     .use(goldsmithFeed({ getCollection: (metadata) => metadata.postsRecent }))
     .use(goldsmithLayout({
         pattern: /.+\.html$/,
-        layout: goldsmithLayoutLitesTemplar({
+        layout: goldsmithLayoutLiteralHTML({
             templates,
             defaultTemplate: "default",
         })

@@ -105,6 +105,7 @@ class GoldsmithObject {
         }
 
         // Clean, if requested
+        // TODO: Must create output directory if it doesn't exist! Does that work with command line permissions?
         const outputDirectory: string = this.outputDirectory;
         if (this.cleanOutputDirectory) {
             try {
