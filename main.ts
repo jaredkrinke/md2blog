@@ -418,15 +418,21 @@ function goldsmithLayoutLiteralHTML(options: GoldsmithLiteralHTMLOptions): Golds
     const textEncoder = new TextEncoder();
     const textDecoder = new TextDecoder();
     return (file, metadata) => {
-        const layout = templates[file.layout ?? defaultTemplate];
-        if (!layout) {
-            throw `Unknown layout: ${layout} (available layouts: ${Object.keys(templates).join(", ")})`;
+        const layoutKey = file.layout;
+        if (layoutKey === false) {
+            // File opted out of layouts
+            return file.data;
+        } else {
+            const layout = templates[layoutKey ?? defaultTemplate];
+            if (!layout) {
+                throw `Unknown layout: ${layoutKey} (available layouts: ${Object.keys(templates).join(", ")})`;
+            }
+    
+            const source = textDecoder.decode(file.data);
+            const context = { ...metadata, ...file };
+            const result = layout(source, context);
+            return textEncoder.encode(result);
         }
-
-        const source = textDecoder.decode(file.data);
-        const context = { ...metadata, ...file };
-        const result = layout(source, context);
-        return textEncoder.encode(result);
     };
 }
 
@@ -810,6 +816,10 @@ await Goldsmith()
     .use(goldsmithFrontMatter())
     .use(goldsmithExcludeDrafts())
     .use(goldsmithFileMetadata({
+        pattern: /\.html$/,
+        metadata: { layout: false }, // Opt raw HTML files out of layouts so they're copied verbatim
+    }))
+    .use(goldsmithFileMetadata({
         pattern: postPathPattern,
         metadata: (_file, matches) => ({ category: matches[2] ?? "misc" }),
     }))
@@ -1095,7 +1105,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
     .use(goldsmithRootPaths)
     .use(goldsmithFeed({ getCollection: (metadata) => metadata.postsRecent }))
     .use(goldsmithLayout({
-        pattern: /.+\.html$/,
+        pattern: /\.html$/,
         layout: goldsmithLayoutLiteralHTML({
             templates,
             defaultTemplate: "default",
