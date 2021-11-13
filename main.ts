@@ -13,6 +13,7 @@ const highlightJS: any = HighlightJS;
 // TODO: Command line interface
 const input = "content";
 const output = "out";
+const watch = true;
 
 // Logging plugins
 const goldsmithLog: Plugin = (files, goldsmith) => {
@@ -532,6 +533,44 @@ function goldsmithBrokenLinkChecker(): Plugin {
     };
 }
 
+// Plugin for automatically rebuilding when files change
+interface GoldsmithWatchOptions {
+    directories?: string[];
+}
+
+function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
+    // Singleton pattern to avoid re-adding the listener on rebuild
+    let initialized = false;
+    return (_files, goldsmith) => {
+        if (!initialized) {
+            initialized = true;
+            const directories = options?.directories ?? [goldsmith.source()];
+            const watcher = Deno.watchFs(directories, { recursive: true });
+
+            // Delay (in milliseconds) for coalescing file system-triggered rebuilds
+            const delay = 200;
+    
+            // Only honor the final callback (i.e. the last outstanding one)
+            let outstanding = 0;
+            const rebuild = () => {
+                if (--outstanding === 0) {
+                    console.log(`  * Watch: rebuilding...`);
+                    goldsmith.build();
+                }
+            };
+    
+            (async () => {
+                for await (const event of watcher) {
+                    console.log(`  * Watch: ${event.kind} for [${event.paths.join("; ")}]`);
+                    ++outstanding;
+                    setTimeout(rebuild, delay);
+                }
+            })();
+            console.log(`Watching for changes in [${directories.join("; ")}]...`);
+        }
+    }
+}
+
 // Path format for posts: posts/(:category/)postName.md
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
@@ -662,6 +701,8 @@ const templates: GoldsmithLiteralHTMLLayoutMap = {
     "post": templatePost,
     "tagIndex": templateTagIndex,
 };
+
+const noop: Plugin = (_files, _goldsmith) => {};
 
 await Goldsmith()
     .metadata({ metadataWorks: true }) // TODO: Move to test only
@@ -965,4 +1006,5 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
     }))
     .use(goldsmithBrokenLinkChecker())
     // TODO: Local web server with automatic reloading
+    .use(watch ? goldsmithWatch() : noop)
     .build();

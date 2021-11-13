@@ -54,14 +54,26 @@ class GoldsmithObject {
         }
     }
 
-    source(directoryName: string): GoldsmithObject {
-        this.inputDirectory = directoryName;
-        return this;
+    source(): string;
+    source(directoryName: string): GoldsmithObject;
+    source(directoryName?: string): GoldsmithObject | string {
+        if (directoryName) {
+            this.inputDirectory = directoryName;
+            return this;
+        } else {
+            return this.inputDirectory ?? "";
+        }
     }
 
-    destination(directoryName: string): GoldsmithObject {
-        this.outputDirectory = directoryName;
-        return this;
+    destination(): string;
+    destination(directoryName: string): GoldsmithObject
+    destination(directoryName?: string): GoldsmithObject | string {
+        if (directoryName) {
+            this.outputDirectory = directoryName;
+            return this;
+        } else {
+            return this.outputDirectory ?? "";
+        }
     }
 
     clean(clean: boolean): GoldsmithObject {
@@ -75,6 +87,11 @@ class GoldsmithObject {
     }
 
     async run(): Promise<Files> {
+        // Reset metadata
+        for (const key of Object.keys(this.properties)) {
+            delete this.properties[key];
+        }
+
         // Read files
         const files: Files = {};
         if (this.inputDirectory) {
