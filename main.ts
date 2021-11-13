@@ -539,11 +539,10 @@ interface GoldsmithWatchOptions {
 }
 
 function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
-    // Only add the listener on the first build
-    let initialized = false;
     return (_files, goldsmith) => {
-        if (!initialized) {
-            initialized = true;
+        // Only start the watcher on the first build
+        if (!goldsmith.metadata().__goldsmithWatchInitialized) {
+            goldsmith.metadata().__goldsmithWatchInitialized = true;
 
             // Delay (in milliseconds) for coalescing file system-triggered rebuilds
             const delay = 200;

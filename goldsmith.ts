@@ -87,11 +87,6 @@ class GoldsmithObject {
     }
 
     async run(): Promise<Files> {
-        // Reset metadata
-        for (const key of Object.keys(this.properties)) {
-            delete this.properties[key];
-        }
-
         // Read files
         const files: Files = {};
         if (this.inputDirectory) {
