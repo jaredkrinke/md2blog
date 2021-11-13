@@ -640,7 +640,12 @@ function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
                                         if (automaticReloading && path.endsWith(".html")) {
                                             // Insert reload script
                                             let text = textDecoder.decode(content);
-                                            text = text.replace(/(<body[^>]*>)/, `$1${automaticReloadScript}`);
+                                            const index = text.lastIndexOf("</body>");
+                                            if (index >= 0) {
+                                                text = text.substr(0, index) + automaticReloadScript + text.substr(index);
+                                            } else {
+                                                text += automaticReloadScript;
+                                            }
                                             content = textEncoder.encode(text);
                                             insertedAutomaticReloadingScript = true;
                                         }
