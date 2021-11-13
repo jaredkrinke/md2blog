@@ -36,12 +36,18 @@ async function enumerateFiles(directoryName: string): Promise<string[]> {
     return filePaths;
 }
 
+export type GoldsmithEventType = "built";
+export class GoldsmithBuiltEvent extends Event {
+    constructor() { super("built"); }
+}
+
 class GoldsmithObject {
     properties: Metadata = {};
     cleanOutputDirectory = false;
     inputDirectory?: string;
     outputDirectory?: string;
     plugins: Plugin[] = [];
+    events: EventTarget = new EventTarget();
 
     metadata(properties: Metadata): GoldsmithObject;
     metadata(): Metadata;
@@ -148,6 +154,17 @@ class GoldsmithObject {
         }
 
         await Promise.all(Object.keys(files).map(key => Deno.writeFile(join(outputDirectory, key), files[key].data)));
+
+        // Signal completion
+        this.events.dispatchEvent(new GoldsmithBuiltEvent());
+    }
+
+    addEventListener(type: GoldsmithEventType, listener: (event: GoldsmithBuiltEvent) => void): void {
+        this.events.addEventListener(type, listener);
+    }
+
+    removeEventListener(type: GoldsmithEventType, listener: (event: GoldsmithBuiltEvent) => void): void {
+        this.events.removeEventListener(type, listener);
     }
 }
 

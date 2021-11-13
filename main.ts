@@ -589,28 +589,30 @@ function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
     return (_files, goldsmith) => {
-        if (goldsmith.metadata().__goldsmithServeInitialized) {
-            // TODO: This should only run AFTER the build fully completes!
-            // Server was already started, meaning this is a rebuild, so notify clients
-            if (automaticReloading) {
-                let sentUpdate = false;
-                for (const socket of automaticReloadClients) {
-                    try {
-                        socket.send("updated");
-                        sentUpdate = true;
-                    } catch (_e) {
-                        // Ignore errors and assume client is no longer active
-                    }
-                }
-
-                if (sentUpdate) {
-                    console.log("  Serve: notified client(s) of update")
-                }
-            }
-        } else {
+        if (!goldsmith.metadata().__goldsmithServeInitialized) {
             // Only start the server on the first build
             goldsmith.metadata().__goldsmithServeInitialized = true;
 
+            // Register for build completion events, if needed
+            if (automaticReloading) {
+                goldsmith.addEventListener("built", function () {
+                    let sentUpdate = false;
+                    for (const socket of automaticReloadClients) {
+                        try {
+                            socket.send("updated");
+                            sentUpdate = true;
+                        } catch (_e) {
+                            // Ignore errors and assume client is no longer active
+                        }
+                    }
+    
+                    if (sentUpdate) {
+                        console.log("  Serve: notified client(s) of update")
+                    }
+                });
+            }
+
+            // Start the server
             const webRoot = goldsmith.destination();
             const server = Deno.listen({ hostname, port });
             console.log(`Serve: listening on: http://${hostname}:${port}/`);
