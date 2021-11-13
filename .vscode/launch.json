@@ -7,7 +7,7 @@
         "request": "launch",
         "cwd": "${workspaceFolder}",
         "runtimeExecutable": "deno",
-        "runtimeArgs": ["run", "--inspect-brk", "--allow-read=content,out", "--allow-write=out", "main.ts"],
+        "runtimeArgs": ["run", "--inspect-brk", "--allow-net=localhost", "--allow-read=content,out", "--allow-write=out", "main.ts"],
         "attachSimplePort": 9229
       }
     ]

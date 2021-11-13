@@ -576,15 +576,39 @@ function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
 interface GoldsmithServeOptions {
     hostName?: string;
     port?: number;
+    automaticReloading?: boolean;
 }
 
+const goldsmithServeEventPath = "/.goldsmithServe/events";
 function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
     const port = options?.port ?? 8888;
     const hostname = options?.hostName ?? "localhost";
+    const automaticReloading = options?.automaticReloading ?? true;
+    const automaticReloadScript = `<script>(new WebSocket("ws://${hostname}:${port}${goldsmithServeEventPath}")).addEventListener("message", function (event) { window.location.reload(); });</script>`;
+    const automaticReloadClients: WebSocket[] = [];
+    const textDecoder = new TextDecoder();
+    const textEncoder = new TextEncoder();
     return (_files, goldsmith) => {
-        // Only start the server on the first build
-        // TODO: Automatic reloading
-        if (!goldsmith.metadata().__goldsmithServeInitialized) {
+        if (goldsmith.metadata().__goldsmithServeInitialized) {
+            // TODO: This should only run AFTER the build fully completes!
+            // Server was already started, meaning this is a rebuild, so notify clients
+            if (automaticReloading) {
+                let sentUpdate = false;
+                for (const socket of automaticReloadClients) {
+                    try {
+                        socket.send("updated");
+                        sentUpdate = true;
+                    } catch (_e) {
+                        // Ignore errors and assume client is no longer active
+                    }
+                }
+
+                if (sentUpdate) {
+                    console.log("  Serve: notified client(s) of update")
+                }
+            }
+        } else {
+            // Only start the server on the first build
             goldsmith.metadata().__goldsmithServeInitialized = true;
 
             const webRoot = goldsmith.destination();
@@ -599,9 +623,29 @@ function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
                             for await (const re of httpConnection) {
                                 const url = new URL(re.request.url);
                                 try {
-                                    const path = webRoot + (url.pathname.endsWith("/") ? url.pathname + "index.html" : url.pathname);
-                                    await re.respondWith(new Response((await Deno.readFile(path)), { status: 200 }));
-                                    console.log(`  Serve: ${re.request.method} ${url.pathname} => ${path}`);
+                                    if (automaticReloading && url.pathname === goldsmithServeEventPath) {
+                                        const { socket, response } = Deno.upgradeWebSocket(re.request);
+                                        automaticReloadClients.push(socket);
+                                        socket.addEventListener("close", () => {
+                                            automaticReloadClients.splice(automaticReloadClients.indexOf(socket), 1);
+                                        });
+                                        await re.respondWith(response);
+                                    } else {
+                                        const path = webRoot + (url.pathname.endsWith("/") ? url.pathname + "index.html" : url.pathname);
+                                        let content = await Deno.readFile(path);
+    
+                                        let insertedAutomaticReloadingScript = false;
+                                        if (automaticReloading && path.endsWith(".html")) {
+                                            // Insert reload script
+                                            let text = textDecoder.decode(content);
+                                            text = text.replace(/(<body[^>]*>)/, `$1${automaticReloadScript}`);
+                                            content = textEncoder.encode(text);
+                                            insertedAutomaticReloadingScript = true;
+                                        }
+    
+                                        await re.respondWith(new Response(content, { status: 200 }));
+                                        console.log(`  Serve: ${re.request.method} ${url.pathname} => ${path}${insertedAutomaticReloadingScript ? " (with auto-reload)" : ""}`);
+                                    }
                                 } catch (_e) {
                                     await re.respondWith(new Response("", { status: 404 }));
                                     console.log(`  Serve: ${re.request.method} ${url.pathname} => (not found)`);
