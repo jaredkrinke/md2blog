@@ -559,7 +559,13 @@ function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
             const rebuild = () => {
                 if (--outstanding === 0) {
                     console.log(`  Watch: rebuilding...`);
-                    goldsmith.build();
+                    (async () => {
+                        try {
+                            await goldsmith.build();
+                        } catch (e) {
+                            console.log(`  Watch: rebuild error: ${e}`);
+                        }
+                    })();
                 }
             };
 
