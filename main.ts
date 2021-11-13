@@ -558,12 +558,12 @@ function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
             let outstanding = 0;
             const rebuild = () => {
                 if (--outstanding === 0) {
-                    console.log(`  Watch: rebuilding...`);
+                    console.log(`Watch: rebuilding...`);
                     (async () => {
                         try {
                             await goldsmith.build();
                         } catch (e) {
-                            console.log(`  Watch: rebuild error: ${e}`);
+                            console.log(`Watch: rebuild error: ${e}`);
                         }
                     })();
                 }
@@ -608,18 +608,12 @@ function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
             // Register for build completion events, if needed
             if (automaticReloading) {
                 goldsmith.addEventListener("built", function () {
-                    let sentUpdate = false;
                     for (const socket of automaticReloadClients) {
                         try {
                             socket.send("updated");
-                            sentUpdate = true;
                         } catch (_e) {
                             // Ignore errors and assume client is no longer active
                         }
-                    }
-    
-                    if (sentUpdate) {
-                        console.log("  Serve: notified client(s) of update")
                     }
                 });
             }
