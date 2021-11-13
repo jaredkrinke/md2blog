@@ -539,13 +539,11 @@ interface GoldsmithWatchOptions {
 }
 
 function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
-    // Singleton pattern to avoid re-adding the listener on rebuild
+    // Only add the listener on the first build
     let initialized = false;
     return (_files, goldsmith) => {
         if (!initialized) {
             initialized = true;
-            const directories = options?.directories ?? [goldsmith.source()];
-            const watcher = Deno.watchFs(directories, { recursive: true });
 
             // Delay (in milliseconds) for coalescing file system-triggered rebuilds
             const delay = 200;
@@ -558,7 +556,10 @@ function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
                     goldsmith.build();
                 }
             };
-    
+
+            // Subscribe to file system changes
+            const directories = options?.directories ?? [goldsmith.source()];
+            const watcher = Deno.watchFs(directories, { recursive: true });
             (async () => {
                 for await (const event of watcher) {
                     console.log(`  * Watch: ${event.kind} for [${event.paths.join("; ")}]`);
