@@ -14,6 +14,7 @@ const highlightJS: any = HighlightJS;
 const input = "content";
 const output = "out";
 const watch = true;
+const serve = true;
 
 // Logging plugins
 const goldsmithLog: Plugin = (files, goldsmith) => {
@@ -551,7 +552,7 @@ function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
             let outstanding = 0;
             const rebuild = () => {
                 if (--outstanding === 0) {
-                    console.log(`  * Watch: rebuilding...`);
+                    console.log(`  Watch: rebuilding...`);
                     goldsmith.build();
                 }
             };
@@ -561,14 +562,59 @@ function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
             const watcher = Deno.watchFs(directories, { recursive: true });
             (async () => {
                 for await (const event of watcher) {
-                    console.log(`  * Watch: ${event.kind} for [${event.paths.join("; ")}]`);
+                    console.log(`  Watch: ${event.kind} for [${event.paths.join("; ")}]`);
                     ++outstanding;
                     setTimeout(rebuild, delay);
                 }
             })();
-            console.log(`Watching for changes in [${directories.join("; ")}]...`);
+            console.log(`Watch: monitoring: [${directories.join("; ")}]...`);
         }
-    }
+    };
+}
+
+// Plugin for serving content locally (for testing)
+interface GoldsmithServeOptions {
+    hostName?: string;
+    port?: number;
+}
+
+function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
+    const port = options?.port ?? 8888;
+    const hostname = options?.hostName ?? "localhost";
+    return (_files, goldsmith) => {
+        // Only start the server on the first build
+        // TODO: Automatic reloading
+        if (!goldsmith.metadata().__goldsmithServeInitialized) {
+            goldsmith.metadata().__goldsmithServeInitialized = true;
+
+            const webRoot = goldsmith.destination();
+            const server = Deno.listen({ hostname, port });
+            console.log(`Serve: listening on: http://${hostname}:${port}/`);
+
+            (async () => {
+                for await (const connection of server) {
+                    (async () => {
+                        try {
+                            const httpConnection = Deno.serveHttp(connection);
+                            for await (const re of httpConnection) {
+                                const url = new URL(re.request.url);
+                                try {
+                                    const path = webRoot + (url.pathname.endsWith("/") ? url.pathname + "index.html" : url.pathname);
+                                    await re.respondWith(new Response((await Deno.readFile(path)), { status: 200 }));
+                                    console.log(`  Serve: ${re.request.method} ${url.pathname} => ${path}`);
+                                } catch (_e) {
+                                    await re.respondWith(new Response("", { status: 404 }));
+                                    console.log(`  Serve: ${re.request.method} ${url.pathname} => (not found)`);
+                                }
+                            }
+                        } catch (e) {
+                            console.log(`  Serve: error: ${e}`);
+                        }
+                    })();
+                }
+            })();
+        }
+    };
 }
 
 // Path format for posts: posts/(:category/)postName.md
@@ -1005,6 +1051,6 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
         })
     }))
     .use(goldsmithBrokenLinkChecker())
-    // TODO: Local web server with automatic reloading
     .use(watch ? goldsmithWatch() : noop)
+    .use(serve ? goldsmithServe() : noop)
     .build();
