@@ -1,5 +1,6 @@
 import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
+import { parse as parseFlags } from "https://deno.land/std@0.113.0/flags/mod.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
 import { html, xml } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
@@ -10,11 +11,39 @@ import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
 // deno-lint-ignore no-explicit-any
 const highlightJS: any = HighlightJS;
 
-// TODO: Command line interface
-const input = "content";
-const output = "out";
-const watch = true;
-const serve = true;
+// Command line arguments
+const unexpectedFlags: string[] = [];
+const { clean, drafts, input, output, serve, watch } = parseFlags(Deno.args, {
+    string: [
+        "input",
+        "output",
+    ],
+    boolean: [
+        "clean",
+        "drafts",
+        "serve",
+        "watch",
+    ],
+    alias: {
+        clean: "c",
+        drafts: "d",
+        input: "i",
+        output: "o",
+        serve: "s",
+        watch: "w",
+    },
+    default: {
+        input: "content",
+        output: "out",
+    },
+    unknown: a => unexpectedFlags.push(a),
+});
+
+if (unexpectedFlags.length > 0) {
+    // TODO: Print usage
+    console.log(`Unknown command line arguments: ${JSON.stringify(unexpectedFlags)}`);
+    Deno.exit(-1);
+}
 
 // Logging plugins
 const goldsmithLog: Plugin = (files, goldsmith) => {
@@ -811,10 +840,10 @@ await Goldsmith()
     .metadata({ metadataWorks: true }) // TODO: Move to test only
     .source(input)
     .destination(output)
-    .clean(true)
+    .clean(clean)
     .use(goldsmithMetadata({ site: "site.json" }))
     .use(goldsmithFrontMatter())
-    .use(goldsmithExcludeDrafts())
+    .use(drafts ? noop : goldsmithExcludeDrafts())
     .use(goldsmithFileMetadata({
         pattern: /\.html$/,
         metadata: { layout: false }, // Opt raw HTML files out of layouts so they're copied verbatim
@@ -1112,6 +1141,6 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
         })
     }))
     .use(goldsmithBrokenLinkChecker())
-    .use(watch ? goldsmithWatch() : noop)
+    .use((serve || watch) ? goldsmithWatch() : noop) // --serve implies --watch
     .use(serve ? goldsmithServe() : noop)
     .build();

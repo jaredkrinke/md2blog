@@ -1,1 +1,1 @@
-deno run --allow-net=localhost --allow-read=content,out --allow-write=out main.ts
+deno run --allow-net=localhost --allow-read=content,out --allow-write=out main.ts %*
