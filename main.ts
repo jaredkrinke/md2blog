@@ -1,11 +1,13 @@
 import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
-import { parse as parseFlags } from "https://deno.land/std@0.113.0/flags/mod.ts";
+import { processFlags } from "https://deno.land/x/flags_usage@1.0.0/mod.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
 import { html, xml } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
 import { cheerio, Root, Cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
 import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
+
+// TODO: Include libraries instead of loading from CDNs...
 
 // TODO: Types from JSPM don't work
 // deno-lint-ignore no-explicit-any
@@ -13,7 +15,19 @@ const highlightJS: any = HighlightJS;
 
 // Command line arguments
 const unexpectedFlags: string[] = [];
-const { clean, drafts, input, output, serve, watch } = parseFlags(Deno.args, {
+const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
+    description: {
+        clean: "Clean output directory before processing",
+        drafts: "Include drafts in output",
+        serve: "Serve web site, with automatic reloading",
+        watch: "Watch for changes and rebuild automatically",
+        input: "Input directory",
+        output: "Output directory",
+    },
+    argument: {
+        input: "dir",
+        output: "dir",
+    },
     string: [
         "input",
         "output",
