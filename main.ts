@@ -1,4 +1,4 @@
-import { Goldsmith, Plugin, File, Metadata } from "./goldsmith.ts";
+import { Goldsmith, Plugin, File, Metadata } from "../goldsmith/mod.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.0/mod.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
