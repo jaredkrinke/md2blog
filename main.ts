@@ -1,4 +1,4 @@
-import { Goldsmith, Plugin, File, Metadata } from "../goldsmith/mod.ts";
+import { Goldsmith, GoldsmithPlugin, GoldsmithFile, GoldsmithMetadata } from "../goldsmith/mod.ts";
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
@@ -14,7 +14,6 @@ import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
 const highlightJS: any = HighlightJS;
 
 // Command line arguments
-const unexpectedFlags: string[] = [];
 const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
     description: {
         clean: "Clean output directory before processing",
@@ -50,35 +49,48 @@ const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
         input: "content",
         output: "out",
     },
-    unknown: a => unexpectedFlags.push(a),
 });
 
-if (unexpectedFlags.length > 0) {
-    // TODO: Print usage
-    console.log(`Unknown command line arguments: ${JSON.stringify(unexpectedFlags)}`);
-    Deno.exit(-1);
+// TODO: Move and fix
+// Logging plugin
+// function goldsmithLog(): GoldsmithPlugin {
+//     return (files, goldsmith) => {
+//         // deno-lint-ignore no-explicit-any
+//         const fileInfo: { [path: string]: { [prop: string]: any } } = {};
+//         Object.keys(files).forEach(key => {
+//             const { data, ...rest } = files[key];
+//             fileInfo[key] = {
+//                 ...rest,
+//                 ["data.length"]: data.length,
+//             };
+//         });
+
+//         console.log(goldsmith.metadata())
+//         console.log(fileInfo);
+//     };
+// }
+
+// TODO: These types are for md2blog, NOT this plugin
+declare module "../goldsmith/mod.ts" {
+    interface GoldsmithMetadata {
+        site?: {
+            title: string;
+            description?: string;
+            url?: string;
+            colors?: {
+                title?: string;
+                heading?: string;
+                link?: string;
+                comment?: string;
+            };
+        }
+    }
 }
-
-// Logging plugins
-const goldsmithLog: Plugin = (files, goldsmith) => {
-    // deno-lint-ignore no-explicit-any
-    const fileInfo: { [path: string]: { [prop: string]: any } } = {};
-    Object.keys(files).forEach(key => {
-        const { data, ...rest } = files[key];
-        fileInfo[key] = {
-            ...rest,
-            ["data.length"]: data.length,
-        };
-    });
-
-    console.log(goldsmith.metadata())
-    console.log(fileInfo);
-};
 
 // Plugin for reading global metadata from files
 type GoldsmithMetadataOptions = string | { [property: string]: string };
 
-function goldsmithMetadata(options: GoldsmithMetadataOptions): Plugin {
+function goldsmithMetadata(options: GoldsmithMetadataOptions): GoldsmithPlugin {
     const textDecoder = new TextDecoder();
     const rows: { path: string, propertyName?: string }[] = [];
     if (typeof(options) === "string") {
@@ -104,12 +116,23 @@ function goldsmithMetadata(options: GoldsmithMetadataOptions): Plugin {
     };
 }
 
+// TODO: Not part of a plugin
+declare module "../goldsmith/mod.ts" {
+    interface GoldsmithFile {
+        title?: string;
+        description?: string;
+        date?: Date;
+        draft?: boolean;
+        keywords?: string[];
+    }
+}
+
 // Plugin for reading YAML front matter
 interface GoldsmithFrontMatterOptions {
     pattern?: RegExp;
 }
 
-function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): Plugin {
+function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): GoldsmithPlugin {
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
     const pattern = options?.pattern ?? /\.md$/;
@@ -134,7 +157,7 @@ function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): Plugin {
 }
 
 // Plugin to exclude drafts
-function goldsmithExcludeDrafts(exclude?: boolean): Plugin {
+function goldsmithExcludeDrafts(exclude?: boolean): GoldsmithPlugin {
     const excludeDrafts = exclude ?? true;
     return (files) => {
         if (excludeDrafts) {
@@ -149,9 +172,9 @@ function goldsmithExcludeDrafts(exclude?: boolean): Plugin {
 }
 
 // Plugin for adding metadata based on regular expressions
-type GoldsmithFileCreateMetadataCallback = (file: File, matches: RegExpMatchArray, metadata: Metadata) => Metadata;
+type GoldsmithFileCreateMetadataCallback = (file: GoldsmithFile, matches: RegExpMatchArray, metadata: GoldsmithMetadata) => Omit<GoldsmithFile, "data">;
 
-function goldsmithFileMetadata(options: { pattern: RegExp, metadata: Metadata | GoldsmithFileCreateMetadataCallback }): Plugin {
+function goldsmithFileMetadata(options: { pattern: RegExp, metadata: GoldsmithMetadata | GoldsmithFileCreateMetadataCallback }): GoldsmithPlugin {
     const { pattern, metadata } = options;
     return (files, goldsmith) => {
         for (const key of Object.keys(files)) {
@@ -165,6 +188,20 @@ function goldsmithFileMetadata(options: { pattern: RegExp, metadata: Metadata | 
 }
 
 // Plugin for creating indexes on properties
+declare module "../goldsmith/mod.ts" {
+    interface GoldsmithMetadata {
+        indexes?: {
+            [propertyName: string]: {
+                [term: string]: GoldsmithFile[];
+            };
+        };
+    }
+
+    interface GoldsmithFile {
+        term?: string;
+    }
+}
+
 interface GoldsmithIndexOptions {
     pattern: RegExp;
     property: string;
@@ -172,11 +209,11 @@ interface GoldsmithIndexOptions {
     // indexPagePath?: string; // TODO
 }
 
-function goldsmithIndex(options: GoldsmithIndexOptions): Plugin {
+function goldsmithIndex(options: GoldsmithIndexOptions): GoldsmithPlugin {
     const { pattern, createTermPagePath } = options;
     const propertyName = options.property;
     return (files, goldsmith) => {
-        const index: { [term: string]: File[] } = {};
+        const index: { [term: string]: GoldsmithFile[] } = {};
         for (const key of Object.keys(files)) {
             if (pattern.test(key)) {
                 const file = files[key];
@@ -205,6 +242,8 @@ function goldsmithIndex(options: GoldsmithIndexOptions): Plugin {
 }
 
 // Plugin for creating collections of files
+type SortableType = number | Date | string;
+
 interface GoldsmithCollection {
     pattern: RegExp;
     sortBy: string;
@@ -212,7 +251,7 @@ interface GoldsmithCollection {
     limit?: number;
 }
 
-function goldsmithCollections(options: { [collectionName: string]: GoldsmithCollection}): Plugin {
+function goldsmithCollections(options: { [collectionName: string]: GoldsmithCollection}): GoldsmithPlugin {
     return (files, goldsmith) => {
         for (const collectionKey of Object.keys(options)) {
             const collection = options[collectionKey];
@@ -228,7 +267,13 @@ function goldsmithCollections(options: { [collectionName: string]: GoldsmithColl
                 }
             }
     
-            list.sort((a, b) => a[sortBy] - b[sortBy]);
+            list.sort((a, b) => {
+                const sa = a[sortBy] as SortableType;
+                const sb = b[sortBy] as SortableType;
+
+                return (sa < sb) ? -1 : ((sa > sb) ? 1 : 0);
+            });
+            
             if (reverse) {
                 list.reverse();
             }
@@ -242,11 +287,13 @@ function goldsmithCollections(options: { [collectionName: string]: GoldsmithColl
 }
 
 // Plugin for injecting files
-type GoldsmithInjectedFile = Metadata & {
-    data?: string | Uint8Array | ((metadata: Metadata) => Uint8Array);
+type GoldsmithFileMetadata = Omit<GoldsmithFile, "data">;
+
+type GoldsmithInjectedFile = GoldsmithFileMetadata & {
+    data?: string | Uint8Array | ((metadata: GoldsmithMetadata) => Uint8Array);
 };
 
-function goldsmithInjectFiles(options: { [path: string]: GoldsmithInjectedFile }): Plugin {
+function goldsmithInjectFiles(options: { [path: string]: GoldsmithInjectedFile }): GoldsmithPlugin {
     const textEncoder = new TextEncoder();
     return (files, goldsmith) => {
         for (const key of Object.keys(options)) {
@@ -282,7 +329,7 @@ interface goldsmithMarkedOptions {
 }
 
 const markdownPattern = /(.+)\.md$/;
-function goldsmithMarked(options?: goldsmithMarkedOptions): Plugin {
+function goldsmithMarked(options?: goldsmithMarkedOptions): GoldsmithPlugin {
     const replaceLinks = options?.replaceLinks;
     const highlight = options?.highlight;
     const textDecoder = new TextDecoder();
@@ -317,18 +364,27 @@ function goldsmithMarked(options?: goldsmithMarkedOptions): Plugin {
 }
 
 // Plugin for computing root paths
-const goldsmithRootPaths: Plugin = (files) => {
-    for (const key of Object.keys(files)) {
-        const file = files[key];
-        file.pathToRoot = pathToRoot(key);
-        file.pathFromRoot = key;
+declare module "../goldsmith/mod.ts" {
+    interface GoldsmithFile {
+        pathToRoot?: string;
+        pathFromRoot?: string;
     }
-};
+}
+
+function goldsmithRootPaths(): GoldsmithPlugin {
+    return (files) => {
+        for (const key of Object.keys(files)) {
+            const file = files[key];
+            file.pathToRoot = pathToRoot(key);
+            file.pathFromRoot = key;
+        }
+    };
+}
 
 // Plugin for creating an Atom feed
 interface GoldsmithFeedOptions {
     path?: string;
-    getCollection: (metadata: Metadata) => File[];
+    getCollection: (metadata: GoldsmithMetadata) => GoldsmithFile[];
 }
 
 interface GoldsmithFeedEntry {
@@ -339,7 +395,7 @@ interface GoldsmithFeedEntry {
     html: string;
 }
 
-function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
+function goldsmithFeed(options: GoldsmithFeedOptions): GoldsmithPlugin {
     const feedPath = options.path ?? "feed.xml";
     const textDecoder = new TextDecoder();
     const textEncoder = new TextEncoder();
@@ -388,8 +444,8 @@ function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
             const { title, date, description } = file;
             list.push({
                 pathFromRoot,
-                title,
-                date,
+                title: title ?? "",
+                date: date ?? new Date(),
                 description,
                 html,
             });
@@ -399,18 +455,18 @@ function goldsmithFeed(options: GoldsmithFeedOptions): Plugin {
         // TODO: Test with a URL with ampersand, etc.
         const feedXML = xml`<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-<title>${m.site.title}</title>
-<id>${{verbatim: m.site.url ? xml`${m.site.url}` : xml`urn:md2blog:${{param: m.site.title}}`}}</id>
-${{verbatim: m.site.url ? xml`<link rel="self" href="${prefix}${feedPath}"/>
+<title>${m.site?.title ?? ""}</title>
+<id>${{verbatim: m.site?.url ? xml`${m.site.url}` : xml`urn:md2blog:${{param: m.site?.title ?? ""}}`}}</id>
+${{verbatim: m.site?.url ? xml`<link rel="self" href="${prefix}${feedPath}"/>
 <link rel="alternate" href="${m.site.url}"/>` : ""}}
 <author>
-<name>${m.site.title}</name>
+<name>${m.site?.title ?? ""}</name>
 </author>
 <updated>${(new Date()).toISOString()}</updated>
 
 ${{verbatim: list.map(post => xml`<entry>
 <title>${post.title}}</title>
-<id>${{verbatim: m.site.url ? xml`${m.site.url}${post.pathFromRoot}` : xml`urn:md2blog:${{param: m.site.title}}:${{param: post.title}}`}}</id>
+<id>${{verbatim: m.site?.url ? xml`${m.site.url}${post.pathFromRoot}` : xml`urn:md2blog:${{param: m.site?.title ?? ""}}:${{param: post.title}}`}}</id>
 <link rel="alternate" href="${prefix}${post.pathFromRoot}"/>
 <updated>${post.date.toISOString()}</updated>
 ${{verbatim: post.description ? xml`<summary type="text">${post.description}</summary>` : ""}}
@@ -425,14 +481,14 @@ ${{verbatim: post.description ? xml`<summary type="text">${post.description}</su
 
 // Plugin for layouts
 // TODO: Support other layout engines
-type GoldsmithLayoutCallback = (file: File, metadata: Metadata) => Uint8Array;
+type GoldsmithLayoutCallback = (file: GoldsmithFile, metadata: GoldsmithMetadata) => Uint8Array;
 
 interface GoldsmithLayoutOptions {
     pattern: RegExp;
     layout: GoldsmithLayoutCallback;
 }
 
-function goldsmithLayout(options: GoldsmithLayoutOptions): Plugin {
+function goldsmithLayout(options: GoldsmithLayoutOptions): GoldsmithPlugin {
     const { pattern, layout } = options;
     return (files, goldsmith) => {
         const metadata = goldsmith.metadata(); 
@@ -446,7 +502,15 @@ function goldsmithLayout(options: GoldsmithLayoutOptions): Plugin {
 }
 
 // literal-html template handler
-type GoldsmithLiteralHTMLLayoutCallback = (content: string, metadata: Metadata) => string;
+declare module "../goldsmith/mod.ts" {
+    interface GoldsmithFile {
+        layout?: string | false;
+    }
+}
+
+type GoldsmithLayoutContext = GoldsmithMetadata & GoldsmithFile;
+
+type GoldsmithLiteralHTMLLayoutCallback = (content: string, metadata: GoldsmithLayoutContext) => string;
 type GoldsmithLiteralHTMLLayoutMap = {
     [name: string]: GoldsmithLiteralHTMLLayoutCallback;
 };
@@ -461,12 +525,12 @@ function goldsmithLayoutLiteralHTML(options: GoldsmithLiteralHTMLOptions): Golds
     const textEncoder = new TextEncoder();
     const textDecoder = new TextDecoder();
     return (file, metadata) => {
-        const layoutKey = file.layout;
-        if (layoutKey === false) {
+        const layoutKey = file.layout ?? defaultTemplate;
+        if (!layoutKey) {
             // File opted out of layouts
             return file.data;
         } else {
-            const layout = templates[layoutKey ?? defaultTemplate];
+            const layout = templates[layoutKey];
             if (!layout) {
                 throw `Unknown layout: ${layoutKey} (available layouts: ${Object.keys(templates).join(", ")})`;
             }
@@ -520,7 +584,7 @@ function pathRelativeResolve(from: string, to: string): string {
 
 // TODO: Make other plugins functions for future extensibility without breaking change
 const relativeLinkPattern = /^[^/][^:]*$/;
-function goldsmithBrokenLinkChecker(): Plugin {
+function goldsmithBrokenLinkChecker(): GoldsmithPlugin {
     const pattern = /^.+\.html$/; // TODO: Make customizable?
     const textDecoder = new TextDecoder();
     return (files, _goldsmith) => {
@@ -588,7 +652,7 @@ interface GoldsmithWatchOptions {
     directories?: string[];
 }
 
-function goldsmithWatch(options?: GoldsmithWatchOptions): Plugin {
+function goldsmithWatch(options?: GoldsmithWatchOptions): GoldsmithPlugin {
     return (_files, goldsmith) => {
         // Only start the watcher on the first build
         if (!goldsmith.metadata().__goldsmithWatchInitialized) {
@@ -635,7 +699,7 @@ interface GoldsmithServeOptions {
 }
 
 const goldsmithServeEventPath = "/.goldsmithServe/events";
-function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
+function goldsmithServe(options?: GoldsmithServeOptions): GoldsmithPlugin {
     const port = options?.port ?? 8888;
     const hostname = options?.hostName ?? "localhost";
     const automaticReloading = options?.automaticReloading ?? true;
@@ -722,22 +786,22 @@ function goldsmithServe(options?: GoldsmithServeOptions): Plugin {
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
 // TODO: Move
-const partialBase = (m: Metadata, mainVerbatim: string, navigationVerbatim?: string) => 
+const partialBase = (m: GoldsmithLayoutContext, mainVerbatim: string, navigationVerbatim?: string) => 
 html`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>${m.site.title}${m.title ? `: ${m.title}` : ""}</title>
+<title>${m.site!.title!}${m.title ? `: ${m.title}` : ""}</title>
 ${{verbatim: m.description ? html`<meta name="description" content="${m.description}" />` : ""}}
 ${{verbatim: m.keywords ? html`<meta name="keywords" content="${m.keywords.join(",")}" />` : ""}}
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-<link rel="stylesheet" href="${m.pathToRoot}css/style.css" />
-${{verbatim: m.isRoot ? html`<link rel="alternate" type="application/rss+xml" href="${m.pathToRoot}feed.xml" />` : ""}}
+<link rel="stylesheet" href="${m.pathToRoot!}css/style.css" />
+${{verbatim: m.isRoot ? html`<link rel="alternate" type="application/rss+xml" href="${m.pathToRoot!}feed.xml" />` : ""}}
 </head>
 <body>
 <header>
-<h1><a href="${m.pathToRoot}index.html">${m.site.title}</a></h1>
-${{verbatim: m.site.description ? html`<p>${m.site.description}</p>` : ""}}
+<h1><a href="${m.pathToRoot!}index.html">${m.site!.title!}</a></h1>
+${{verbatim: m.site?.description ? html`<p>${m.site.description}</p>` : ""}}
 ${{verbatim: navigationVerbatim ? navigationVerbatim : ""}}
 </header>
 <main>
@@ -747,11 +811,11 @@ ${{verbatim: mainVerbatim}}
 </html>
 `;
 
-function partialNavigation(m: Metadata, tags: string[], incomplete?: boolean, isTagIndex?: boolean, tag?: string): string {
+function partialNavigation(m: GoldsmithLayoutContext, tags: string[], incomplete?: boolean, isTagIndex?: boolean, tag?: string): string {
     return tags ? html`<nav>
 <ul>
-${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.pathToRoot}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
-${{verbatim: incomplete ? html`<li><a href="${m.pathToRoot}posts/index.html">&hellip;</a></li>\n` : ""}}</ul>
+${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.pathToRoot ?? ""}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
+${{verbatim: incomplete ? html`<li><a href="${m.pathToRoot!}posts/index.html">&hellip;</a></li>\n` : ""}}</ul>
 </nav>` : "";
 }
 
@@ -762,20 +826,20 @@ function partialDate(date: Date): string {
     return html`<p><time datetime="${formatDateShort(date)}">${formatDate(date)}</time></p>`;
 }
 
-const partialArticleSummary: (m: Metadata, post: Metadata) => string = (m, post) => {
+const partialArticleSummary: (m: GoldsmithLayoutContext, post: GoldsmithFile) => string = (m, post) => {
     return html`<article>
 <header>
-<h1><a href="${m.pathToRoot}${post.pathFromRoot}">${post.title}</a></h1>
-${{verbatim: partialDate(post.date)}}
+<h1><a href="${m.pathToRoot!}${post.pathFromRoot as string}">${post.title!}</a></h1>
+${{verbatim: partialDate(post.date!)}}
 </header>
 ${{verbatim: post.description ? html`<p>${post.description}</p>` : ""}}
 </article>
 `;
 };
 
-function partialArticleSummaryList(m: Metadata, posts: Metadata[]): string {
+function partialArticleSummaryList(m: GoldsmithLayoutContext, posts: GoldsmithFile[]): string {
     return html`<ul>
-${{verbatim: posts.map((post: Metadata) => html`<li>${{verbatim: partialArticleSummary(m, post)}}</li>`).join("\n")}}
+${{verbatim: posts.map((post: GoldsmithFile) => html`<li>${{verbatim: partialArticleSummary(m, post)}}</li>`).join("\n")}}
 </ul>`;
 }
 
@@ -790,8 +854,8 @@ const templateArchive: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => par
         title: "Archive of all posts since the beginning of time",
         ...m
     },
-    partialArticleSummaryList(m, m.posts),
-    partialNavigation(m, m.tagsAll)
+    partialArticleSummaryList(m, m.posts!),
+    partialNavigation(m, m.tagsAll!)
 );
 
 const templateDefault: GoldsmithLiteralHTMLLayoutCallback = (content, m) => partialBase(
@@ -799,35 +863,35 @@ const templateDefault: GoldsmithLiteralHTMLLayoutCallback = (content, m) => part
     html`<article>
 ${{verbatim: content}}
 </article>`,
-    partialNavigation(m, m.tags)
+    partialNavigation(m, m.tags!)
 );
 
 const templatePost: GoldsmithLiteralHTMLLayoutCallback = (content, m) => partialBase(
     m,
     html`<article>
 <header>
-<h1><a href="${m.pathToRoot}${m.pathFromRoot}">${m.title}</a></h1>
-${{verbatim: partialDate(m.date)}}
+<h1><a href="${m.pathToRoot!}${m.pathFromRoot!}">${m.title!}</a></h1>
+${{verbatim: partialDate(m.date!)}}
 </header>
 ${{verbatim: content}}
 <footer>
-<p><a href="${m.pathToRoot}index.html">Back to home</a></p>
+<p><a href="${m.pathToRoot!}index.html">Back to home</a></p>
 </footer>
 </article>`,
-    partialNavigation(m, m.tags)
+    partialNavigation(m, m.tags!)
 );
 
 const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
     {
         isRoot: true,
-        description: m.site.description,
+        description: m.site?.description,
         ...m,
     },
-    html`${{verbatim: partialArticleSummaryList(m, m.postsRecent)}}
+    html`${{verbatim: partialArticleSummaryList(m, m.postsRecent!)}}
 <footer>
 <p><a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>`,
-    partialNavigation(m, m.tagsTop, m.tagsTop.length !== m.tagsAll.length)
+    partialNavigation(m, m.tagsTop!, m.tagsTop!.length !== m.tagsAll!.length)
 );
 
 const templateTagIndex: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
@@ -835,8 +899,8 @@ const templateTagIndex: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => pa
         title: "Archive of all posts since the beginning of time",
         ...m
     },
-    partialArticleSummaryList(m, m.postsWithTag),
-    partialNavigation(m, m.tagsAll, false, true, m.tag)
+    partialArticleSummaryList(m, m.postsWithTag!),
+    partialNavigation(m, m.tagsAll!, false, true, m.tag)
 );
 
 const templates: GoldsmithLiteralHTMLLayoutMap = {
@@ -848,7 +912,28 @@ const templates: GoldsmithLiteralHTMLLayoutMap = {
     "tagIndex": templateTagIndex,
 };
 
-const noop: Plugin = (_files, _goldsmith) => {};
+declare module "../goldsmith/mod.ts" {
+    interface GoldsmithMetadata {
+        posts?: GoldsmithFile[];
+        postsRecent?: GoldsmithFile[];
+
+        tagsAll?: string[];
+        tagsTop?: string[];
+    }
+
+    interface GoldsmithFile {
+        category?: string;
+        keywords?: string[];
+        tags?: string[];
+
+        // Tag index properties
+        tag?: string;
+        isTagIndex?: boolean;
+        postsWithTag?: GoldsmithFile[];
+    }
+}
+
+const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
 
 await Goldsmith()
     .metadata({ metadataWorks: true }) // TODO: Move to test only
@@ -872,7 +957,7 @@ await Goldsmith()
             layout: "post",
 
             // Set "tags" to be [ category, ...keywords ] (with duplicates removed)
-            tags: [...new Set([ file.category, ...(file.keywords ?? []) ])],
+            tags: [...new Set([ file.category!, ...(file.keywords ?? []) ])],
         }),
     }))
     .use(goldsmithIndex({
@@ -887,7 +972,7 @@ await Goldsmith()
             tag: file.term,
             layout: "tagIndex",
             isTagIndex: true,
-            postsWithTag: metadata.indexes.tags[file.term].sort((a: File, b: File) => (b.date - a.date)), // Note: Sorts the array in place!
+            postsWithTag: metadata.indexes!.tags[file.term!].sort((a, b) => (b.date!.valueOf() - a.date!.valueOf())), // Note: Sorts the array in place!
         }),
     }))
     .use(goldsmithCollections({
@@ -908,13 +993,13 @@ await Goldsmith()
         const metadata = goldsmith.metadata();
 
         // Sort "all tags" list alphabetically
-        metadata.tagsAll = Object.keys(metadata.indexes.tags).sort((a, b) => (a < b ? -1 : 1));
+        metadata.tagsAll = Object.keys(metadata.indexes!.tags).sort((a, b) => (a < b ? -1 : 1));
 
         // Sort "top tags" list by most posts, and then most recent post if there's a tie
-        metadata.tagsTop = Object.keys(metadata.indexes.tags).sort((a, b) => {
-            const postsA = metadata.indexes.tags[a];
-            const postsB = metadata.indexes.tags[b];
-            return (postsB.length - postsA.length) || (postsB[0].date - postsA[0].date);
+        metadata.tagsTop = Object.keys(metadata.indexes!.tags).sort((a, b) => {
+            const postsA = metadata.indexes!.tags[a];
+            const postsB = metadata.indexes!.tags[b];
+            return (postsB.length - postsA.length) || (postsB[0].date!.getDate() - postsA[0].date!.getDate());
         }).slice(0, 4);
     })
     .use(goldsmithInjectFiles({
@@ -924,7 +1009,7 @@ await Goldsmith()
     }))
     .use(goldsmithInjectFiles({
         "css/style.css": {
-            data: (metadata: Metadata) => {
+            data: (metadata) => {
                 let css = `:root { color-scheme: dark; }
 html, body { margin: 0; }
 
@@ -1145,8 +1230,8 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
             }
         },
     }))
-    .use(goldsmithRootPaths)
-    .use(goldsmithFeed({ getCollection: (metadata) => metadata.postsRecent }))
+    .use(goldsmithRootPaths())
+    .use(goldsmithFeed({ getCollection: (metadata) => metadata.postsRecent! }))
     .use(goldsmithLayout({
         pattern: /\.html$/,
         layout: goldsmithLayoutLiteralHTML({
