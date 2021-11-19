@@ -51,25 +51,6 @@ const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
     },
 });
 
-// TODO: Move and fix
-// Logging plugin
-// function goldsmithLog(): GoldsmithPlugin {
-//     return (files, goldsmith) => {
-//         // deno-lint-ignore no-explicit-any
-//         const fileInfo: { [path: string]: { [prop: string]: any } } = {};
-//         Object.keys(files).forEach(key => {
-//             const { data, ...rest } = files[key];
-//             fileInfo[key] = {
-//                 ...rest,
-//                 ["data.length"]: data.length,
-//             };
-//         });
-
-//         console.log(goldsmith.metadata())
-//         console.log(fileInfo);
-//     };
-// }
-
 // TODO: These types are for md2blog, NOT this plugin
 declare module "../goldsmith/mod.ts" {
     interface GoldsmithMetadata {
