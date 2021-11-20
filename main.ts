@@ -803,7 +803,7 @@ await Goldsmith()
     .use(goldsmithIndex({
         pattern: postPathPattern,
         property: "tags",
-        createTermPagePath: term => `posts/${term}/index.html`,
+        createTermIndexPath: term => `posts/${term}/index.html`,
     }))
     .use(goldsmithFileMetadata({
         pattern: /^posts\/[^/]+?\/index.html$/,
