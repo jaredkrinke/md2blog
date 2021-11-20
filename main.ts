@@ -6,6 +6,7 @@ import { goldsmithExcludeDrafts } from "../goldsmith/plugins/exclude_drafts/mod.
 import { goldsmithFileMetadata } from "../goldsmith/plugins/file_metadata/mod.ts";
 import { goldsmithIndex } from "../goldsmith/plugins/index/mod.ts";
 import { goldsmithCollections } from "../goldsmith/plugins/collections/mod.ts";
+import { goldsmithInjectFiles } from "../goldsmith/plugins/inject_files/mod.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
@@ -80,42 +81,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for injecting files
-type GoldsmithFileMetadata = Omit<GoldsmithFile, "data">;
-
-type GoldsmithInjectedFile = GoldsmithFileMetadata & {
-    data?: string | Uint8Array | ((metadata: GoldsmithMetadata) => Uint8Array);
-};
-
-function goldsmithInjectFiles(options: { [path: string]: GoldsmithInjectedFile }): GoldsmithPlugin {
-    const textEncoder = new TextEncoder();
-    return (files, goldsmith) => {
-        for (const key of Object.keys(options)) {
-            const { data: stringOrDataOrCallback, ...rest } = options[key];
-            let data: Uint8Array;
-            switch (typeof(stringOrDataOrCallback)) {
-                case "undefined":
-                    data = new Uint8Array(0);
-                    break;
-
-                case "string":
-                    data = textEncoder.encode(stringOrDataOrCallback);
-                    break;
-                
-                case "function":
-                    data = stringOrDataOrCallback(goldsmith.metadata());
-                    break;
-
-                default:
-                    data = stringOrDataOrCallback;
-                    break;
-            }
-
-            files[key] = { data, ...rest };
-        }
-    };
 }
 
 // Plugin for processing Markdown using Marked
