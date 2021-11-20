@@ -1,5 +1,6 @@
 import { Goldsmith, GoldsmithPlugin, GoldsmithFile, GoldsmithMetadata } from "../goldsmith/mod.ts";
 import { goldsmithJSONMetadata } from "../goldsmith/plugins/json_metadata/mod.ts";
+import { goldsmithFrontMatter } from "../goldsmith/plugins/front_matter/mod.ts";
 
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
@@ -79,35 +80,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for reading YAML front matter
-interface GoldsmithFrontMatterOptions {
-    pattern?: RegExp;
-}
-
-function goldsmithFrontMatter(options?: GoldsmithFrontMatterOptions): GoldsmithPlugin {
-    const textDecoder = new TextDecoder();
-    const textEncoder = new TextEncoder();
-    const pattern = options?.pattern ?? /\.md$/;
-    const frontMatterPattern = /^---\r?\n(.*?)\r?\n---\r?\n/ms;
-    return (files) => {
-        for (const key of Object.keys(files)) {
-            if (pattern.test(key)) {
-                const file = files[key];
-                const text = textDecoder.decode(file.data);
-                const matches = frontMatterPattern.exec(text);
-                if (matches) {
-                    const yamlText = matches[1];
-                    const yaml = parseYAML(yamlText);
-                    Object.assign(file, yaml);
-
-                    const body = text.slice(matches[0].length);
-                    file.data = textEncoder.encode(body);
-                }
-            }
-        }
-    };
 }
 
 // Plugin to exclude drafts
