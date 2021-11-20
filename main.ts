@@ -1,4 +1,6 @@
 import { Goldsmith, GoldsmithPlugin, GoldsmithFile, GoldsmithMetadata } from "../goldsmith/mod.ts";
+import { goldsmithJSONMetadata } from "../goldsmith/plugins/json_metadata/mod.ts";
+
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
@@ -66,35 +68,6 @@ declare module "../goldsmith/mod.ts" {
             };
         }
     }
-}
-
-// Plugin for reading global metadata from files
-type GoldsmithMetadataOptions = string | { [property: string]: string };
-
-function goldsmithMetadata(options: GoldsmithMetadataOptions): GoldsmithPlugin {
-    const textDecoder = new TextDecoder();
-    const rows: { path: string, propertyName?: string }[] = [];
-    if (typeof(options) === "string") {
-        rows.push({ path: options });
-    } else {
-        rows.push(...Object.keys(options).map(key => ({
-            path: options[key],
-            propertyName: key,
-        })));
-    }
-
-    return (files, goldsmith) => {
-        for (const { path, propertyName } of rows) {
-            const file = files[path];
-            delete files[path];
-            const parsedObject = JSON.parse(textDecoder.decode(file.data));
-            if (propertyName) {
-                goldsmith.metadata({ [propertyName]: parsedObject});
-            } else {
-                goldsmith.metadata(parsedObject);
-            }
-        }
-    };
 }
 
 // TODO: Not part of a plugin
@@ -921,7 +894,7 @@ await Goldsmith()
     .source(input)
     .destination(output)
     .clean(clean)
-    .use(goldsmithMetadata({ site: "site.json" }))
+    .use(goldsmithJSONMetadata({ "site.json": "site" }))
     .use(goldsmithFrontMatter())
     .use(drafts ? noop : goldsmithExcludeDrafts())
     .use(goldsmithFileMetadata({
