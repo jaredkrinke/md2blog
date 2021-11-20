@@ -1,6 +1,7 @@
 import { Goldsmith, GoldsmithPlugin, GoldsmithFile, GoldsmithMetadata } from "../goldsmith/mod.ts";
 import { goldsmithJSONMetadata } from "../goldsmith/plugins/json_metadata/mod.ts";
 import { goldsmithFrontMatter } from "../goldsmith/plugins/front_matter/mod.ts";
+import { goldsmithExcludeDrafts } from "../goldsmith/plugins/exclude_drafts/mod.ts";
 
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
@@ -77,21 +78,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin to exclude drafts
-function goldsmithExcludeDrafts(exclude?: boolean): GoldsmithPlugin {
-    const excludeDrafts = exclude ?? true;
-    return (files) => {
-        if (excludeDrafts) {
-            for (const key of Object.keys(files)) {
-                const file = files[key];
-                if (file.draft) {
-                    delete files[key];
-                }
-            }
-        }
-    };
 }
 
 // Plugin for adding metadata based on regular expressions
