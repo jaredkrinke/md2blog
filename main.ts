@@ -2,6 +2,7 @@ import { Goldsmith, GoldsmithPlugin, GoldsmithFile, GoldsmithMetadata } from "..
 import { goldsmithJSONMetadata } from "../goldsmith/plugins/json_metadata/mod.ts";
 import { goldsmithFrontMatter } from "../goldsmith/plugins/front_matter/mod.ts";
 import { goldsmithExcludeDrafts } from "../goldsmith/plugins/exclude_drafts/mod.ts";
+import { goldsmithFileMetadata } from "../goldsmith/plugins/file_metadata/mod.ts";
 
 import { parse as parseYAML } from "https://deno.land/std@0.113.0/encoding/_yaml/parse.ts";
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
@@ -78,22 +79,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for adding metadata based on regular expressions
-type GoldsmithFileCreateMetadataCallback = (file: GoldsmithFile, matches: RegExpMatchArray, metadata: GoldsmithMetadata) => Omit<GoldsmithFile, "data">;
-
-function goldsmithFileMetadata(options: { pattern: RegExp, metadata: GoldsmithMetadata | GoldsmithFileCreateMetadataCallback }): GoldsmithPlugin {
-    const { pattern, metadata } = options;
-    return (files, goldsmith) => {
-        for (const key of Object.keys(files)) {
-            const matches = pattern.exec(key);
-            if (matches) {
-                const file = files[key];
-                Object.assign(file, (typeof(metadata) === "function") ? metadata(file, matches, goldsmith.metadata()) : metadata);
-            }
-        }
-    };
 }
 
 // Plugin for creating indexes on properties
