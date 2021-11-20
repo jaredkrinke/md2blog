@@ -4,6 +4,7 @@ import { goldsmithJSONMetadata } from "../goldsmith/plugins/json_metadata/mod.ts
 import { goldsmithFrontMatter } from "../goldsmith/plugins/front_matter/mod.ts";
 import { goldsmithExcludeDrafts } from "../goldsmith/plugins/exclude_drafts/mod.ts";
 import { goldsmithFileMetadata } from "../goldsmith/plugins/file_metadata/mod.ts";
+import { goldsmithIndex } from "../goldsmith/plugins/index/mod.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
@@ -78,60 +79,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for creating indexes on properties
-declare module "../goldsmith/mod.ts" {
-    interface GoldsmithMetadata {
-        indexes?: {
-            [propertyName: string]: {
-                [term: string]: GoldsmithFile[];
-            };
-        };
-    }
-
-    interface GoldsmithFile {
-        term?: string;
-    }
-}
-
-interface GoldsmithIndexOptions {
-    pattern: RegExp;
-    property: string;
-    createTermPagePath?: (term: string) => string;
-    // indexPagePath?: string; // TODO
-}
-
-function goldsmithIndex(options: GoldsmithIndexOptions): GoldsmithPlugin {
-    const { pattern, createTermPagePath } = options;
-    const propertyName = options.property;
-    return (files, goldsmith) => {
-        const index: { [term: string]: GoldsmithFile[] } = {};
-        for (const key of Object.keys(files)) {
-            if (pattern.test(key)) {
-                const file = files[key];
-                const termOrTerms = file[propertyName];
-                const terms = Array.isArray(termOrTerms) ? termOrTerms : [termOrTerms];
-                for (const term of terms) {
-                    const list = index[term] ?? [];
-                    index[term] = [...list, file];
-                }
-            }
-        }
-
-        const metadata = goldsmith.metadata();
-        const { ...rest } = metadata.indexes ?? {};
-        metadata.indexes = { [propertyName]: index, ...rest };
-
-        if (createTermPagePath) {
-            for (const term of Object.keys(index)) {
-                files[createTermPagePath(term)] = {
-                    term,
-                    data: new Uint8Array(0),
-                };
-            }
-        }
-    };
 }
 
 // Plugin for creating collections of files
