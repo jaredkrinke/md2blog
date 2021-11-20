@@ -5,6 +5,7 @@ import { goldsmithFrontMatter } from "../goldsmith/plugins/front_matter/mod.ts";
 import { goldsmithExcludeDrafts } from "../goldsmith/plugins/exclude_drafts/mod.ts";
 import { goldsmithFileMetadata } from "../goldsmith/plugins/file_metadata/mod.ts";
 import { goldsmithIndex } from "../goldsmith/plugins/index/mod.ts";
+import { goldsmithCollections } from "../goldsmith/plugins/collections/mod.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
@@ -79,51 +80,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for creating collections of files
-type SortableType = number | Date | string;
-
-interface GoldsmithCollection {
-    pattern: RegExp;
-    sortBy: string;
-    reverse?: boolean;
-    limit?: number;
-}
-
-function goldsmithCollections(options: { [collectionName: string]: GoldsmithCollection}): GoldsmithPlugin {
-    return (files, goldsmith) => {
-        for (const collectionKey of Object.keys(options)) {
-            const collection = options[collectionKey];
-
-            const { pattern, sortBy } = collection;
-            const reverse = collection.reverse ?? false;
-            const limit = collection.limit;
-
-            const list = [];
-            for (const key of Object.keys(files)) {
-                if (pattern.test(key)) {
-                    list.push(files[key]);
-                }
-            }
-    
-            list.sort((a, b) => {
-                const sa = a[sortBy] as SortableType;
-                const sb = b[sortBy] as SortableType;
-
-                return (sa < sb) ? -1 : ((sa > sb) ? 1 : 0);
-            });
-            
-            if (reverse) {
-                list.reverse();
-            }
-            if (limit !== undefined) {
-                list.splice(limit);
-            }
-
-            goldsmith.metadata({ [collectionKey]: list});
-        }
-    };
 }
 
 // Plugin for injecting files
@@ -694,7 +650,7 @@ const templateArchive: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => par
         title: "Archive of all posts since the beginning of time",
         ...m
     },
-    partialArticleSummaryList(m, m.posts!),
+    partialArticleSummaryList(m, m.collections!.posts!),
     partialNavigation(m, m.tagsAll!)
 );
 
@@ -727,7 +683,7 @@ const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partia
         description: m.site?.description,
         ...m,
     },
-    html`${{verbatim: partialArticleSummaryList(m, m.postsRecent!)}}
+    html`${{verbatim: partialArticleSummaryList(m, m.collections!.postsRecent!)}}
 <footer>
 <p><a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>`,
@@ -754,9 +710,6 @@ const templates: GoldsmithLiteralHTMLLayoutMap = {
 
 declare module "../goldsmith/mod.ts" {
     interface GoldsmithMetadata {
-        posts?: GoldsmithFile[];
-        postsRecent?: GoldsmithFile[];
-
         tagsAll?: string[];
         tagsTop?: string[];
     }
@@ -1071,7 +1024,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
         },
     }))
     .use(goldsmithRootPaths())
-    .use(goldsmithFeed({ getCollection: (metadata) => metadata.postsRecent! }))
+    .use(goldsmithFeed({ getCollection: (metadata) => metadata.collections!.postsRecent! }))
     .use(goldsmithLayout({
         pattern: /\.html$/,
         layout: goldsmithLayoutLiteralHTML({
