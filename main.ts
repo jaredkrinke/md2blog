@@ -69,10 +69,7 @@ declare module "../goldsmith/mod.ts" {
             };
         }
     }
-}
 
-// TODO: Not part of a plugin
-declare module "../goldsmith/mod.ts" {
     interface GoldsmithFile {
         title?: string;
         description?: string;
