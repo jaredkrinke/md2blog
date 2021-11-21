@@ -7,9 +7,9 @@ import { goldsmithFileMetadata } from "../goldsmith/plugins/file_metadata/mod.ts
 import { goldsmithIndex } from "../goldsmith/plugins/index/mod.ts";
 import { goldsmithCollections } from "../goldsmith/plugins/collections/mod.ts";
 import { goldsmithInjectFiles } from "../goldsmith/plugins/inject_files/mod.ts";
+import { goldsmithMarkdown } from "../goldsmith/plugins/markdown/mod.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
-import { marked, Renderer } from "https://jspm.dev/marked@4.0.0";
 import { html, xml } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
 import { cheerio, Root, Cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
 import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
@@ -81,47 +81,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for processing Markdown using Marked
-interface goldsmithMarkedOptions {
-    replaceLinks?: (link: string) => string;
-    highlight?: (code: string, language: string) => string;
-}
-
-const markdownPattern = /(.+)\.md$/;
-function goldsmithMarked(options?: goldsmithMarkedOptions): GoldsmithPlugin {
-    const replaceLinks = options?.replaceLinks;
-    const highlight = options?.highlight;
-    const textDecoder = new TextDecoder();
-    const textEncoder = new TextEncoder();
-    return (files, _goldsmith) => {
-        marked.setOptions(marked.getDefaults());
-        if (replaceLinks) {
-            const renderer = new Renderer();
-            const base = renderer.link;
-            renderer.link = function (href: string, title: string, text: string) {
-                return base.call(this, replaceLinks(href), title, text);
-            };
-            marked.use({ renderer });
-        }
-
-        if (highlight) {
-            marked.use({ highlight });
-        }
-
-        for (const key of Object.keys(files)) {
-            const matches = markdownPattern.exec(key);
-            if (matches) {
-                const file = files[key];
-                const markdown = textDecoder.decode(file.data);
-                const html = marked(markdown);
-                file.data = textEncoder.encode(html);
-                delete files[key];
-                files[`${matches[1]}.html`] = file;
-            }
-        }
-    };
 }
 
 // Plugin for computing root paths
@@ -978,7 +937,7 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
             }
         },
     }))
-    .use(goldsmithMarked({
+    .use(goldsmithMarkdown({
         replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2"),
         highlight: (code, language) => {
             if (language && highlightJS.getLanguage(language)) {
