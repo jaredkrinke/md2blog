@@ -8,6 +8,7 @@ import { goldsmithIndex } from "../goldsmith/plugins/index/mod.ts";
 import { goldsmithCollections } from "../goldsmith/plugins/collections/mod.ts";
 import { goldsmithInjectFiles } from "../goldsmith/plugins/inject_files/mod.ts";
 import { goldsmithMarkdown } from "../goldsmith/plugins/markdown/mod.ts";
+import { goldsmithRootPaths } from "../goldsmith/plugins/root_paths/mod.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { html, xml } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
@@ -81,24 +82,6 @@ declare module "../goldsmith/mod.ts" {
         draft?: boolean;
         keywords?: string[];
     }
-}
-
-// Plugin for computing root paths
-declare module "../goldsmith/mod.ts" {
-    interface GoldsmithFile {
-        pathToRoot?: string;
-        pathFromRoot?: string;
-    }
-}
-
-function goldsmithRootPaths(): GoldsmithPlugin {
-    return (files) => {
-        for (const key of Object.keys(files)) {
-            const file = files[key];
-            file.pathToRoot = pathToRoot(key);
-            file.pathFromRoot = key;
-        }
-    };
 }
 
 // Plugin for creating an Atom feed
