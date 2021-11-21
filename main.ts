@@ -9,6 +9,8 @@ import { goldsmithCollections } from "../goldsmith/plugins/collections/mod.ts";
 import { goldsmithInjectFiles } from "../goldsmith/plugins/inject_files/mod.ts";
 import { goldsmithMarkdown } from "../goldsmith/plugins/markdown/mod.ts";
 import { goldsmithRootPaths } from "../goldsmith/plugins/root_paths/mod.ts";
+import { goldsmithLayout } from "../goldsmith/plugins/layout/mod.ts";
+import { goldsmithLayoutLiteralHTML, GoldsmithLiteralHTMLLayoutContext, GoldsmithLiteralHTMLLayoutCallback, GoldsmithLiteralHTMLLayoutMap } from "../goldsmith/plugins/layout/literal_html.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { html, xml } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
@@ -179,70 +181,6 @@ ${{verbatim: post.description ? xml`<summary type="text">${post.description}</su
 `;
 
         files[feedPath] = { data: textEncoder.encode(feedXML) };
-    };
-}
-
-// Plugin for layouts
-// TODO: Support other layout engines
-type GoldsmithLayoutCallback = (file: GoldsmithFile, metadata: GoldsmithMetadata) => Uint8Array;
-
-interface GoldsmithLayoutOptions {
-    pattern: RegExp;
-    layout: GoldsmithLayoutCallback;
-}
-
-function goldsmithLayout(options: GoldsmithLayoutOptions): GoldsmithPlugin {
-    const { pattern, layout } = options;
-    return (files, goldsmith) => {
-        const metadata = goldsmith.metadata(); 
-        for (const key of Object.keys(files)) {
-            if (pattern.test(key)) {
-                const file = files[key];
-                file.data = layout(file, metadata);
-            }
-        }
-    };
-}
-
-// literal-html template handler
-declare module "../goldsmith/mod.ts" {
-    interface GoldsmithFile {
-        layout?: string | false;
-    }
-}
-
-type GoldsmithLayoutContext = GoldsmithMetadata & GoldsmithFile;
-
-type GoldsmithLiteralHTMLLayoutCallback = (content: string, metadata: GoldsmithLayoutContext) => string;
-type GoldsmithLiteralHTMLLayoutMap = {
-    [name: string]: GoldsmithLiteralHTMLLayoutCallback;
-};
-
-interface GoldsmithLiteralHTMLOptions {
-    templates: GoldsmithLiteralHTMLLayoutMap;
-    defaultTemplate?: string;
-}
-
-function goldsmithLayoutLiteralHTML(options: GoldsmithLiteralHTMLOptions): GoldsmithLayoutCallback {
-    const { templates, defaultTemplate } = options;
-    const textEncoder = new TextEncoder();
-    const textDecoder = new TextDecoder();
-    return (file, metadata) => {
-        const layoutKey = file.layout ?? defaultTemplate;
-        if (!layoutKey) {
-            // File opted out of layouts
-            return file.data;
-        } else {
-            const layout = templates[layoutKey];
-            if (!layout) {
-                throw `Unknown layout: ${layoutKey} (available layouts: ${Object.keys(templates).join(", ")})`;
-            }
-    
-            const source = textDecoder.decode(file.data);
-            const context = { ...metadata, ...file };
-            const result = layout(source, context);
-            return textEncoder.encode(result);
-        }
     };
 }
 
@@ -489,7 +427,7 @@ function goldsmithServe(options?: GoldsmithServeOptions): GoldsmithPlugin {
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
 // TODO: Move
-const partialBase = (m: GoldsmithLayoutContext, mainVerbatim: string, navigationVerbatim?: string) => 
+const partialBase = (m: GoldsmithLiteralHTMLLayoutContext, mainVerbatim: string, navigationVerbatim?: string) => 
 html`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -514,7 +452,7 @@ ${{verbatim: mainVerbatim}}
 </html>
 `;
 
-function partialNavigation(m: GoldsmithLayoutContext, tags: string[], incomplete?: boolean, isTagIndex?: boolean, tag?: string): string {
+function partialNavigation(m: GoldsmithLiteralHTMLLayoutContext, tags: string[], incomplete?: boolean, isTagIndex?: boolean, tag?: string): string {
     return tags ? html`<nav>
 <ul>
 ${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.pathToRoot ?? ""}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
@@ -529,7 +467,7 @@ function partialDate(date: Date): string {
     return html`<p><time datetime="${formatDateShort(date)}">${formatDate(date)}</time></p>`;
 }
 
-const partialArticleSummary: (m: GoldsmithLayoutContext, post: GoldsmithFile) => string = (m, post) => {
+const partialArticleSummary: (m: GoldsmithLiteralHTMLLayoutContext, post: GoldsmithFile) => string = (m, post) => {
     return html`<article>
 <header>
 <h1><a href="${m.pathToRoot!}${post.pathFromRoot as string}">${post.title!}</a></h1>
@@ -540,7 +478,7 @@ ${{verbatim: post.description ? html`<p>${post.description}</p>` : ""}}
 `;
 };
 
-function partialArticleSummaryList(m: GoldsmithLayoutContext, posts: GoldsmithFile[]): string {
+function partialArticleSummaryList(m: GoldsmithLiteralHTMLLayoutContext, posts: GoldsmithFile[]): string {
     return html`<ul>
 ${{verbatim: posts.map((post: GoldsmithFile) => html`<li>${{verbatim: partialArticleSummary(m, post)}}</li>`).join("\n")}}
 </ul>`;
