@@ -11,6 +11,7 @@ import { goldsmithMarkdown } from "../goldsmith/plugins/markdown/mod.ts";
 import { goldsmithRootPaths } from "../goldsmith/plugins/root_paths/mod.ts";
 import { goldsmithLayout } from "../goldsmith/plugins/layout/mod.ts";
 import { goldsmithLayoutLiteralHTML, GoldsmithLiteralHTMLLayoutContext, GoldsmithLiteralHTMLLayoutCallback, GoldsmithLiteralHTMLLayoutMap } from "../goldsmith/plugins/layout/literal_html.ts";
+import { goldsmithWatch } from "../goldsmith/plugins/watch/mod.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
 import { html, xml } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
@@ -114,6 +115,7 @@ function goldsmithFeed(options: GoldsmithFeedOptions): GoldsmithPlugin {
         const prefix = (siteURL ? (siteURL.endsWith("/") ? siteURL : (siteURL + "/")) :feedPathToRoot);
         for (const file of collection) {
             // Find path (TODO: make this not O(n^2)?)
+            // TODO: This is very fragile and should not rely on object identity
             let pathFromRoot: string | undefined;
             for (const key of Object.keys(files)) {
                 if (files[key] === file) {
@@ -284,50 +286,6 @@ function goldsmithBrokenLinkChecker(): GoldsmithPlugin {
 
         if (brokenLinks.length > 0) {
             throw `The site has broken relative links:\n\n${brokenLinks.map(bl => `From "${bl.filePath}" to "${bl.href}"`).join("\n")}`;
-        }
-    };
-}
-
-// Plugin for automatically rebuilding when files change
-interface GoldsmithWatchOptions {
-    directories?: string[];
-}
-
-function goldsmithWatch(options?: GoldsmithWatchOptions): GoldsmithPlugin {
-    return (_files, goldsmith) => {
-        // Only start the watcher on the first build
-        if (!goldsmith.metadata().__goldsmithWatchInitialized) {
-            goldsmith.metadata().__goldsmithWatchInitialized = true;
-
-            // Delay (in milliseconds) for coalescing file system-triggered rebuilds
-            const delay = 200;
-    
-            // Only honor the final callback (i.e. the last outstanding one)
-            let outstanding = 0;
-            const rebuild = () => {
-                if (--outstanding === 0) {
-                    console.log(`Watch: rebuilding...`);
-                    (async () => {
-                        try {
-                            await goldsmith.build();
-                        } catch (e) {
-                            console.log(`Watch: rebuild error: ${e}`);
-                        }
-                    })();
-                }
-            };
-
-            // Subscribe to file system changes
-            const directories = options?.directories ?? [goldsmith.source()];
-            const watcher = Deno.watchFs(directories, { recursive: true });
-            (async () => {
-                for await (const event of watcher) {
-                    console.log(`  Watch: ${event.kind} for [${event.paths.join("; ")}]`);
-                    ++outstanding;
-                    setTimeout(rebuild, delay);
-                }
-            })();
-            console.log(`Watch: monitoring: [${directories.join("; ")}]...`);
         }
     };
 }
