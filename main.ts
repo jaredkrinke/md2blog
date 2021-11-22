@@ -14,7 +14,7 @@ import { goldsmithLayoutLiteralHTML } from "../goldsmith/plugins/layout/literal_
 import { goldsmithWatch } from "../goldsmith/plugins/watch/mod.ts";
 import { goldsmithServe } from "../goldsmith/plugins/serve/mod.ts";
 import { goldsmithFeed } from "./goldsmith_feed.ts";
-import { goldsmithLinkChecker } from "./goldsmith_link_checker.ts";
+import { goldsmithLinkChecker } from "../goldsmith/plugins/link_checker/mod.ts";
 import { templates, generateCSS } from "./templates.ts";
 
 import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
