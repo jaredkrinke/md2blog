@@ -18,10 +18,10 @@ import { goldsmithLinkChecker } from "../goldsmith/plugins/link_checker/mod.ts";
 import { templates, generateCSS } from "./templates.ts";
 // @deno-types="./deps/highlightjs-11.3.1.d.ts"
 import highlightJS from "./deps/highlightjs-11.3.1.js";
-
+import copyrightNotice from "./LICENSE.ts";
 
 // Command line arguments
-const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
+const { clean, drafts, input, output, serve, watch, copyright } = processFlags(Deno.args, {
     description: {
         clean: "Clean output directory before processing",
         drafts: "Include drafts in output",
@@ -29,6 +29,7 @@ const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
         watch: "Watch for changes and rebuild automatically",
         input: "Input directory",
         output: "Output directory",
+        copyright: "Display open source software copyright notices"
     },
     argument: {
         input: "dir",
@@ -43,6 +44,7 @@ const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
         "drafts",
         "serve",
         "watch",
+        "copyright",
     ],
     alias: {
         clean: "c",
@@ -57,6 +59,11 @@ const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
         output: "out",
     },
 });
+
+if (copyright) {
+    console.log(copyrightNotice);
+    Deno.exit(0);
+}
 
 declare module "../goldsmith/mod.ts" {
     interface GoldsmithMetadata {
