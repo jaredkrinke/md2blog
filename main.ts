@@ -16,14 +16,9 @@ import { goldsmithServe } from "../goldsmith/plugins/serve/mod.ts";
 import { goldsmithFeed } from "../goldsmith/plugins/feed/mod.ts";
 import { goldsmithLinkChecker } from "../goldsmith/plugins/link_checker/mod.ts";
 import { templates, generateCSS } from "./templates.ts";
+// @deno-types="./deps/highlightjs-11.3.1.d.ts"
+import highlightJS from "./deps/highlightjs-11.3.1.js";
 
-import HighlightJS from "https://jspm.dev/highlight.js@11.3.1";
-
-// TODO: Include libraries instead of loading from CDNs...
-
-// TODO: Types from JSPM don't work
-// deno-lint-ignore no-explicit-any
-const highlightJS: any = HighlightJS;
 
 // Command line arguments
 const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
@@ -63,7 +58,6 @@ const { clean, drafts, input, output, serve, watch } = processFlags(Deno.args, {
     },
 });
 
-// TODO: These types are for md2blog, NOT this plugin
 declare module "../goldsmith/mod.ts" {
     interface GoldsmithMetadata {
         site?: {
@@ -106,7 +100,6 @@ const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
 
 await Goldsmith()
-    .metadata({ metadataWorks: true }) // TODO: Move to test only
     .source(input)
     .destination(output)
     .clean(clean)
