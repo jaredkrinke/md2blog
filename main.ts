@@ -13,7 +13,7 @@ import { goldsmithLayout } from "../goldsmith/plugins/layout/mod.ts";
 import { goldsmithLayoutLiteralHTML } from "../goldsmith/plugins/layout/literal_html.ts";
 import { goldsmithWatch } from "../goldsmith/plugins/watch/mod.ts";
 import { goldsmithServe } from "../goldsmith/plugins/serve/mod.ts";
-import { goldsmithFeed } from "./goldsmith_feed.ts";
+import { goldsmithFeed } from "../goldsmith/plugins/feed/mod.ts";
 import { goldsmithLinkChecker } from "../goldsmith/plugins/link_checker/mod.ts";
 import { templates, generateCSS } from "./templates.ts";
 
