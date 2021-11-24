@@ -93,6 +93,8 @@ declare module "../goldsmith/mod.ts" {
         category?: string;
         tags?: string[];
 
+        isRoot?: boolean;
+
         // Tag index properties
         tag?: string;
         isTagIndex?: boolean;
@@ -127,13 +129,13 @@ await Goldsmith()
             ];
 
             for (const row of requiredProperties) {
-                const value = file[row.key];
+                const value = (file as unknown as Record<string, unknown>)[row.key];
                 if (!row.validate(value)) {
                     throw `Required property "${row.key}" missing or invalid on "${file.originalFilePath}" (value: ${(typeof(value) === "string") ? `"${value}"` : `${value}` })`;
                 }
             }
 
-            return { valid: true };
+            return {};
         },
     }))
     .use(goldsmithFileMetadata({
