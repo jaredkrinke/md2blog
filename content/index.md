@@ -36,4 +36,4 @@ Here are two web sites that are built using md2blog:
 * [FAQ](posts/faq/index.html) (e.g. [themes](posts/faq/themes.md), [command line options](posts/faq/command-line.md), [support](posts/faq/support.md))
 * [Template repository](https://github.com/jaredkrinke/md2blog-template-site) for creating your own dev blog (see [instructions](quick-start.md#setup))
 * [Example repository](https://github.com/jaredkrinke/log) for a real site using md2blog
-* [Source code](https://github.com/jaredkrinke/md2blog) for md2blog ([MIT Licensed](https://github.com/jaredkrinke/md2blog/blob/main/LICENSE))
+* [Source code](https://github.com/jaredkrinke/md2blog) for md2blog ([MIT Licensed](https://github.com/jaredkrinke/md2blog/blob/main/LICENSE.ts))
