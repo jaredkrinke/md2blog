@@ -1,5 +1,5 @@
-import type { GoldsmithFile } from "../goldsmith/mod.ts";
-import type { GoldsmithLiteralHTMLLayoutContext, GoldsmithLiteralHTMLLayoutCallback, GoldsmithLiteralHTMLLayoutMap } from "../goldsmith/plugins/layout/literal_html.ts";
+import type { GoldsmithFile } from "https://deno.land/x/goldsmith@1.0.0/mod.ts";
+import type { GoldsmithLiteralHTMLLayoutContext, GoldsmithLiteralHTMLLayoutCallback, GoldsmithLiteralHTMLLayoutMap } from "https://deno.land/x/goldsmith@1.0.0/plugins/layout/literal_html.ts";
 import { html } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
 import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
 
