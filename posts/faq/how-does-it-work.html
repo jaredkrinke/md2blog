@@ -25,35 +25,14 @@
 <h1><a href="../../posts/faq/how-does-it-work.html">How was md2blog made?</a></h1>
 <p><time datetime="2021-10-25">October 25, 2021</time></p>
 </header>
-<p>md2blog is built on top of <a href="https://metalsmith.io/">Metalsmith</a>, an &quot;extremely simple, pluggable static site generator&quot;, along with the following Metalsmith plugins:</p>
+<p>md2blog uses the <a href="https://deno.land/">Deno</a> TypeScript/JavaScript runtime and is built on top of the following open source libraries:</p>
 <ul>
-<li><a href="https://github.com/davidxmoody/metalsmith-broken-link-checker">metalsmith-broken-link-checker</a></li>
-<li><a href="https://github.com/segmentio/metalsmith-collections">metalsmith-collections</a></li>
-<li><a href="https://github.com/timdp/metalsmith-discover-partials">metalsmith-discover-partials</a></li>
-<li><a href="https://github.com/segmentio/metalsmith-drafts">metalsmith-drafts</a></li>
-<li><a href="https://github.com/chiefy/metalsmith-express">metalsmith-express</a></li>
-<li><a href="https://github.com/dpobel/metalsmith-filemetadata">metalsmith-filemetadata</a></li>
-<li><a href="https://github.com/metalsmith/metalsmith-layouts">metalsmith-layouts</a></li>
-<li><a href="https://github.com/segmentio/metalsmith-metadata">metalsmith-metadata</a></li>
-<li><a href="https://github.com/radiovisual/metalsmith-rootpath">metalsmith-rootpath</a></li>
-<li><a href="https://github.com/webketje/metalsmith-taxonomy">metalsmith-taxonomy</a></li>
-<li><a href="https://github.com/FWeinb/metalsmith-watch">metalsmith-watch</a></li>
-</ul>
-<p>md2blog also uses the following libraries (unrelated to Metalsmith):</p>
-<ul>
-<li><a href="https://www.npmjs.com/package/commander">commander</a></li>
-<li><a href="https://github.com/jaredkrinke/dot2svg-wasm">dot2svg-wasm</a></li>
-<li><a href="https://handlebarsjs.com/">Handlebars</a></li>
-<li><a href="https://highlightjs.org/">highlight.js</a></li>
-<li><a href="https://github.com/jstransformers/jstransformer">JSTransformer</a></li>
-<li><a href="https://lesscss.org/">Less</a></li>
-<li><a href="https://marked.js.org/">Marked</a></li>
-<li><a href="https://github.com/rcs/route-parser">route-parser</a></li>
-</ul>
-<p>Libraries used for testing:</p>
-<ul>
-<li><a href="https://cheerio.js.org/">cheerio</a></li>
-<li><a href="https://mochajs.org/">Mocha</a></li>
+<li><a href="https://deno.land/std">Deno standard library</a></li>
+<li><a href="https://github.com/jaredkrinke/goldsmith">Goldsmith</a> (an in-progress static site generator inspired by <a href="https://metalsmith.io/">Metalsmith</a>)</li>
+<li><a href="https://marked.js.org/">Marked</a> for Markdown processing</li>
+<li><a href="https://highlightjs.org/">highlight.js</a> for syntax highlighting</li>
+<li><a href="https://deno.land/x/event_driven_html_parser">event_driven_html_parser</a> for detecting broken links</li>
+<li><a href="https://deno.land/x/literal_html">literal_html</a> for templates</li>
 </ul>
 
 <footer>

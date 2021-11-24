@@ -32,8 +32,8 @@
 <li>No support for relative links between Markdown files (that get translated to corresponding HTML files at build time)</li>
 <li>No support for implicit categorization</li>
 <li>No relative link checking at build time</li>
-<li>Unintuitive template languages</li>
-<li>Requiring installing new language runtimes</li>
+<li>Unintuitive/verbose template languages</li>
+<li>Requires installing new language runtimes</li>
 </ul>
 <p>Here are some specific notes on popular SSGs:</p>
 <h1 id="jekyll">Jekyll</h1>
@@ -43,9 +43,11 @@
 <h1 id="pelican">Pelican</h1>
 <p><a href="https://blog.getpelican.com/">Pelican</a> sounds like &quot;Jekyll in Python&quot;, but I honestly didn&#39;t seriously consider it because I&#39;ve had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I&#39;m in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.</p>
 <h1 id="eleventy">Eleventy</h1>
-<p>I actually started out using <a href="https://www.11ty.dev/">Eleventy</a> because it was very simple and easy to understand, but I ended up preferring <a href="https://metalsmith.io/">Metalsmith</a> (on which md2blog is now built) because Metalsmith was <em>even simpler</em>, to the point that I could easily understand everything it was doing, instead of having to guess.</p>
+<p>I actually started out using <a href="https://www.11ty.dev/">Eleventy</a> because it was very simple and easy to understand, but I ended up preferring <a href="https://metalsmith.io/">Metalsmith</a> (on which md2blog was originally built) because Metalsmith was <em>even simpler</em>, to the point that I could easily understand everything it was doing, instead of having to guess.</p>
+<h1 id="metalsmith">Metalsmith</h1>
+<p>I originally used <a href="https://metalsmith.io/">Metalsmith</a> for md2blog, but the dependency tree quickly grew out of control and recent security incidents made me wary of using so many packages off of NPM.</p>
 <h1 id="gatsby">Gatsby</h1>
-<p>I hate <a href="https://www.gatsbyjs.com/">Gatsby</a>, and pretty much any other &quot;static&quot; site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Maybe I&#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.</p>
+<p>Honestly, I dislike <a href="https://www.gatsbyjs.com/">Gatsby</a>, and pretty much any other &quot;static&quot; site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Perhaps I&#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.</p>
 <h1 id="hexo">Hexo</h1>
 <p><a href="https://hexo.io/">Hexo</a> sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn&#39;t investigate Hexo further. I realize this isn&#39;t a great reason for not exploring Hexo, but it&#39;s the honest truth.</p>
 

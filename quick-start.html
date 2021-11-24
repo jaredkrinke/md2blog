@@ -26,15 +26,15 @@
 <li><strong>Site metadata</strong> is information about the site (e.g. title and root URL, stored in <code>site.json</code>)</li>
 <li><strong>Posts</strong> represent individual articles (stored under <code>posts/&lt;category&gt;/&lt;post&gt;.md</code>)</li>
 <li><strong>Pages</strong> are just arbitrary pages on the site (e.g. <code>quick-start.md</code>)</li>
-<li><strong>Static assets</strong> are non-Markdown files that are copied verbatim to the output directory (e.g. <code>favicon.ico</code>)</li>
+<li><strong>Static assets</strong> are non-Markdown files that are copied verbatim to the output directory (e.g. images)</li>
 </ul>
 <p>Posts and pages are authored in plain text using <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> (<code>.md</code> extension), with <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> front matter for specifying metadata (such as the date of the post).</p>
 <h1 id="directory-structure">Directory structure</h1>
 <ul>
 <li><code>content/</code>: Root directory that contains all source content for the site<ul>
-<li><code>site.json</code>: Site-wide metadata</li>
-<li><code>assets/</code>: Directory for static assets (e.g. images)</li>
-<li><code>posts/</code>: Directory for all posts<ul>
+<li><code>site.json</code>: Site-wide metadata (required)</li>
+<li><code>assets/</code>: Directory for static assets such as images (optional)</li>
+<li><code>posts/</code>: Directory for all posts (required)<ul>
 <li><code>category1/</code>: Directory for posts related to &quot;category1&quot;<ul>
 <li><code>post1.md</code>: Post related to &quot;category1&quot;</li>
 <li><code>post2.md</code>: Another &quot;category1&quot; post</li>
@@ -171,13 +171,13 @@ const add = (a, b) =&gt; a + b;
 </code></pre>
 <h1 id="building-and-testing-locally">Building and testing locally</h1>
 <p>To build the site locally, use the following command (note: <code>--clean</code> is optional):</p>
-<pre><code class="language-sh">npx md2blog --clean
+<pre><code class="language-sh">md2blog --clean
 </code></pre>
 <p>The file will be written to the <code>out/</code> directory.</p>
 <p>To test the site, simply open <code>out/index.html</code> directly from the file system.</p>
 <h2 id="local-web-server-with-automatic-reloading">Local web server with automatic reloading</h2>
 <p>You can also test using a local web server that will automatically regenerate and reload pages when you save content files to disk using this command:</p>
-<pre><code class="language-sh">npx md2blog --serve
+<pre><code class="language-sh">md2blog --serve
 </code></pre>
 <h1 id="publishing">Publishing</h1>
 <p>md2blog doesn&#39;t have any built-in support for publishing sites, but all that&#39;s required is copying everything from <code>out/</code> to your web root.</p>
@@ -185,7 +185,7 @@ const add = (a, b) =&gt; a + b;
 <p>If you&#39;re planning to publish to <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages">GitHub Pages</a>, here&#39;s an example:</p>
 <ol>
 <li>Set up GitHub pages to publish from some branch, e.g. <code>web</code></li>
-<li>Build your site with <code>npx md2blog --clean</code></li>
+<li>Build your site with <code>md2blog --clean</code></li>
 <li>Initialize Git in <code>out/</code> and upload for the first time:</li>
 </ol>
 <pre><code class="language-sh"><span class="hljs-built_in">cd</span> out
@@ -198,7 +198,7 @@ git push -u origin web
 <span class="hljs-built_in">cd</span> ..
 </code></pre>
 <p>To update your site in the future:</p>
-<pre><code class="language-sh">npx md2blog --clean
+<pre><code class="language-sh">md2blog --clean
 <span class="hljs-built_in">cd</span> out
 git add .
 git commit -m <span class="hljs-string">&quot;Update site&quot;</span>
