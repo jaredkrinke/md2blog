@@ -1,4 +1,5 @@
 out/
 node_modules/
 .vscode/
-*.exe
+md2blog.exe
+md2blog
