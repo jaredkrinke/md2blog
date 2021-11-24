@@ -11,8 +11,7 @@ export interface GenerateCSSOptions {
     comment?: string;
 }
 
-export function generateCSS(options: GenerateCSSOptions): string {
-    let css = `:root { color-scheme: dark; }
+const cssTemplate = `:root { color-scheme: dark; }
 html, body { margin: 0; }
 
 body {
@@ -161,6 +160,9 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
 .hljs-selector-id,
 .hljs-selector-class { color: @textTitle; }
 `;
+
+export function generateCSS(options: GenerateCSSOptions): string {
+    let css = cssTemplate;
     
     // Base colors
     const textTitle = options.title ?? "#e6b95c";
@@ -178,6 +180,11 @@ ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
         textDefault,
         background,
     };
+
+    // Validate format of each color
+    for (const value of Object.values(colors)) {
+        hexToRGB(value);
+    }
 
     // Derived colors
     const desaturateStep = -0.15;

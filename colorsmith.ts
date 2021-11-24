@@ -5,13 +5,19 @@ export type RGB = { r: number, g: number, b: number };
 /** Represents a color using hue (0 - 360 degrees), saturation (0 - 1.0), and lightness (0 - 1.0). */
 export type HSL = { h: number, s: number, l: number };
 
+export class ColorsmithError extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}
+
 const max = 256;
 
 /** Converts a 6 digit hex color of the form "#RRGGBB" to RGB (0 - 1.0). Note: 3 digit form ("#123") is not supported.  */
 const hexColorPattern = /^#[0-9a-fA-F]{6}$/;
 export function hexToRGB(hex: string): RGB {
     if (!hexColorPattern.test(hex)) {
-        throw `Invalid color format: "${hex}" (expected: "#789abc")`;
+        throw new ColorsmithError(`Invalid color format: "${hex}" (expected: "#789abc")`);
     }
 
     const r = parseInt(hex.substr(1, 2), 16) / max;

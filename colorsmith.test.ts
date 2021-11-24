@@ -1,5 +1,5 @@
-import { assertEquals } from "https://deno.land/std@0.113.0/testing/asserts.ts";
-import { hexToRGB, rgbToHex, rgbToHSL, hslToRGB } from "./colorsmith.ts";
+import { assertEquals, assertThrows } from "https://deno.land/std@0.113.0/testing/asserts.ts";
+import { hexToRGB, rgbToHex, rgbToHSL, hslToRGB, ColorsmithError } from "./colorsmith.ts";
 
 Deno.test({
     name: "RGB to hex",
@@ -14,6 +14,17 @@ Deno.test({
     name: "Hex to RGB",
     fn: () => {
         assertEquals(hexToRGB("#808080"), { r: 0.5, g: 0.5, b: 0.5 });
+    },
+});
+
+Deno.test({
+    name: "Hex to RGB, invalid",
+    fn: () => {
+        assertThrows<ColorsmithError>(() => hexToRGB("black"));
+        assertThrows<ColorsmithError>(() => hexToRGB("#000"));
+        assertThrows<ColorsmithError>(() => hexToRGB("######"));
+        assertThrows<ColorsmithError>(() => hexToRGB("aabbcc"));
+        assertThrows<ColorsmithError>(() => hexToRGB("#gggggg"));
     },
 });
 

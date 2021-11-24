@@ -119,6 +119,25 @@ await Goldsmith()
     }))
     .use(goldsmithFileMetadata({
         pattern: postPathPattern,
+        metadata: (file, _matches) => {
+            // Verify required properties
+            const requiredProperties = [
+                { key: "title", validate: (o: unknown) => (typeof(o) === "string") },
+                { key: "date", validate: (o: unknown) => (o instanceof Date) },
+            ];
+
+            for (const row of requiredProperties) {
+                const value = file[row.key];
+                if (!row.validate(value)) {
+                    throw `Required property "${row.key}" missing or invalid on "${file.originalFilePath}" (value: ${(typeof(value) === "string") ? `"${value}"` : `${value}` })`;
+                }
+            }
+
+            return { valid: true };
+        },
+    }))
+    .use(goldsmithFileMetadata({
+        pattern: postPathPattern,
         metadata: (_file, matches) => ({ category: matches[2] ?? "misc" }),
     }))
     .use(goldsmithFileMetadata({
