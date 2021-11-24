@@ -47,7 +47,7 @@ Schema:
 | Field | Type | Required? | Note |
 | --- | --- | --- | --- |
 | `title` | string | Required | |
-| `url` | string | Recommended | Must end with "/" |
+| `url` | string | Recommended | |
 | `description` | string | Optional | |
 | `colors` | object | Optional | See [theme FAQ](posts/faq/themes.md) for details |
 
