@@ -12,15 +12,15 @@ The input directory contains **site metadata**, **posts**, **pages**, and **stat
 * **Site metadata** is information about the site (e.g. title and root URL, stored in `site.json`)
 * **Posts** represent individual articles (stored under `posts/<category>/<post>.md`)
 * **Pages** are just arbitrary pages on the site (e.g. `quick-start.md`)
-* **Static assets** are non-Markdown files that are copied verbatim to the output directory (e.g. `favicon.ico`)
+* **Static assets** are non-Markdown files that are copied verbatim to the output directory (e.g. images)
 
 Posts and pages are authored in plain text using [Markdown](https://guides.github.com/features/mastering-markdown/) (`.md` extension), with [YAML](https://en.wikipedia.org/wiki/YAML) front matter for specifying metadata (such as the date of the post).
 
 # Directory structure
 * `content/`: Root directory that contains all source content for the site
-  * `site.json`: Site-wide metadata
-  * `assets/`: Directory for static assets (e.g. images)
-  * `posts/`: Directory for all posts
+  * `site.json`: Site-wide metadata (required)
+  * `assets/`: Directory for static assets such as images (optional)
+  * `posts/`: Directory for all posts (required)
     * `category1/`: Directory for posts related to "category1"
       * `post1.md`: Post related to "category1"
       * `post2.md`: Another "category1" post
@@ -109,7 +109,7 @@ const add = (a, b) => a + b;
 To build the site locally, use the following command (note: `--clean` is optional):
 
 ```sh
-npx md2blog --clean
+md2blog --clean
 ```
 
 The file will be written to the `out/` directory.
@@ -120,7 +120,7 @@ To test the site, simply open `out/index.html` directly from the file system.
 You can also test using a local web server that will automatically regenerate and reload pages when you save content files to disk using this command:
 
 ```sh
-npx md2blog --serve
+md2blog --serve
 ```
 
 # Publishing
@@ -130,7 +130,7 @@ md2blog doesn't have any built-in support for publishing sites, but all that's r
 If you're planning to publish to [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages), here's an example:
 
 1. Set up GitHub pages to publish from some branch, e.g. `web`
-1. Build your site with `npx md2blog --clean`
+1. Build your site with `md2blog --clean`
 1. Initialize Git in `out/` and upload for the first time:
 
 ```sh
@@ -147,7 +147,7 @@ cd ..
 To update your site in the future:
 
 ```sh
-npx md2blog --clean
+md2blog --clean
 cd out
 git add .
 git commit -m "Update site"

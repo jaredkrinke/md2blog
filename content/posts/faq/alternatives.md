@@ -11,8 +11,8 @@ The most common issues were:
 * No support for relative links between Markdown files (that get translated to corresponding HTML files at build time)
 * No support for implicit categorization
 * No relative link checking at build time
-* Unintuitive template languages
-* Requiring installing new language runtimes
+* Unintuitive/verbose template languages
+* Requires installing new language runtimes
 
 Here are some specific notes on popular SSGs:
 
@@ -26,10 +26,13 @@ Given that [Hugo](https://gohugo.io/) is broadly used and ships in a single bina
 [Pelican](https://blog.getpelican.com/) sounds like "Jekyll in Python", but I honestly didn't seriously consider it because I've had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I'm in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.
 
 # Eleventy
-I actually started out using [Eleventy](https://www.11ty.dev/) because it was very simple and easy to understand, but I ended up preferring [Metalsmith](https://metalsmith.io/) (on which md2blog is now built) because Metalsmith was *even simpler*, to the point that I could easily understand everything it was doing, instead of having to guess.
+I actually started out using [Eleventy](https://www.11ty.dev/) because it was very simple and easy to understand, but I ended up preferring [Metalsmith](https://metalsmith.io/) (on which md2blog was originally built) because Metalsmith was *even simpler*, to the point that I could easily understand everything it was doing, instead of having to guess.
+
+# Metalsmith
+I originally used [Metalsmith](https://metalsmith.io/) for md2blog, but the dependency tree quickly grew out of control and recent security incidents made me wary of using so many packages off of NPM.
 
 # Gatsby
-I hate [Gatsby](https://www.gatsbyjs.com/), and pretty much any other "static" site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Maybe I'm being unreasonable, but I want a static site generator to spit out HTML, not a web app.
+Honestly, I dislike [Gatsby](https://www.gatsbyjs.com/), and pretty much any other "static" site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Perhaps I'm being unreasonable, but I want a static site generator to spit out HTML, not a web app.
 
 # Hexo
 [Hexo](https://hexo.io/) sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn't investigate Hexo further. I realize this isn't a great reason for not exploring Hexo, but it's the honest truth.

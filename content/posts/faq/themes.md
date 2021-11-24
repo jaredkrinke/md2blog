@@ -4,10 +4,10 @@ date: 2021-10-31
 ---
 Originally, I hadn't planned on making md2blog's theme customizable because theming would readily provide an irresistible distraction from authoring content (and eliminating such distractions is one of the main motivations for md2blog).
 
-But in the end, I decided to make a concession to customization and add support for theming through the following four colors (specified in CSS color names like `cyan` or hex format, e.g. `#ffee88`):
+But in the end, I decided to make a concession to customization and add support for theming through the following four colors (specified in HTML-inspired 6 digit hex format, e.g. `#ffee88`):
 
 * Title (used for the site title)
-* Heading (used for top headings)
+* Heading (used for headings)
 * Link (used for links)
 * Comment (used only in code blocks)
 
@@ -28,4 +28,4 @@ To customize colors, use the `colors.title`, etc. properties in your `site.json`
 }
 ```
 
-I suggest serving the site locally with `npx md2blog --serve` while you play with the values and watch the page automatically reload in your browser.
+I suggest serving the site locally with `md2blog --serve` while you play with the values and watch the page automatically reload in your browser.

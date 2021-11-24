@@ -1,11 +1,10 @@
 ---
 title: A zero-config static site generator for dev blogs
 ---
-# Summary
-Here's the purpose of md2blog:
-
+# What does md2blog do?
 > Convert a *self-contained, organized* set of [Markdown](https://guides.github.com/features/mastering-markdown/) posts into a *minimal, but fully functional* static blog, requiring *zero configuration*.
 
+# How is md2blog different?
 The key differentiator for md2blog is the "self-contained, organized" part. By this, I mean:
 
 * **Relative links between Markdown files (including anchors) "just work"** (and are validated at build time)
@@ -15,19 +14,19 @@ Additionally, the produced site is "minimal, but fully functional" in the follow
 
 * Page templates use **clean, semantic HTML** with only a few kilobytes of CSS (and no JavaScript)
 * **Relative links are used wherever possible**, so the site can be hosted anywhere
-  * The site can even be viewed directly from the file system (**no web server required**)
+  * A local web server with automatic reloading is provided, but the site can even be viewed directly from the file system
 * **Syntax highlighting** is automatically added to code blocks
 * An [Atom](https://validator.w3.org/feed/docs/atom.html) feed is automatically generated
 
 Note that "zero configuration" implies that md2blog is highly opinionated, to the point that there are (almost) no options to configure. **Instead of fiddling with options and themes, your focus is strictly on writing and publishing content.**
 
-# Interested?
-If you've got [Node and NPM](https://nodejs.org/en/download/) installed already, here's how to get started:
+# How do I use md2blog?
+Here's how to get started:
 
 * **[Quick start](quick-start.md)**
 
-# Samples
-Want to see an example site? Here are two web sites built with md2blog:
+# Can I see some examples?
+Here are two web sites that are built using md2blog:
 
 * [My dev blog](https://log.schemescape.com/)
 * [The site you're currently reading](index.md) (which isn't a blog, so not the best example)
