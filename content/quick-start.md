@@ -2,7 +2,48 @@
 title: Quick start
 ---
 # Setup
-TODO
+## Install md2blog
+### Option A: pre-built executable
+First, download the appropriate zip file for your platform from the [md2blog releases page](https://github.com/jaredkrinke/md2blog/releases). Then unzip the binary, and place it somewhere convenient (e.g. somewhere in `PATH`).
+
+### Option B: install script using Deno
+Alternatively, and *only if you have [Deno](https://deno.land/) and are familiar with it*, install the md2blog script (with desired [permissions](posts/faq/permissions.md)) using `deno install`:
+
+```txt
+deno install --allow-read --allow-write --allow-net=localhost https://deno.land/x/md2blog/main.ts
+```
+
+## Create site from template
+After ensuring you can run md2blog (e.g. with `md2blog --help`), it's time to create your site. You can start from scratch (using the information on the rest of this page) or continue reading this section to learn how to use the [md2blog-template-site repository](https://github.com/jaredkrinke/md2blog-template-site).
+
+[Download the zip file](https://github.com/jaredkrinke/md2blog-template-site/archive/refs/heads/main.zip) of the template and extract the files somewhere.
+
+## Customize the site
+The [directory structure for the template site](#directory-structure) is explained later.
+
+Here are some recommended first steps:
+
+1. Update `content/site.json` and edit the `title` and `description` (and optionally add a `url`)
+1. Create directories under `content/posts/` for categories
+1. Create posts as `*.md` Markdown files under the category directories, e.g. `content/posts/misc/first-post.md`
+
+## Build and view the site
+To build and test the site locally (with automatic reloading), run:
+
+```txt
+md2blog --clean --serve
+```
+
+And open a browser to the "localhost" URL that is written to the console. You can kill the server with Ctrl+C.
+
+More details on [building and testing locally](#building-and-testing-locally) are below.
+
+## Read on for more information
+The rest of this page contains more detailed information on how to use md2blog. Feel free to skim it or just use it for reference, as needed.
+
+Additional resources:
+* [FAQ](posts/faq/index.html)
+* [md2blog discussion board](https://github.com/jaredkrinke/md2blog/discussions)
 
 # Concepts
 md2blog reads input from a single **input directory** (`content/`, by default) and writes a static site to an **output directory** (`out/`, by default).
