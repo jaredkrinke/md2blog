@@ -1,20 +1,24 @@
+import {
+    Goldsmith,
+    GoldsmithPlugin,
+    goldsmithJSONMetadata,
+    goldsmithFrontMatter,
+    goldsmithExcludeDrafts,
+    goldsmithFileMetadata,
+    goldsmithIndex,
+    goldsmithCollections,
+    goldsmithInjectFiles,
+    goldsmithMarkdown,
+    goldsmithRootPaths,
+    goldsmithLayout,
+    goldsmithLayoutLiteralHTML,
+    goldsmithWatch,
+    goldsmithServe,
+    goldsmithFeed,
+    goldsmithLinkChecker,
+} from "./deps.ts";
+
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
-import { Goldsmith, GoldsmithPlugin } from "https://deno.land/x/goldsmith@1.0.0/mod.ts";
-import { goldsmithJSONMetadata } from "https://deno.land/x/goldsmith@1.0.0/plugins/json_metadata/mod.ts";
-import { goldsmithFrontMatter } from "https://deno.land/x/goldsmith@1.0.0/plugins/front_matter/mod.ts";
-import { goldsmithExcludeDrafts } from "https://deno.land/x/goldsmith@1.0.0/plugins/exclude_drafts/mod.ts";
-import { goldsmithFileMetadata } from "https://deno.land/x/goldsmith@1.0.0/plugins/file_metadata/mod.ts";
-import { goldsmithIndex } from "https://deno.land/x/goldsmith@1.0.0/plugins/index/mod.ts";
-import { goldsmithCollections } from "https://deno.land/x/goldsmith@1.0.0/plugins/collections/mod.ts";
-import { goldsmithInjectFiles } from "https://deno.land/x/goldsmith@1.0.0/plugins/inject_files/mod.ts";
-import { goldsmithMarkdown } from "https://deno.land/x/goldsmith@1.0.0/plugins/markdown/mod.ts";
-import { goldsmithRootPaths } from "https://deno.land/x/goldsmith@1.0.0/plugins/root_paths/mod.ts";
-import { goldsmithLayout } from "https://deno.land/x/goldsmith@1.0.0/plugins/layout/mod.ts";
-import { goldsmithLayoutLiteralHTML } from "https://deno.land/x/goldsmith@1.0.0/plugins/layout/literal_html.ts";
-import { goldsmithWatch } from "https://deno.land/x/goldsmith@1.0.0/plugins/watch/mod.ts";
-import { goldsmithServe } from "https://deno.land/x/goldsmith@1.0.0/plugins/serve/mod.ts";
-import { goldsmithFeed } from "https://deno.land/x/goldsmith@1.0.0/plugins/feed/mod.ts";
-import { goldsmithLinkChecker } from "https://deno.land/x/goldsmith@1.0.0/plugins/link_checker/mod.ts";
 import { templates, generateCSS } from "./templates.ts";
 // @deno-types="./deps/highlightjs-11.3.1.d.ts"
 import highlightJS from "./deps/highlightjs-11.3.1.js";
@@ -63,46 +67,6 @@ const { clean, drafts, input, output, serve, watch, copyright } = processFlags(D
 if (copyright) {
     console.log(copyrightNotice);
     Deno.exit(0);
-}
-
-declare module "https://deno.land/x/goldsmith@1.0.0/mod.ts" {
-    interface GoldsmithMetadata {
-        site?: {
-            title: string;
-            description?: string;
-            url?: string;
-            colors?: {
-                title?: string;
-                heading?: string;
-                link?: string;
-                comment?: string;
-            };
-        };
-
-        tagsAll?: string[];
-        tagsTop?: string[];
-    }
-
-    interface GoldsmithFile {
-        // Generic post schema
-        title?: string; // Required
-        date?: Date; // Required
-        description?: string;
-        draft?: boolean;
-        keywords?: string[];
-
-        // Derived properties
-        category?: string;
-        tags?: string[];
-
-        // Root properties
-        isRoot?: boolean;
-
-        // Tag index properties
-        tag?: string;
-        isTagIndex?: boolean;
-        postsWithTag?: GoldsmithFile[];
-    }
 }
 
 // Path format for posts: posts/(:category/)postName.md
