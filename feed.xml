@@ -6,7 +6,7 @@
 <author>
 <name>md2blog</name>
 </author>
-<updated>2021-11-26T18:54:50.475Z</updated>
+<updated>2021-11-26T21:10:04.759Z</updated>
 
 <entry>
 <title>How do I get support or report bugs?</title>
@@ -106,7 +106,18 @@ Options:
   --copyright         Display open source software copyright notices
   -h, -?, --help      Display usage information
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that &lt;code&gt;--serve&lt;/code&gt; implies &lt;code&gt;--watch&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Note that &lt;code&gt;--serve&lt;/code&gt; implies &lt;code&gt;--watch&lt;/code&gt;. Also note that &lt;code&gt;--serve&lt;/code&gt; does &lt;em&gt;not&lt;/em&gt; affect the build output (the automatic reloading code is injected by the test web server, and is not present in the files on disk).&lt;/p&gt;
+&lt;h1 id=&quot;recommended-options&quot;&gt;Recommended options&lt;/h1&gt;
+&lt;p&gt;Here are some recommended command lines:&lt;/p&gt;
+&lt;h2 id=&quot;for-local-testing-no-drafts&quot;&gt;For local testing (no drafts)&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean --serve
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;for-local-testing-with-drafts&quot;&gt;For local testing (with drafts)&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean --serve --drafts
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&quot;for-building-without-serving&quot;&gt;For building (without serving)&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean
+&lt;/code&gt;&lt;/pre&gt;
 </content>
 </entry>
 <entry>

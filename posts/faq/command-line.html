@@ -36,7 +36,18 @@ Options:
   --copyright         Display open source software copyright notices
   -h, -?, --help      Display usage information
 </code></pre>
-<p>Note that <code>--serve</code> implies <code>--watch</code>.</p>
+<p>Note that <code>--serve</code> implies <code>--watch</code>. Also note that <code>--serve</code> does <em>not</em> affect the build output (the automatic reloading code is injected by the test web server, and is not present in the files on disk).</p>
+<h1 id="recommended-options">Recommended options</h1>
+<p>Here are some recommended command lines:</p>
+<h2 id="for-local-testing-no-drafts">For local testing (no drafts)</h2>
+<pre><code class="language-txt">md2blog --clean --serve
+</code></pre>
+<h2 id="for-local-testing-with-drafts">For local testing (with drafts)</h2>
+<pre><code class="language-txt">md2blog --clean --serve --drafts
+</code></pre>
+<h2 id="for-building-without-serving">For building (without serving)</h2>
+<pre><code class="language-txt">md2blog --clean
+</code></pre>
 
 <footer>
 <p><a href="../../index.html">Back to home</a></p>

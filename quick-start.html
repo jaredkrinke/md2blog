@@ -34,7 +34,7 @@
 <ol>
 <li>Update <code>content/site.json</code> and edit the <code>title</code> and <code>description</code> (and optionally add a <code>url</code>)</li>
 <li>Create directories under <code>content/posts/</code> for categories</li>
-<li>Create posts as <code>*.md</code> Markdown files under the category directories, e.g. <code>content/posts/misc/first-post.md</code></li>
+<li>Create posts as <code>*.md</code> Markdown files under the category directories, e.g. <code>content/posts/misc/first-post.md</code> (see <a href="#front-matter">below</a> for the metadata format)</li>
 </ol>
 <h2 id="build-and-view-the-site">Build and view the site</h2>
 <p>To build and test the site locally (with automatic reloading), run:</p>
@@ -209,12 +209,13 @@ const add = (a, b) =&gt; a + b;
 <p>You can also test using a local web server that will automatically regenerate and reload pages when you save content files to disk using this command:</p>
 <pre><code class="language-sh">md2blog --serve
 </code></pre>
+<h2 id="command-line-options">Command line options</h2>
+<p>For more details on command line options, see <a href="posts/faq/command-line.html">this FAQ entry</a>.</p>
 <h1 id="publishing">Publishing</h1>
 <p>md2blog doesn&#39;t have any built-in support for publishing sites, but all that&#39;s required is copying everything from <code>out/</code> to your web root.</p>
 <h2 id="publishing-to-github-pages">Publishing to GitHub pages</h2>
 <p>If you&#39;re planning to publish to <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages">GitHub Pages</a>, here&#39;s an example:</p>
 <ol>
-<li>Set up GitHub pages to publish from some branch, e.g. <code>web</code></li>
 <li>Build your site with <code>md2blog --clean</code></li>
 <li>Initialize Git in <code>out/</code> and upload for the first time:</li>
 </ol>
@@ -235,6 +236,7 @@ git commit -m <span class="hljs-string">&quot;Update site&quot;</span>
 git push
 <span class="hljs-built_in">cd</span> ..
 </code></pre>
+<p>Finally, set up GitHub Pages on your repository to publish from the appropriate branch/directory (the &quot;web&quot; branch, in this example).</p>
 <p>Note that if you want to use a custom domain, just follow <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site">GitHub&#39;s custom domain directions</a> and then plop your <code>CNAME</code> file in the <code>content/</code> directory prior to building your site.</p>
 <h1 id="now-go-build-your-dev-blog">Now go build your dev blog!</h1>
 <p>That&#39;s all there is to md2blog. There&#39;s no need to worry about themes or plugins. Just start writing!</p>
