@@ -15,4 +15,22 @@ Options:
   -h, -?, --help      Display usage information
 ```
 
-Note that `--serve` implies `--watch`.
+Note that `--serve` implies `--watch`. Also note that `--serve` does *not* affect the build output (the automatic reloading code is injected by the test web server, and is not present in the files on disk).
+
+# Recommended options
+Here are some recommended command lines:
+
+## For local testing (no drafts)
+```txt
+md2blog --clean --serve
+```
+
+## For local testing (with drafts)
+```txt
+md2blog --clean --serve --drafts
+```
+
+## For building (without serving)
+```txt
+md2blog --clean
+```
