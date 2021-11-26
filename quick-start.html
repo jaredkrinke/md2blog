@@ -18,7 +18,37 @@
 <main>
 <article>
 <h1 id="setup">Setup</h1>
-<p>TODO</p>
+<h2 id="install-md2blog">Install md2blog</h2>
+<h3 id="option-a-pre-built-executable">Option A: pre-built executable</h3>
+<p>First, download the appropriate zip file for your platform from the <a href="https://github.com/jaredkrinke/md2blog/releases">md2blog releases page</a>. Then unzip the binary, and place it somewhere convenient (e.g. somewhere in <code>PATH</code>).</p>
+<h3 id="option-b-install-script-using-deno">Option B: install script using Deno</h3>
+<p>Alternatively, and <em>only if you have <a href="https://deno.land/">Deno</a> and are familiar with it</em>, install the md2blog script (with desired <a href="posts/faq/permissions.html">permissions</a>) using <code>deno install</code>:</p>
+<pre><code class="language-txt">deno install --allow-read --allow-write --allow-net=localhost https://deno.land/x/md2blog/main.ts
+</code></pre>
+<h2 id="create-site-from-template">Create site from template</h2>
+<p>After ensuring you can run md2blog (e.g. with <code>md2blog --help</code>), it&#39;s time to create your site. You can start from scratch (using the information on the rest of this page) or continue reading this section to learn how to use the <a href="https://github.com/jaredkrinke/md2blog-template-site">md2blog-template-site repository</a>.</p>
+<p><a href="https://github.com/jaredkrinke/md2blog-template-site/archive/refs/heads/main.zip">Download the zip file</a> of the template and extract the files somewhere.</p>
+<h2 id="customize-the-site">Customize the site</h2>
+<p>The <a href="#directory-structure">directory structure for the template site</a> is explained later.</p>
+<p>Here are some recommended first steps:</p>
+<ol>
+<li>Update <code>content/site.json</code> and edit the <code>title</code> and <code>description</code> (and optionally add a <code>url</code>)</li>
+<li>Create directories under <code>content/posts/</code> for categories</li>
+<li>Create posts as <code>*.md</code> Markdown files under the category directories, e.g. <code>content/posts/misc/first-post.md</code></li>
+</ol>
+<h2 id="build-and-view-the-site">Build and view the site</h2>
+<p>To build and test the site locally (with automatic reloading), run:</p>
+<pre><code class="language-txt">md2blog --clean --serve
+</code></pre>
+<p>And open a browser to the &quot;localhost&quot; URL that is written to the console. You can kill the server with Ctrl+C.</p>
+<p>More details on <a href="#building-and-testing-locally">building and testing locally</a> are below.</p>
+<h2 id="read-on-for-more-information">Read on for more information</h2>
+<p>The rest of this page contains more detailed information on how to use md2blog. Feel free to skim it or just use it for reference, as needed.</p>
+<p>Additional resources:</p>
+<ul>
+<li><a href="posts/faq/index.html">FAQ</a></li>
+<li><a href="https://github.com/jaredkrinke/md2blog/discussions">md2blog discussion board</a></li>
+</ul>
 <h1 id="concepts">Concepts</h1>
 <p>md2blog reads input from a single <strong>input directory</strong> (<code>content/</code>, by default) and writes a static site to an <strong>output directory</strong> (<code>out/</code>, by default).</p>
 <p>The input directory contains <strong>site metadata</strong>, <strong>posts</strong>, <strong>pages</strong>, and <strong>static assets</strong>:</p>
@@ -80,7 +110,7 @@
 <td><code>url</code></td>
 <td>string</td>
 <td>Recommended</td>
-<td>Must end with &quot;/&quot;</td>
+<td></td>
 </tr>
 <tr>
 <td><code>description</code></td>

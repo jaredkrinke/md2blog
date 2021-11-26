@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>md2blog: Why is the download so big?</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="../../css/style.css" />
+
+</head>
+<body>
+<header>
+<h1><a href="../../index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+<nav>
+<ul>
+<li><a href="../../posts/faq/index.html">faq</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<article>
+<header>
+<h1><a href="../../posts/faq/download-size.html">Why is the download so big?</a></h1>
+<p><time datetime="2021-10-28">October 28, 2021</time></p>
+</header>
+<p>md2blog is built on <a href="https://deno.land/">Deno</a> and written in TypeScript. For ease of installation, the pre-built, all-in-one compiled executable includes a complete JavaScript runtime. This runtime makes up the bulk of the download (and it is redundant if you already have Deno installed).</p>
+<p>If Deno is already installed, md2blog can simply be run (or installed/cached) from deno.land/x (using <code>deno run</code> or <code>deno install</code>, with appropriate <a href="permissions.html">permission flags</a>), at which point the download is around 2 MB (most of which is syntax highlighting code). See the <a href="../../quick-start.html#setup">quick start</a> for an example <code>deno install</code> command line.</p>
+
+<footer>
+<p><a href="../../index.html">Back to home</a></p>
+</footer>
+</article>
+</main>
+</body>
+</html>

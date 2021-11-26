@@ -6,10 +6,10 @@
 <author>
 <name>md2blog</name>
 </author>
-<updated>2021-11-24T04:33:52.986Z</updated>
+<updated>2021-11-26T18:54:50.475Z</updated>
 
 <entry>
-<title>How do I get support or report bugs?}</title>
+<title>How do I get support or report bugs?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20get%20support%20or%20report%20bugs%3F</id>
 <link rel="alternate" href="posts/faq/support.html"/>
 <updated>2021-11-02T00:00:00.000Z</updated>
@@ -27,7 +27,7 @@
 </content>
 </entry>
 <entry>
-<title>Why not just use X instead?}</title>
+<title>Why not just use X instead?</title>
 <id>urn:md2blog:md2blog:Why%20not%20just%20use%20X%20instead%3F</id>
 <link rel="alternate" href="posts/faq/alternatives.html"/>
 <updated>2021-11-01T00:00:00.000Z</updated>
@@ -40,27 +40,27 @@
 &lt;li&gt;No support for implicit categorization&lt;/li&gt;
 &lt;li&gt;No relative link checking at build time&lt;/li&gt;
 &lt;li&gt;Unintuitive/verbose template languages&lt;/li&gt;
-&lt;li&gt;Requires installing new language runtimes&lt;/li&gt;
+&lt;li&gt;Requiring a huge runtime I didn&amp;#39;t want to install&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Here are some specific notes on popular SSGs:&lt;/p&gt;
 &lt;h1 id=&quot;jekyll&quot;&gt;Jekyll&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; is probably the closest to what I was looking for, but I had no interest in setting up a Ruby environment or learning about the language (in case I needed to author my own plugins). I also didn&amp;#39;t like the verbose syntax of the &lt;a href=&quot;https://shopify.github.io/liquid/&quot;&gt;Liquid&lt;/a&gt; template language.&lt;/p&gt;
 &lt;h1 id=&quot;hugo&quot;&gt;Hugo&lt;/h1&gt;
-&lt;p&gt;Given that &lt;a href=&quot;https://gohugo.io/&quot;&gt;Hugo&lt;/a&gt; is broadly used and ships in a single binary, I thought I would end up using Hugo, but it was too general, and I wanted something with out-of-the-box support for a dev blog. Hugo&amp;#39;s template language was also the most unintuitive template language I&amp;#39;ve ever seen.&lt;/p&gt;
+&lt;p&gt;Given that &lt;a href=&quot;https://gohugo.io/&quot;&gt;Hugo&lt;/a&gt; is broadly used and ships in a convenient single binary, I thought I would end up using Hugo. Unfortunately, it was &lt;em&gt;too&lt;/em&gt; general, and it wasn&amp;#39;t obvious how to go from a blank repository to a dev blog. Hugo&amp;#39;s template language was also the most unintuitive template language I ran across during my research.&lt;/p&gt;
 &lt;h1 id=&quot;pelican&quot;&gt;Pelican&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://blog.getpelican.com/&quot;&gt;Pelican&lt;/a&gt; sounds like &amp;quot;Jekyll in Python&amp;quot;, but I honestly didn&amp;#39;t seriously consider it because I&amp;#39;ve had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I&amp;#39;m in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.getpelican.com/&quot;&gt;Pelican&lt;/a&gt; seems like &amp;quot;Jekyll in Python&amp;quot;, but I honestly didn&amp;#39;t seriously consider it because I&amp;#39;ve had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I&amp;#39;m in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.&lt;/p&gt;
 &lt;h1 id=&quot;eleventy&quot;&gt;Eleventy&lt;/h1&gt;
 &lt;p&gt;I actually started out using &lt;a href=&quot;https://www.11ty.dev/&quot;&gt;Eleventy&lt;/a&gt; because it was very simple and easy to understand, but I ended up preferring &lt;a href=&quot;https://metalsmith.io/&quot;&gt;Metalsmith&lt;/a&gt; (on which md2blog was originally built) because Metalsmith was &lt;em&gt;even simpler&lt;/em&gt;, to the point that I could easily understand everything it was doing, instead of having to guess.&lt;/p&gt;
 &lt;h1 id=&quot;metalsmith&quot;&gt;Metalsmith&lt;/h1&gt;
-&lt;p&gt;I originally used &lt;a href=&quot;https://metalsmith.io/&quot;&gt;Metalsmith&lt;/a&gt; for md2blog, but the dependency tree quickly grew out of control and recent security incidents made me wary of using so many packages off of NPM.&lt;/p&gt;
+&lt;p&gt;I originally used &lt;a href=&quot;https://metalsmith.io/&quot;&gt;Metalsmith&lt;/a&gt; for md2blog, but the dependency tree quickly grew out of control and recent security incidents on NPM made me wary of using so many packages from contributors I didn&amp;#39;t trust.&lt;/p&gt;
 &lt;h1 id=&quot;gatsby&quot;&gt;Gatsby&lt;/h1&gt;
-&lt;p&gt;Honestly, I dislike &lt;a href=&quot;https://www.gatsbyjs.com/&quot;&gt;Gatsby&lt;/a&gt;, and pretty much any other &amp;quot;static&amp;quot; site generator that runs a bunch of client JavaScript to hopefully speed up subsequent page loads. Perhaps I&amp;#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.&lt;/p&gt;
+&lt;p&gt;I wasn&amp;#39;t interested in &lt;a href=&quot;https://www.gatsbyjs.com/&quot;&gt;Gatsby&lt;/a&gt; because I don&amp;#39;t want to run a bunch of client JavaScript to hopefully speed up subsequent page loads. Perhaps I&amp;#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.&lt;/p&gt;
 &lt;h1 id=&quot;hexo&quot;&gt;Hexo&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt; sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn&amp;#39;t investigate Hexo further. I realize this isn&amp;#39;t a great reason for not exploring Hexo, but it&amp;#39;s the honest truth.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt; sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn&amp;#39;t investigate Hexo further. I realize this isn&amp;#39;t a great reason for skipping Hexo.&lt;/p&gt;
 </content>
 </entry>
 <entry>
-<title>How do I customize the theme?}</title>
+<title>How do I customize the theme?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20customize%20the%20theme%3F</id>
 <link rel="alternate" href="posts/faq/themes.html"/>
 <updated>2021-10-31T00:00:00.000Z</updated>
@@ -90,7 +90,7 @@
 </content>
 </entry>
 <entry>
-<title>What are all the command line options?}</title>
+<title>What are all the command line options?</title>
 <id>urn:md2blog:md2blog:What%20are%20all%20the%20command%20line%20options%3F</id>
 <link rel="alternate" href="posts/faq/command-line.html"/>
 <updated>2021-10-30T00:00:00.000Z</updated>
@@ -110,13 +110,13 @@ Options:
 </content>
 </entry>
 <entry>
-<title>How do I add Google Analytics to my site?}</title>
-<id>urn:md2blog:md2blog:How%20do%20I%20add%20Google%20Analytics%20to%20my%20site%3F</id>
-<link rel="alternate" href="posts/faq/tracking.html"/>
-<updated>2021-10-26T00:00:00.000Z</updated>
+<title>Why is the download so big?</title>
+<id>urn:md2blog:md2blog:Why%20is%20the%20download%20so%20big%3F</id>
+<link rel="alternate" href="posts/faq/download-size.html"/>
+<updated>2021-10-28T00:00:00.000Z</updated>
 
-<content type="html">&lt;p&gt;md2blog has no built-in support for adding trackers to sites it generates, and there are no plans to add such support.&lt;/p&gt;
-&lt;p&gt;Frankly, as a reader, I&amp;#39;d prefer that you not add invasive tracking to your site. &lt;a href=&quot;https://www.goatcounter.com/&quot;&gt;GoatCounter&lt;/a&gt; might be fine.&lt;/p&gt;
+<content type="html">&lt;p&gt;md2blog is built on &lt;a href=&quot;https://deno.land/&quot;&gt;Deno&lt;/a&gt; and written in TypeScript. For ease of installation, the pre-built, all-in-one compiled executable includes a complete JavaScript runtime. This runtime makes up the bulk of the download (and it is redundant if you already have Deno installed).&lt;/p&gt;
+&lt;p&gt;If Deno is already installed, md2blog can simply be run (or installed/cached) from deno.land/x (using &lt;code&gt;deno run&lt;/code&gt; or &lt;code&gt;deno install&lt;/code&gt;, with appropriate &lt;a href=&quot;posts/faq/permissions.html&quot;&gt;permission flags&lt;/a&gt;), at which point the download is around 2 MB (most of which is syntax highlighting code). See the &lt;a href=&quot;posts/faq/../../quick-start.html#setup&quot;&gt;quick start&lt;/a&gt; for an example &lt;code&gt;deno install&lt;/code&gt; command line.&lt;/p&gt;
 </content>
 </entry>
 </feed>
