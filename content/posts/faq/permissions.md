@@ -26,5 +26,7 @@ Note that md2blog must be able to both read and write to the output directory, s
 As an example, the following `deno install` command will limit file system access to only the default "content" (input) and "out" (output) directories (and `--serve` will be supported on "localhost"):
 
 ```txt
-deno install --allow-read=content,out --allow-write=out --allow-net=localhost <path to md2blog/mod.ts>
+deno install --allow-read=content,out --allow-write=out --allow-net=localhost https://deno.land/x/md2blog/main.ts
 ```
+
+Note that you can download a specific version or specify a version in the URL to ensure you get a particular version.
