@@ -14,7 +14,9 @@ deno install --allow-read --allow-write --allow-net=localhost https://deno.land/
 ```
 
 ## Create site from template
-After ensuring you can run md2blog (e.g. with `md2blog --help`), it's time to create your site. You can start from scratch (using the information on the rest of this page) or continue reading this section to learn how to use the [md2blog-template-site repository](https://github.com/jaredkrinke/md2blog-template-site).
+After ensuring you can run md2blog (e.g. with `md2blog --help`), it's time to create your site (if md2blog doesn't run, check the [FAQ for likely problems](posts/faq/common-problems.md)).
+
+You can start from scratch (using the information on the rest of this page) or continue reading this section to learn how to use the [md2blog-template-site repository](https://github.com/jaredkrinke/md2blog-template-site).
 
 [Download the zip file](https://github.com/jaredkrinke/md2blog-template-site/archive/refs/heads/main.zip) of the template and extract the files somewhere.
 
