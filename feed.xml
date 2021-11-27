@@ -6,8 +6,32 @@
 <author>
 <name>md2blog</name>
 </author>
-<updated>2021-11-26T21:10:04.759Z</updated>
+<updated>2021-11-27T20:09:16.062Z</updated>
 
+<entry>
+<title>What is causing this error?</title>
+<id>urn:md2blog:md2blog:What%20is%20causing%20this%20error%3F</id>
+<link rel="alternate" href="posts/faq/common-problems.html"/>
+<updated>2021-11-27T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;Here are some issues that may be common:&lt;/p&gt;
+&lt;h1 id=&quot;permission-denied-error-when-running-on-linux&quot;&gt;&amp;quot;Permission denied&amp;quot; error when running on Linux&lt;/h1&gt;
+&lt;p&gt;Ensure that &lt;code&gt;md2blog&lt;/code&gt; is executable (if not: &lt;code&gt;chmod +x md2blog&lt;/code&gt;).&lt;/p&gt;
+&lt;h1 id=&quot;content-not-found-error&quot;&gt;&amp;quot;content&amp;quot; not found error&lt;/h1&gt;
+&lt;p&gt;By default, md2blog reads from an input directory named &amp;quot;content&amp;quot;. You can change the input directory using &lt;a href=&quot;posts/faq/command-line.html&quot;&gt;command line options&lt;/a&gt; (namely &lt;code&gt;--input&lt;/code&gt;).&lt;/p&gt;
+&lt;h1 id=&quot;sitejson-not-found-error&quot;&gt;&amp;quot;site.json&amp;quot; not found error&lt;/h1&gt;
+&lt;p&gt;md2blog reads the site title (and optional description/URL/theme) from &lt;code&gt;content/site.json&lt;/code&gt;. See the &lt;a href=&quot;posts/faq/../../quick-start.html#setup&quot;&gt;quick start&lt;/a&gt; for more details.&lt;/p&gt;
+&lt;h1 id=&quot;my-site-built-fine-before-but-now-its-not-building-anything&quot;&gt;My site built fine before, but now it&amp;#39;s not building anything&lt;/h1&gt;
+&lt;p&gt;Check the console output to see if there is a message about broken relative links, e.g.:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;Error: The site has broken relative links:
+
+From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick-start.html#Setup&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you&amp;#39;re running with &lt;code&gt;--clean&lt;/code&gt; and there is a broken relative link, the build is aborted &lt;em&gt;after&lt;/em&gt; the output directory is cleaned, so the output directory will be empty. Just fix the broken link and rebuild.&lt;/p&gt;
+&lt;h1 id=&quot;i-hit-some-other-error-not-listed-here&quot;&gt;I hit some other error not listed here&lt;/h1&gt;
+&lt;p&gt;Consult the FAQ entry on &lt;a href=&quot;posts/faq/support.html&quot;&gt;general support info&lt;/a&gt;. It contains links to the discussion board and issue tracker.&lt;/p&gt;
+</content>
+</entry>
 <entry>
 <title>How do I get support or report bugs?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20get%20support%20or%20report%20bugs%3F</id>
@@ -118,16 +142,6 @@ Options:
 &lt;h2 id=&quot;for-building-without-serving&quot;&gt;For building (without serving)&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean
 &lt;/code&gt;&lt;/pre&gt;
-</content>
-</entry>
-<entry>
-<title>Why is the download so big?</title>
-<id>urn:md2blog:md2blog:Why%20is%20the%20download%20so%20big%3F</id>
-<link rel="alternate" href="posts/faq/download-size.html"/>
-<updated>2021-10-28T00:00:00.000Z</updated>
-
-<content type="html">&lt;p&gt;md2blog is built on &lt;a href=&quot;https://deno.land/&quot;&gt;Deno&lt;/a&gt; and written in TypeScript. For ease of installation, the pre-built, all-in-one compiled executable includes a complete JavaScript runtime. This runtime makes up the bulk of the download (and it is redundant if you already have Deno installed).&lt;/p&gt;
-&lt;p&gt;If Deno is already installed, md2blog can simply be run (or installed/cached) from deno.land/x (using &lt;code&gt;deno run&lt;/code&gt; or &lt;code&gt;deno install&lt;/code&gt;, with appropriate &lt;a href=&quot;posts/faq/permissions.html&quot;&gt;permission flags&lt;/a&gt;), at which point the download is around 2 MB (most of which is syntax highlighting code). See the &lt;a href=&quot;posts/faq/../../quick-start.html#setup&quot;&gt;quick start&lt;/a&gt; for an example &lt;code&gt;deno install&lt;/code&gt; command line.&lt;/p&gt;
 </content>
 </entry>
 </feed>
