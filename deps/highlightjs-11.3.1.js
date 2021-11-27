@@ -1,4 +1,4 @@
-var exports = {
+var HighlightJS1 =  (() => { var exports = {
 };
 var deepFreezeEs6 = {
     exports: {
@@ -46587,6 +46587,7 @@ hljs.registerLanguage("zephir", _zephir);
 hljs.HighlightJS = hljs;
 hljs.default = hljs;
 exports192 = hljs;
-var HighlightJS1 = exports192;
+return exports192;
+})();
 export { HighlightJS1 as HighlightJS, HighlightJS1 as default };
 
