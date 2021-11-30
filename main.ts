@@ -170,7 +170,7 @@ await Goldsmith()
     }))
     .use(goldsmithInjectFiles({
         "css/style.css": {
-            data: (metadata) => generateCSS(metadata.site!.colors ?? {}),
+            data: (metadata) => generateCSS(metadata.site?.colors ?? {}),
         },
     }))
     .use(goldsmithMarkdown({
