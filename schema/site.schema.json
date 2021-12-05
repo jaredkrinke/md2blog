@@ -1,0 +1,52 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Site Metadata",
+    "description": "Format for md2blog site metadata file (site.json).",
+    "type": "object",
+    "$defs": {
+        "hexColor": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+    },
+    "properties": {
+        "title": {
+            "description": "Title for the site (displayed at the top of every page).",
+            "type": "string"
+        },
+        "description": {
+            "description": "Optional (but recommended) description of the site (used in meta tags and also used as the default subtitle on all pages).",
+            "type": "string"
+        },
+        "url": {
+            "description": "Optional (but recommended) URL for the root of the site (used in Atom feed and Open Graph links).",
+            "type": "string"
+        },
+        "colors": {
+            "description": "Optional object specifying colors to use on the site. Note that all colors are reused for syntax highlighting.",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "description": "Color used for the site title.",
+                    "$ref": "#/$defs/hexColor"
+                },
+                "heading": {
+                    "description": "Color used for headings.",
+                    "$ref": "#/$defs/hexColor"
+                },
+                "link": {
+                    "description": "Color used links.",
+                    "$ref": "#/$defs/hexColor"
+                },
+                "comment": {
+                    "description": "Color used only for syntax highlighting (generally for comments).",
+                    "$ref": "#/$defs/hexColor"
+                }
+            }
+        }
+    },
+    "required": [
+        "title"
+    ],
+    "additionalProperties": false
+}

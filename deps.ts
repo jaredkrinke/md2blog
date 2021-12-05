@@ -1,3 +1,6 @@
+import type { SiteMetadata } from "./schema/site.d.ts";
+export type { SiteMetadata };
+export { validate as validateSiteMetadata } from "./schema/site.validate.js";
 export { Goldsmith } from "https://deno.land/x/goldsmith@1.1.1/mod.ts";
 export type { GoldsmithPlugin, GoldsmithFile } from "https://deno.land/x/goldsmith@1.1.1/mod.ts";
 export { goldsmithJSONMetadata } from "https://deno.land/x/goldsmith@1.1.1/plugins/json_metadata/mod.ts";
@@ -19,18 +22,7 @@ export { goldsmithLinkChecker } from "https://deno.land/x/goldsmith@1.1.1/plugin
 
 declare module "https://deno.land/x/goldsmith@1.1.1/mod.ts" {
     interface GoldsmithMetadata {
-        site?: {
-            title: string;
-            description?: string;
-            url?: string;
-            colors?: {
-                title?: string;
-                heading?: string;
-                link?: string;
-                comment?: string;
-            };
-        };
-
+        site?: SiteMetadata;
         tagsAll?: string[];
         tagsTop?: string[];
     }

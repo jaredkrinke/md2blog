@@ -16,6 +16,7 @@ import {
     goldsmithServe,
     goldsmithFeed,
     goldsmithLinkChecker,
+    validateSiteMetadata,
 } from "./deps.ts";
 
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
@@ -80,6 +81,15 @@ await Goldsmith()
     .destination(output)
     .clean(clean)
     .use(goldsmithJSONMetadata({ "site.json": "site" }))
+    .use((_files, goldsmith) => {
+        // Validate site.json
+        try {
+            validateSiteMetadata(goldsmith.metadata().site)
+        } catch (error) {
+            console.log("Error validating site.json:");
+            throw error;
+        }
+    })
     .use(goldsmithFrontMatter())
     .use(drafts ? noop : goldsmithExcludeDrafts())
     .use(goldsmithFileMetadata({
