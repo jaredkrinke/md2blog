@@ -10,6 +10,10 @@
         }
     },
     "properties": {
+        "$schema": {
+            "description": "Optional JSON schema URI (ignored by md2blog, but can be used by text editors to support contextual hints and auto-complete).",
+            "type": "string"
+        },
         "title": {
             "description": "Title for the site (displayed at the top of every page).",
             "type": "string"
@@ -43,10 +47,19 @@
                     "$ref": "#/$defs/hexColor"
                 }
             }
+        },
+        "footer": {
+            "description": "Optional footer, e.g. for copyright notices (added to all pages).",
+            "type": "object",
+            "properties": {
+                "text": {
+                    "description": "Text to be shown in the footer (e.g. copyright notice).",
+                    "type": "string"
+                }
+            }
         }
     },
     "required": [
         "title"
-    ],
-    "additionalProperties": false
+    ]
 }

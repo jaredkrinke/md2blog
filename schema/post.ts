@@ -25,15 +25,6 @@ export function parse(json: any): PostMetadata {
     for (const [jsonKey, jsonValue] of Object.entries(json as Record<string, any>)) {
         jsonResultObject[jsonKey] = (() => {
             switch (jsonKey) {
-                case "$schema": {
-                    
-                    if (typeof(jsonValue) !== "string") {
-                        throw `JSON validation error at "$schema": expected string, but encountered ${typeof(jsonValue)}`;
-                    }
-                    return jsonValue;
-                    
-                }
-                
                 case "title": {
                     
                     ++jsonRequiredPropertyCount;

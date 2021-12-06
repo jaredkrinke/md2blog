@@ -4,6 +4,8 @@ export type HexColor = string;
 
 /** Format for md2blog site metadata file (site.json). */
 export interface SiteMetadata {
+    /** Optional JSON schema URI (ignored by md2blog, but can be used by text editors to support contextual hints and auto-complete). */
+    $schema?: string;
     /** Title for the site (displayed at the top of every page). */
     title: string;
     /** Optional (but recommended) description of the site (used in meta tags and also used as the default subtitle on all pages). */
@@ -20,6 +22,11 @@ export interface SiteMetadata {
         link?: HexColor;
         /** Color used only for syntax highlighting (generally for comments). */
         comment?: HexColor;
+    };
+    /** Optional footer, e.g. for copyright notices (added to all pages). */
+    footer?: {
+        /** Text to be shown in the footer (e.g. copyright notice). */
+        text?: string;
     };
 }
 
@@ -137,9 +144,40 @@ export function parse(json: any): SiteMetadata {
                     
                 }
                 
-                default: {
-                    throw `JSON validation error at root: encountered unexpected property: ${jsonKey}`;
+                case "footer": {
+                    
+                    if (jsonValue === null) {
+                        throw `JSON validation error at "footer": expected object, but encountered null`;
+                    } else if (typeof(jsonValue) !== "object") {
+                        throw `JSON validation error at "footer": expected object, but encountered ${typeof(jsonValue)}`;
+                    } else if (Array.isArray(jsonValue)) {
+                        throw `JSON validation error at "footer": expected object, but encountered an array`;
+                    }
+                    
+                    // deno-lint-ignore no-explicit-any
+                    const jsonValueResultObject: any = {};
+                    // deno-lint-ignore no-explicit-any
+                    for (const [jsonValueKey, jsonValueValue] of Object.entries(jsonValue as Record<string, any>)) {
+                        jsonValueResultObject[jsonValueKey] = (() => {
+                            switch (jsonValueKey) {
+                                case "text": {
+                                    
+                                    if (typeof(jsonValueValue) !== "string") {
+                                        throw `JSON validation error at "footer.text": expected string, but encountered ${typeof(jsonValueValue)}`;
+                                    }
+                                    return jsonValueValue;
+                                    
+                                }
+                                
+                                
+                            }
+                        })();
+                    }
+                    return jsonValueResultObject;
+                    
                 }
+                
+                
             }
         })();
     }

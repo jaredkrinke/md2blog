@@ -44,10 +44,12 @@ body > header > h1 { margin-bottom: 0.25em; }
 body > header > p { margin-top: 0.25em; }
 
 nav { display: flex; flex-direction: row; justify-content: center; }
-nav > ul { margin: 0; padding: 0 0 0 0.5em; display: inline; }
+nav > ul { display: inline; padding: 0; }
 nav > ul > li { display: inline; }
-nav > ul > li:first-child:before { content: "Topics: "; }
 nav > ul > li + li:before { content: " | "; }
+header > nav > ul { margin: 0; }
+header > nav > ul > li:first-child:before { content: "Topics: "; }
+footer > nav > ul { margin-bottom: 0; }
 
 body > header > h1 > a {
     font-size: 1.75rem;
@@ -56,7 +58,6 @@ body > header > h1 > a {
 
 article > header > h1 { margin-bottom: 0.25em; }
 article > header > p { margin-top: 0em; }
-main footer { margin-top: 1em; }
 
 main { overflow: auto; }
 pre { overflow: auto; }
@@ -85,7 +86,7 @@ h5 { font-size: 1rem; font-weight: normal; }
 
 body { background-color: @background; }
 * { color: @textDefault; }
-main footer { border-top: 1px solid @backgroundLightest; }
+body > main { border-bottom: 1px solid @backgroundLightest; }
 th { background-color: @backgroundLightest; color: @textLight; }
 pre, table, th, tr, td { border-color: @border; }
 pre { background-color: @backgroundLighter; }
@@ -254,6 +255,9 @@ ${{verbatim: navigationVerbatim ? navigationVerbatim : ""}}
 <main>
 ${{verbatim: mainVerbatim}}
 </main>
+${{verbatim: m.site?.footer ? html`<footer>
+${{verbatim: m.site.footer.text ? html`<p>${m.site.footer.text}</p>` : ""}}
+</footer>` : ""}}
 </body>
 </html>
 `;
@@ -322,7 +326,7 @@ ${{verbatim: partialDate(m.date!)}}
 </header>
 ${{verbatim: content}}
 <footer>
-<p><a href="${m.pathToRoot!}index.html">Back to home</a></p>
+<p>&crarr; <a href="${m.pathToRoot!}index.html">Back to home</a></p>
 </footer>
 </article>`,
     partialNavigation(m, m.tags!)
@@ -336,7 +340,7 @@ const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partia
     },
     html`${{verbatim: partialArticleSummaryList(m, m.collections!.postsRecent!)}}
 <footer>
-<p><a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
+<p>&rarr; <a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>`,
     partialNavigation(m, m.tagsTop!, m.tagsTop!.length !== m.tagsAll!.length)
 );
