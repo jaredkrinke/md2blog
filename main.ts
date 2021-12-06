@@ -16,6 +16,7 @@ import {
     goldsmithServe,
     goldsmithFeed,
     goldsmithLinkChecker,
+    validatePostMetadata,
     validateSiteMetadata,
 } from "./deps.ts";
 
@@ -98,23 +99,14 @@ await Goldsmith()
     }))
     .use(goldsmithFileMetadata({
         pattern: postPathPattern,
-        metadata: (file, _matches) => {
-            // Verify required properties
-            const requiredProperties = [
-                { required: true, key: "title", validate: (o: unknown) => (typeof(o) === "string") },
-                { required: true, key: "date", validate: (o: unknown) => (o instanceof Date) },
-                { required: false, key: "keywords", validate: (o: unknown) => (o === undefined || Array.isArray(o)) },
-                { required: false, key: "description", validate: (o: unknown) => (o === undefined || typeof(o) === "string") },
-                { required: false, key: "draft", validate: (o: unknown) => (o === undefined || typeof(o) === "boolean") },
-            ];
-
-            for (const row of requiredProperties) {
-                const value = (file as unknown as Record<string, unknown>)[row.key];
-                if (!row.validate(value)) {
-                    throw `${row.required ? "Required" : "Optional"} property is "${row.key}" ${row.required ? "missing or " : ""}invalid on "${file.originalFilePath}" (value: ${(typeof(value) === "string") ? `"${value}"` : `${value}` })`;
-                }
+        metadata: (file, matches) => {
+            // Verify post metadata
+            try {
+                validatePostMetadata(file);
+            } catch (error) {
+                console.log(`Error validating ${matches[0]}:`);
+                throw error;
             }
-
             return {};
         },
     }))

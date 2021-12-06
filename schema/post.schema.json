@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Post Metadata",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "date": {
+            "type": "string",
+            "format": "date"
+        },
+        "keywords": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "description": {
+            "type": "string"
+        },
+        "draft": {
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "title",
+        "date"
+    ]
+}

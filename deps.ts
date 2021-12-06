@@ -1,6 +1,10 @@
-import type { SiteMetadata } from "./schema/site.d.ts";
+import type { SiteMetadata } from "./schema/site.ts";
+import type { PostMetadata } from "./schema/post.ts";
+
 export type { SiteMetadata };
-export { validate as validateSiteMetadata } from "./schema/site.validate.js";
+export type { PostMetadata };
+export { validate as validateSiteMetadata } from "./schema/site.ts";
+export { validate as validatePostMetadata } from "./schema/post.ts";
 export { Goldsmith } from "https://deno.land/x/goldsmith@1.1.1/mod.ts";
 export type { GoldsmithPlugin, GoldsmithFile } from "https://deno.land/x/goldsmith@1.1.1/mod.ts";
 export { goldsmithJSONMetadata } from "https://deno.land/x/goldsmith@1.1.1/plugins/json_metadata/mod.ts";
@@ -27,13 +31,8 @@ declare module "https://deno.land/x/goldsmith@1.1.1/mod.ts" {
         tagsTop?: string[];
     }
 
-    interface GoldsmithFile {
-        // Generic post schema
-        title?: string; // Required
-        date?: Date; // Required
-        description?: string;
-        draft?: boolean;
-        keywords?: string[];
+    interface GoldsmithFile extends Partial<PostMetadata> {
+        // Generic post schema comes from PostMetadata
 
         // Derived properties
         category?: string;
