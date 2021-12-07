@@ -26,10 +26,12 @@ body > header > h1 { margin-bottom: 0.25em; }
 body > header > p { margin-top: 0.25em; }
 
 nav { display: flex; flex-direction: row; justify-content: center; }
-nav > ul { margin: 0; padding: 0 0 0 0.5em; display: inline; }
+nav > ul { display: inline; padding: 0; }
 nav > ul > li { display: inline; }
-nav > ul > li:first-child:before { content: "Topics: "; }
 nav > ul > li + li:before { content: " | "; }
+header > nav > ul { margin: 0; }
+header > nav > ul > li:first-child:before { content: "Topics: "; }
+footer > nav > ul { margin-bottom: 0; }
 
 body > header > h1 > a {
     font-size: 1.75rem;
@@ -38,7 +40,6 @@ body > header > h1 > a {
 
 article > header > h1 { margin-bottom: 0.25em; }
 article > header > p { margin-top: 0em; }
-main footer { margin-top: 1em; }
 
 main { overflow: auto; }
 pre { overflow: auto; }
@@ -67,7 +68,7 @@ h5 { font-size: 1rem; font-weight: normal; }
 
 body { background-color: #181818; }
 * { color: #c8c8c8; }
-main footer { border-top: 1px solid #4b4b4b; }
+body > main { border-bottom: 1px solid #4b4b4b; }
 th { background-color: #4b4b4b; color: #dcdcdc; }
 pre, table, th, tr, td { border-color: #5f5f5f; }
 pre { background-color: #2c2c2c; }

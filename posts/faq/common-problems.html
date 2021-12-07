@@ -28,6 +28,12 @@
 <p>Here are some issues that may be common:</p>
 <h1 id="permission-denied-error-when-running-on-linux">&quot;Permission denied&quot; error when running on Linux</h1>
 <p>Ensure that <code>md2blog</code> is executable (if not: <code>chmod +x md2blog</code>).</p>
+<h1 id="developer-cannot-be-verified-error-on-macos">&quot;Developer cannot be verified&quot; error on macOS</h1>
+<p>Pre-built binaries for md2blog are not signed (currently, this is <a href="https://github.com/denoland/deno/issues/11154">not possible with Deno</a>), so macOS may refuse to run md2blog with an error similar to &quot;&#39;md2blog&#39; cannot be opened because the developer cannot be verified&quot;. Options to get around this:</p>
+<ul>
+<li>Ignore the error: &quot;System Preferences&quot; &gt; &quot;Security &amp; Privacy&quot; &gt; &quot;General&quot; &gt; &quot;Allow Anyway&quot; (as noted <a href="https://github.com/jaredkrinke/md2blog/issues/1#issuecomment-982280702">here</a>)</li>
+<li>Install Deno and then use <code>deno install</code> to <a href="../../quick-start.html#option-b-install-script-using-deno">install md2blog as a script</a></li>
+</ul>
 <h1 id="content-not-found-error">&quot;content&quot; not found error</h1>
 <p>By default, md2blog reads from an input directory named &quot;content&quot;. You can change the input directory using <a href="command-line.html">command line options</a> (namely <code>--input</code>).</p>
 <h1 id="sitejson-not-found-error">&quot;site.json&quot; not found error</h1>
@@ -43,9 +49,10 @@ From &quot;posts/faq/common-problems.html&quot; to &quot;../../quick-start.html#
 <p>Consult the FAQ entry on <a href="support.html">general support info</a>. It contains links to the discussion board and issue tracker.</p>
 
 <footer>
-<p><a href="../../index.html">Back to home</a></p>
+<p>&crarr; <a href="../../index.html">Back to home</a></p>
 </footer>
 </article>
 </main>
+
 </body>
 </html>

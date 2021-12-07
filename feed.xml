@@ -6,7 +6,7 @@
 <author>
 <name>md2blog</name>
 </author>
-<updated>2021-11-27T20:09:16.062Z</updated>
+<updated>2021-12-07T02:23:21.457Z</updated>
 
 <entry>
 <title>What is causing this error?</title>
@@ -17,6 +17,12 @@
 <content type="html">&lt;p&gt;Here are some issues that may be common:&lt;/p&gt;
 &lt;h1 id=&quot;permission-denied-error-when-running-on-linux&quot;&gt;&amp;quot;Permission denied&amp;quot; error when running on Linux&lt;/h1&gt;
 &lt;p&gt;Ensure that &lt;code&gt;md2blog&lt;/code&gt; is executable (if not: &lt;code&gt;chmod +x md2blog&lt;/code&gt;).&lt;/p&gt;
+&lt;h1 id=&quot;developer-cannot-be-verified-error-on-macos&quot;&gt;&amp;quot;Developer cannot be verified&amp;quot; error on macOS&lt;/h1&gt;
+&lt;p&gt;Pre-built binaries for md2blog are not signed (currently, this is &lt;a href=&quot;https://github.com/denoland/deno/issues/11154&quot;&gt;not possible with Deno&lt;/a&gt;), so macOS may refuse to run md2blog with an error similar to &amp;quot;&amp;#39;md2blog&amp;#39; cannot be opened because the developer cannot be verified&amp;quot;. Options to get around this:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ignore the error: &amp;quot;System Preferences&amp;quot; &amp;gt; &amp;quot;Security &amp;amp; Privacy&amp;quot; &amp;gt; &amp;quot;General&amp;quot; &amp;gt; &amp;quot;Allow Anyway&amp;quot; (as noted &lt;a href=&quot;https://github.com/jaredkrinke/md2blog/issues/1#issuecomment-982280702&quot;&gt;here&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Install Deno and then use &lt;code&gt;deno install&lt;/code&gt; to &lt;a href=&quot;posts/faq/../../quick-start.html#option-b-install-script-using-deno&quot;&gt;install md2blog as a script&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h1 id=&quot;content-not-found-error&quot;&gt;&amp;quot;content&amp;quot; not found error&lt;/h1&gt;
 &lt;p&gt;By default, md2blog reads from an input directory named &amp;quot;content&amp;quot;. You can change the input directory using &lt;a href=&quot;posts/faq/command-line.html&quot;&gt;command line options&lt;/a&gt; (namely &lt;code&gt;--input&lt;/code&gt;).&lt;/p&gt;
 &lt;h1 id=&quot;sitejson-not-found-error&quot;&gt;&amp;quot;site.json&amp;quot; not found error&lt;/h1&gt;
@@ -30,6 +36,21 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 &lt;p&gt;If you&amp;#39;re running with &lt;code&gt;--clean&lt;/code&gt; and there is a broken relative link, the build is aborted &lt;em&gt;after&lt;/em&gt; the output directory is cleaned, so the output directory will be empty. Just fix the broken link and rebuild.&lt;/p&gt;
 &lt;h1 id=&quot;i-hit-some-other-error-not-listed-here&quot;&gt;I hit some other error not listed here&lt;/h1&gt;
 &lt;p&gt;Consult the FAQ entry on &lt;a href=&quot;posts/faq/support.html&quot;&gt;general support info&lt;/a&gt;. It contains links to the discussion board and issue tracker.&lt;/p&gt;
+</content>
+</entry>
+<entry>
+<title>What platforms does md2blog run on?</title>
+<id>urn:md2blog:md2blog:What%20platforms%20does%20md2blog%20run%20on%3F</id>
+<link rel="alternate" href="posts/faq/platforms.html"/>
+<updated>2021-11-10T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;md2blog is based on &lt;a href=&quot;https://deno.land/&quot;&gt;Deno&lt;/a&gt;, so it only runs on platforms that Deno supports. Here&amp;#39;s the current list (copied from &lt;a href=&quot;https://deno.land/manual@v1.16.4/getting_started/installation&quot;&gt;Deno&amp;#39;s install page&lt;/a&gt;):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linux (x64 only)&lt;/li&gt;
+&lt;li&gt;Windows (x64 only)&lt;/li&gt;
+&lt;li&gt;macOS (x64 and arm64)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note that md2blog is only regularly tested on Linux and Windows, although there are reports that it works on macOS (apart from the &lt;a href=&quot;posts/faq/common-problems.html#developer-cannot-be-verified-error-on-macos&quot;&gt;pre-built binaries not being signed&lt;/a&gt;).&lt;/p&gt;
 </content>
 </entry>
 <entry>
@@ -111,37 +132,6 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 &lt;span class=&quot;hljs-punctuation&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;I suggest serving the site locally with &lt;code&gt;md2blog --serve&lt;/code&gt; while you play with the values and watch the page automatically reload in your browser.&lt;/p&gt;
-</content>
-</entry>
-<entry>
-<title>What are all the command line options?</title>
-<id>urn:md2blog:md2blog:What%20are%20all%20the%20command%20line%20options%3F</id>
-<link rel="alternate" href="posts/faq/command-line.html"/>
-<updated>2021-10-30T00:00:00.000Z</updated>
-
-<content type="html">&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;$ md2blog --help
-Options:
-  -c, --clean         Clean output directory before processing
-  -d, --drafts        Include drafts in output
-  -s, --serve         Serve web site, with automatic reloading
-  -w, --watch         Watch for changes and rebuild automatically
-  -i, --input &amp;lt;dir&amp;gt;   Input directory (default: &amp;quot;content&amp;quot;)
-  -o, --output &amp;lt;dir&amp;gt;  Output directory (default: &amp;quot;out&amp;quot;)
-  --copyright         Display open source software copyright notices
-  -h, -?, --help      Display usage information
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Note that &lt;code&gt;--serve&lt;/code&gt; implies &lt;code&gt;--watch&lt;/code&gt;. Also note that &lt;code&gt;--serve&lt;/code&gt; does &lt;em&gt;not&lt;/em&gt; affect the build output (the automatic reloading code is injected by the test web server, and is not present in the files on disk).&lt;/p&gt;
-&lt;h1 id=&quot;recommended-options&quot;&gt;Recommended options&lt;/h1&gt;
-&lt;p&gt;Here are some recommended command lines:&lt;/p&gt;
-&lt;h2 id=&quot;for-local-testing-no-drafts&quot;&gt;For local testing (no drafts)&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean --serve
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&quot;for-local-testing-with-drafts&quot;&gt;For local testing (with drafts)&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean --serve --drafts
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&quot;for-building-without-serving&quot;&gt;For building (without serving)&lt;/h2&gt;
-&lt;pre&gt;&lt;code class=&quot;language-txt&quot;&gt;md2blog --clean
-&lt;/code&gt;&lt;/pre&gt;
 </content>
 </entry>
 </feed>
