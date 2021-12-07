@@ -25,7 +25,7 @@ The [directory structure for the template site](#directory-structure) is explain
 
 Here are some recommended first steps:
 
-1. Update `content/site.json` and edit the `title` and `description` (and optionally add a `url`)
+1. Update `content/site.json` and edit the `title`, `description`, and `footer.text` properties (and optionally add a `url` property)
 1. Create directories under `content/posts/` for categories
 1. Create posts as `*.md` Markdown files under the category directories, e.g. `content/posts/misc/first-post.md` (see [below](#front-matter) for the metadata format)
 
@@ -79,13 +79,19 @@ Here's an example `site.json` file:
 
 ```json
 {
+    "$schema": "https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json",
     "title": "My dev blog",
     "url": "https://mydevblog.com/",
-    "description": "A very good dev blog indeed"
+    "description": "A very good dev blog indeed",
+    "footer": {
+        "text": "Optional copyright notice goes here"
+    }
 }
 ```
 
-Schema:
+Note that the (optional) `$schema` property is not used by md2blog, but is instead used by some editors (e.g. VS Code) to support contextual hints and auto-complete based on the [site.json JSON schema](https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json).
+
+Schema (official link [here](https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json)):
 
 | Field | Type | Required? | Note |
 | --- | --- | --- | --- |
@@ -93,6 +99,7 @@ Schema:
 | `url` | string | Recommended | |
 | `description` | string | Optional | |
 | `colors` | object | Optional | See [theme FAQ](posts/faq/themes.md) for details |
+| `footer.text` | string | Optional | Footer text added to all pages of the site (recommended for [adding a copyright notice](posts/faq/copyright-notice.md)) |
 
 Note that the site *will* generally work without specifying a URL, but the Atom feed may not work in all feed readers because it will be forced to use relative links instead of absolute URLs.
 
