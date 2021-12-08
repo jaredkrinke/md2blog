@@ -40,14 +40,13 @@ h1, h2, h3, h4, h5 { line-height: 1.2; }
 td { line-height: 1.2; }
 
 body > header { text-align: center; }
-body > header > h1 { margin-bottom: 0.25em; }
-body > header > p { margin-top: 0.25em; }
+body > header > h1 { margin-bottom: 0; }
+body > header > p { margin: 0.3em 0; }
 
+nav { padding: 0.3em 0; }
 nav > ul { display: inline; padding: 0; }
 nav > ul > li { display: inline; }
 nav > ul > li + li:before { content: " | "; }
-header > nav > ul { margin: 0; }
-footer > nav > ul { margin-bottom: 0; }
 
 body > header > h1 > a {
     font-size: 1.75rem;
@@ -103,6 +102,7 @@ pre code {
 }
 
 body > header > h1 { color: @textTitle; }
+nav.site { font-weight: bold; }
 nav > strong { font-weight: bold; color: @textHeading; }
 h1, h2, h3, h4, h5 { color: @textHeading; }
 a:link { color: @textLink; }
