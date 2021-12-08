@@ -5,7 +5,7 @@ import type {
     GoldsmithLiteralHTMLLayoutMap,
 } from "./deps.ts";
 
-import { html } from "https://deno.land/x/literal_html@1.0.2/mod.ts";
+import { html } from "https://deno.land/x/literal_html@1.1.0/mod.ts";
 import { hexToRGB, rgbToHSL, hslToRGB, rgbToHex } from "./colorsmith.ts";
 
 // CSS template
@@ -234,7 +234,12 @@ export function generateCSS(options: GenerateCSSOptions): string {
 }
 
 // HTML templates
-const partialBase = (m: GoldsmithLiteralHTMLLayoutContext, mainVerbatim: string, navigationVerbatim?: string) => 
+interface PartialBaseOptions {
+    navigationVerbatim?: string;
+    headVerbatim?: string;
+}
+
+const partialBase = (m: GoldsmithLiteralHTMLLayoutContext, mainVerbatim: string, o?: PartialBaseOptions) => 
 html`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -245,12 +250,13 @@ ${{verbatim: m.keywords ? html`<meta name="keywords" content="${m.keywords.join(
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link rel="stylesheet" href="${m.pathToRoot!}css/style.css" />
 ${{verbatim: m.isRoot ? html`<link rel="alternate" type="application/rss+xml" href="${m.pathToRoot!}feed.xml" />` : ""}}
+${{verbatim: o?.headVerbatim ?? ""}}
 </head>
 <body>
 <header>
 <h1><a href="${m.pathToRoot!}index.html">${m.site!.title!}</a></h1>
 ${{verbatim: m.site?.description ? html`<p>${m.site.description}</p>` : ""}}
-${{verbatim: navigationVerbatim ? navigationVerbatim : ""}}
+${{verbatim: o?.navigationVerbatim ?? ""}}
 </header>
 <main>
 ${{verbatim: mainVerbatim}}
@@ -262,11 +268,17 @@ ${{verbatim: m.site.footer.text ? html`<p>${m.site.footer.text}</p>` : ""}}
 </html>
 `;
 
-function partialNavigation(m: GoldsmithLiteralHTMLLayoutContext, tags: string[], incomplete?: boolean, isTagIndex?: boolean, tag?: string): string {
+interface PartialNavigationOptions {
+    incomplete?: boolean;
+    isTagIndex?: boolean;
+    tag?: string;
+}
+
+function partialNavigation(m: GoldsmithLiteralHTMLLayoutContext, tags: string[], o?: PartialNavigationOptions): string {
     return tags ? html`<nav>
 <ul>
-${{verbatim: tags.map(t => (isTagIndex && t === tag) ? html`<li>${tag}</li>` : html`<li><a href="${m.pathToRoot ?? ""}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
-${{verbatim: incomplete ? html`<li><a href="${m.pathToRoot!}posts/index.html">&hellip;</a></li>\n` : ""}}</ul>
+${{verbatim: tags.map(t => (o?.isTagIndex && t === o.tag) ? html`<li>${o.tag}</li>` : html`<li><a href="${m.pathToRoot ?? ""}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
+${{verbatim: o?.incomplete ? html`<li><a href="${m.pathToRoot!}posts/index.html">&hellip;</a></li>\n` : ""}}</ul>
 </nav>` : "";
 }
 
@@ -306,7 +318,7 @@ const templateArchive: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => par
         ...m
     },
     partialArticleSummaryList(m, m.collections!.posts!),
-    partialNavigation(m, m.tagsAll!)
+    { navigationVerbatim: partialNavigation(m, m.tagsAll!) }
 );
 
 const templateDefault: GoldsmithLiteralHTMLLayoutCallback = (content, m) => partialBase(
@@ -314,7 +326,7 @@ const templateDefault: GoldsmithLiteralHTMLLayoutCallback = (content, m) => part
     html`<article>
 ${{verbatim: content}}
 </article>`,
-    partialNavigation(m, m.tags!)
+    { navigationVerbatim: partialNavigation(m, m.tags!) }
 );
 
 const templatePost: GoldsmithLiteralHTMLLayoutCallback = (content, m) => partialBase(
@@ -329,7 +341,19 @@ ${{verbatim: content}}
 <p>&crarr; <a href="${m.pathToRoot!}index.html">Back to home</a></p>
 </footer>
 </article>`,
-    partialNavigation(m, m.tags!)
+    {
+        navigationVerbatim: partialNavigation(m, m.tags!),
+        headVerbatim: html`<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "${{scriptString: m.title!}}",
+${{verbatim: m.description ? html`  "abstract": "${{scriptString: m.description}}",` : ""}}
+${{verbatim: m.tags ? html`  "keywords": "${{scriptString: m.tags.join(",")}}",` : ""}}
+  "datePublished": "${{scriptString: formatDateShort(m.date!)}}"
+}
+</script>`
+    }
 );
 
 const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
@@ -342,7 +366,11 @@ const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partia
 <footer>
 <p>&rarr; <a href="posts/index.html">See all articles</a> or subscribe to the <a href="feed.xml">Atom feed</a></p>
 </footer>`,
-    partialNavigation(m, m.tagsTop!, m.tagsTop!.length !== m.tagsAll!.length)
+    {
+        navigationVerbatim: partialNavigation(m, m.tagsTop!, {
+            incomplete: m.tagsTop!.length !== m.tagsAll!.length,
+        }),
+    }
 );
 
 const templateTagIndex: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
@@ -351,7 +379,12 @@ const templateTagIndex: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => pa
         ...m
     },
     partialArticleSummaryList(m, m.postsWithTag!),
-    partialNavigation(m, m.tagsAll!, false, true, m.tag)
+    {
+        navigationVerbatim: partialNavigation(m, m.tagsAll!, {
+            isTagIndex: true,
+            tag: m.tag,
+        }),
+    }
 );
 
 export const templates: GoldsmithLiteralHTMLLayoutMap = {
