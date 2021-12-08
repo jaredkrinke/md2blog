@@ -43,12 +43,10 @@ body > header { text-align: center; }
 body > header > h1 { margin-bottom: 0.25em; }
 body > header > p { margin-top: 0.25em; }
 
-nav { display: flex; flex-direction: row; justify-content: center; }
 nav > ul { display: inline; padding: 0; }
 nav > ul > li { display: inline; }
 nav > ul > li + li:before { content: " | "; }
 header > nav > ul { margin: 0; }
-header > nav > ul > li:first-child:before { content: "Topics: "; }
 footer > nav > ul { margin-bottom: 0; }
 
 body > header > h1 > a {
@@ -105,7 +103,7 @@ pre code {
 }
 
 body > header > h1 { color: @textTitle; }
-nav > ul > li:first-child:before { font-weight: bold; color: @textHeading; }
+nav > strong { font-weight: bold; color: @textHeading; }
 h1, h2, h3, h4, h5 { color: @textHeading; }
 a:link { color: @textLink; }
 a:visited { color: @textLinkVisited; }
@@ -276,6 +274,7 @@ interface PartialNavigationOptions {
 
 function partialNavigation(m: GoldsmithLiteralHTMLLayoutContext, tags: string[], o?: PartialNavigationOptions): string {
     return tags ? html`<nav>
+<strong>Topics:&nbsp;</strong>
 <ul>
 ${{verbatim: tags.map(t => (o?.isTagIndex && t === o.tag) ? html`<li>${o.tag}</li>` : html`<li><a href="${m.pathToRoot ?? ""}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
 ${{verbatim: o?.incomplete ? html`<li><a href="${m.pathToRoot!}posts/index.html">&hellip;</a></li>\n` : ""}}</ul>
