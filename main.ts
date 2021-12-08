@@ -131,7 +131,6 @@ await Goldsmith()
     .use(goldsmithFileMetadata({
         pattern: /^posts\/[^/]+?\/index.html$/,
         metadata: (file, _matches, metadata) => ({
-            title: file.term,
             tag: file.term,
             layout: "tagIndex",
             isTagIndex: true,

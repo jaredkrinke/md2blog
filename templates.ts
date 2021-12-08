@@ -244,7 +244,7 @@ html`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>${m.site!.title!}${m.title ? `: ${m.title}` : ""}</title>
+<title>${m.title ?? m.site!.title!}</title>
 ${{verbatim: m.description ? html`<meta name="description" content="${m.description}" />` : ""}}
 ${{verbatim: m.keywords ? html`<meta name="keywords" content="${m.keywords.join(",")}" />` : ""}}
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -314,7 +314,7 @@ const template404: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partial
 
 const templateArchive: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
     {
-        title: "Archive of all posts since the beginning of time",
+        title: `${m.site!.title!}: Archive of all posts since the beginning of time`,
         ...m
     },
     partialArticleSummaryList(m, m.collections!.posts!),
@@ -375,7 +375,7 @@ const templateRoot: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partia
 
 const templateTagIndex: GoldsmithLiteralHTMLLayoutCallback = (_content, m) => partialBase(
     {
-        title: "Archive of all posts since the beginning of time",
+        title: `${m.site!.title!}: Posts tagged with: ${m.term!}`,
         ...m
     },
     partialArticleSummaryList(m, m.postsWithTag!),
