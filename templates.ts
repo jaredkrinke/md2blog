@@ -292,7 +292,7 @@ function partialDate(date: Date): string {
 const partialArticleSummary: (m: GoldsmithLiteralHTMLLayoutContext, post: GoldsmithFile) => string = (m, post) => {
     return html`<article>
 <header>
-<h1><a href="${m.pathToRoot!}${post.pathFromRoot as string}">${post.title!}</a></h1>
+<h1><a href="${m.pathToRoot!}${post.pathFromRoot!}">${post.title!}</a></h1>
 ${{verbatim: partialDate(post.date!)}}
 </header>
 ${{verbatim: post.description ? html`<p>${post.description}</p>` : ""}}
