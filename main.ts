@@ -75,6 +75,10 @@ if (copyright) {
 // Groups:                       |-- 2 --|
 const postPathPattern = /^posts(\/([^/]+))?\/[^/]+.md$/;
 
+function replaceLink(link: string) {
+    return link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2")
+}
+
 const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
 
 await Goldsmith()
@@ -149,6 +153,10 @@ await Goldsmith()
             reverse: true,
             limit: 5,
         },
+        nonPosts: {
+            pattern: /^[^/]+\.(html|md)$/,
+            sortBy: "title",
+        },
     }))
     .use((_files, goldsmith) => {
         // Create index and archive tag lists
@@ -175,7 +183,7 @@ await Goldsmith()
         },
     }))
     .use(goldsmithMarkdown({
-        replaceLinks: link => link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2"),
+        replaceLinks: link => replaceLink(link),
         highlight: (code, language) => {
             if (language && highlightJS.getLanguage(language)) {
                 return highlightJS.highlight(code, { language }).value;
@@ -186,6 +194,36 @@ await Goldsmith()
     }))
     .use(goldsmithRootPaths())
     .use(goldsmithFeed({ getCollection: (metadata) => metadata.collections!.postsRecent! }))
+    .use((_files, goldsmith) => {
+        // Set header defaults
+        const metadata = goldsmith.metadata();
+        const site = metadata.site!;
+        const text = site.header?.text ?? site.description;
+        let links = site.header?.links;
+        if (!links) {
+            links = site.header?.links ?? {
+                "home": "index.html",
+                "archive": "posts/index.html",
+            };
+
+            for (const file of metadata.collections!.nonPosts) {
+                const pathFromRoot = file.pathFromRoot!;
+                if (pathFromRoot !== "index.html") {
+                    const name = pathFromRoot.replace(/\.[^.]*$/, "");
+                    links[name] = pathFromRoot;
+                }
+            }
+        }
+
+        for (const [name, link] of Object.entries(links)) {
+            links[name] = replaceLink(link);
+        }
+
+        site.header = {
+            text,
+            links,
+        };
+    })
     .use(goldsmithLayout({
         pattern: /\.html$/,
         layout: goldsmithLayoutLiteralHTML({

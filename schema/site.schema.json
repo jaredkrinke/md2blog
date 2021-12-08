@@ -48,6 +48,23 @@
                 }
             }
         },
+        "header": {
+            "description": "Optional subtitle and top-level links (added to all pages). By default, the site description is used as the subtitle and links to the home page, archive, and non-post pages in the site root are shown.",
+            "type": "object",
+            "properties": {
+                "text": {
+                    "description": "Optional subtitle (added to all pages). By default, the site description is used as the subtitle.",
+                    "type": "string"
+                },
+                "links": {
+                    "description": "Optional map of top-level link names to relative paths or URLs. Use `index.html` to link to the home page and `posts/index.html` to link to the archive. By default, links to the home page, archive, and all non-post pages in the site root are shown.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "footer": {
             "description": "Optional footer, e.g. for copyright notices (added to all pages).",
             "type": "object",

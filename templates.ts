@@ -253,7 +253,10 @@ ${{verbatim: o?.headVerbatim ?? ""}}
 <body>
 <header>
 <h1><a href="${m.pathToRoot!}index.html">${m.site!.title!}</a></h1>
-${{verbatim: m.site?.description ? html`<p>${m.site.description}</p>` : ""}}
+${{verbatim: m.site?.header?.text ? html`<p>${m.site.header.text}</p>` : ""}}
+${{verbatim: m.site?.header?.links ? html`<nav class="main"><ul>
+${{verbatim: Object.entries(m.site.header.links).map(([name, link]) => html`<li><a href="${m.pathToRoot!}${link}">${name}</a></li>`).join("\n")}}
+</ul></nav>` : ""}}
 ${{verbatim: o?.navigationVerbatim ?? ""}}
 </header>
 <main>

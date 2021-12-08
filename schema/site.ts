@@ -23,6 +23,15 @@ export interface SiteMetadata {
         /** Color used only for syntax highlighting (generally for comments). */
         comment?: HexColor;
     };
+    /** Optional subtitle and top-level links (added to all pages). By default, the site description is used as the subtitle and links to the home page, archive, and non-post pages in the site root are shown. */
+    header?: {
+        /** Optional subtitle (added to all pages). By default, the site description is used as the subtitle. */
+        text?: string;
+        /** Optional map of top-level link names to relative paths or URLs. Use `index.html` to link to the home page and `posts/index.html` to link to the archive. By default, links to the home page, archive, and all non-post pages in the site root are shown. */
+        links?: {
+            [key: string]: string;
+        };
+    };
     /** Optional footer, e.g. for copyright notices (added to all pages). */
     footer?: {
         /** Text to be shown in the footer (e.g. copyright notice). */
@@ -133,6 +142,71 @@ export function parse(json: any): SiteMetadata {
                                 case "comment": {
                                     
                                     return parseHexColor(jsonValueValue);
+                                    
+                                }
+                                
+                                
+                            }
+                        })();
+                    }
+                    return jsonValueResultObject;
+                    
+                }
+                
+                case "header": {
+                    
+                    if (jsonValue === null) {
+                        throw `JSON validation error at "header": expected object, but encountered null`;
+                    } else if (typeof(jsonValue) !== "object") {
+                        throw `JSON validation error at "header": expected object, but encountered ${typeof(jsonValue)}`;
+                    } else if (Array.isArray(jsonValue)) {
+                        throw `JSON validation error at "header": expected object, but encountered an array`;
+                    }
+                    
+                    // deno-lint-ignore no-explicit-any
+                    const jsonValueResultObject: any = {};
+                    // deno-lint-ignore no-explicit-any
+                    for (const [jsonValueKey, jsonValueValue] of Object.entries(jsonValue as Record<string, any>)) {
+                        jsonValueResultObject[jsonValueKey] = (() => {
+                            switch (jsonValueKey) {
+                                case "text": {
+                                    
+                                    if (typeof(jsonValueValue) !== "string") {
+                                        throw `JSON validation error at "header.text": expected string, but encountered ${typeof(jsonValueValue)}`;
+                                    }
+                                    return jsonValueValue;
+                                    
+                                }
+                                
+                                case "links": {
+                                    
+                                    if (jsonValueValue === null) {
+                                        throw `JSON validation error at "header.links": expected object, but encountered null`;
+                                    } else if (typeof(jsonValueValue) !== "object") {
+                                        throw `JSON validation error at "header.links": expected object, but encountered ${typeof(jsonValueValue)}`;
+                                    } else if (Array.isArray(jsonValueValue)) {
+                                        throw `JSON validation error at "header.links": expected object, but encountered an array`;
+                                    }
+                                    
+                                    // deno-lint-ignore no-explicit-any
+                                    const jsonValueValueResultObject: any = {};
+                                    // deno-lint-ignore no-explicit-any
+                                    for (const [jsonValueValueKey, jsonValueValueValue] of Object.entries(jsonValueValue as Record<string, any>)) {
+                                        jsonValueValueResultObject[jsonValueValueKey] = (() => {
+                                            switch (jsonValueValueKey) {
+                                                
+                                                default: {
+                                                    if (typeof(jsonValueValueValue) !== "string") {
+                                                        throw `JSON validation error at "header.links.additionalProperties": expected string, but encountered ${typeof(jsonValueValueValue)}`;
+                                                    }
+                                                    return jsonValueValueValue;
+                                                    
+                                                }
+                                                
+                                            }
+                                        })();
+                                    }
+                                    return jsonValueValueResultObject;
                                     
                                 }
                                 
