@@ -2,17 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>md2blog: Quick start</title>
+<title>Quick start</title>
 
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link rel="stylesheet" href="css/style.css" />
+
 
 </head>
 <body>
 <header>
 <h1><a href="index.html">md2blog</a></h1>
 <p>A zero-config static site generator for dev blogs</p>
+<nav class="site"><ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="quick-start.html">Quick Start</a></li>
+<li><a href="posts/faq/index.html">FAQ</a></li>
+</ul></nav>
 
 </header>
 <main>
@@ -33,7 +39,7 @@
 <p>The <a href="#directory-structure">directory structure for the template site</a> is explained later.</p>
 <p>Here are some recommended first steps:</p>
 <ol>
-<li>Update <code>content/site.json</code> and edit the <code>title</code> and <code>description</code> (and optionally add a <code>url</code>)</li>
+<li>Update <code>content/site.json</code> and edit the <code>title</code>, <code>description</code>, and <code>footer.text</code> properties (and optionally add a <code>url</code> property)</li>
 <li>Create directories under <code>content/posts/</code> for categories</li>
 <li>Create posts as <code>*.md</code> Markdown files under the category directories, e.g. <code>content/posts/misc/first-post.md</code> (see <a href="#front-matter">below</a> for the metadata format)</li>
 </ol>
@@ -86,12 +92,17 @@
 <h2 id="sitejson">site.json</h2>
 <p>Here&#39;s an example <code>site.json</code> file:</p>
 <pre><code class="language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;$schema&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json&quot;</span><span class="hljs-punctuation">,</span>
     <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;My dev blog&quot;</span><span class="hljs-punctuation">,</span>
     <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://mydevblog.com/&quot;</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A very good dev blog indeed&quot;</span>
+    <span class="hljs-attr">&quot;description&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;A very good dev blog indeed&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;footer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;text&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Optional copyright notice goes here&quot;</span>
+    <span class="hljs-punctuation">}</span>
 <span class="hljs-punctuation">}</span>
 </code></pre>
-<p>Schema:</p>
+<p>Note that the (optional) <code>$schema</code> property is not used by md2blog, but is instead used by some editors (e.g. VS Code) to support contextual hints and auto-complete based on the <a href="https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json">site.json JSON schema</a>.</p>
+<p>Schema (official link <a href="https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json">here</a>):</p>
 <table>
 <thead>
 <tr>
@@ -117,13 +128,31 @@
 <td><code>description</code></td>
 <td>string</td>
 <td>Optional</td>
-<td></td>
+<td>Used in meta tag and as the default subtitle</td>
 </tr>
 <tr>
 <td><code>colors</code></td>
 <td>object</td>
 <td>Optional</td>
 <td>See <a href="posts/faq/themes.html">theme FAQ</a> for details</td>
+</tr>
+<tr>
+<td><code>header.text</code></td>
+<td>string</td>
+<td>Optional</td>
+<td>Overrides the default subtitle</td>
+</tr>
+<tr>
+<td><code>header.links</code></td>
+<td>object</td>
+<td>Optional</td>
+<td>Site-wide navigation links (<a href="posts/faq/additional-links.html">more details here</a>)</td>
+</tr>
+<tr>
+<td><code>footer.text</code></td>
+<td>string</td>
+<td>Optional</td>
+<td>Footer text added to all pages of the site (recommended for <a href="posts/faq/copyright-notice.html">adding a copyright notice</a>)</td>
 </tr>
 </tbody></table>
 <p>Note that the site <em>will</em> generally work without specifying a URL, but the Atom feed may not work in all feed readers because it will be forced to use relative links instead of absolute URLs.</p>

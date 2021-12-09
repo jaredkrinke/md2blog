@@ -22,16 +22,13 @@ h1, h2, h3, h4, h5 { line-height: 1.2; }
 td { line-height: 1.2; }
 
 body > header { text-align: center; }
-body > header > h1 { margin-bottom: 0.25em; }
-body > header > p { margin-top: 0.25em; }
+body > header > h1 { margin-bottom: 0; }
+body > header > p { margin: 0.3em 0; }
 
-nav { display: flex; flex-direction: row; justify-content: center; }
+nav { padding: 0.3em 0; }
 nav > ul { display: inline; padding: 0; }
 nav > ul > li { display: inline; }
 nav > ul > li + li:before { content: " | "; }
-header > nav > ul { margin: 0; }
-header > nav > ul > li:first-child:before { content: "Topics: "; }
-footer > nav > ul { margin-bottom: 0; }
 
 body > header > h1 > a {
     font-size: 1.75rem;
@@ -87,7 +84,8 @@ pre code {
 }
 
 body > header > h1 { color: #e6b95c; }
-nav > ul > li:first-child:before { font-weight: bold; color: #d97c57; }
+nav.site { font-weight: bold; }
+nav > strong { font-weight: bold; color: #d97c57; }
 h1, h2, h3, h4, h5 { color: #d97c57; }
 a:link { color: #59c5ff; }
 a:visited { color: #4eb7f0; }

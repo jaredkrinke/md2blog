@@ -6,7 +6,7 @@
 <author>
 <name>md2blog</name>
 </author>
-<updated>2021-12-07T02:23:21.457Z</updated>
+<updated>2021-12-09T17:11:26.803Z</updated>
 
 <entry>
 <title>What is causing this error?</title>
@@ -57,7 +57,7 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 <title>How do I get support or report bugs?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20get%20support%20or%20report%20bugs%3F</id>
 <link rel="alternate" href="posts/faq/support.html"/>
-<updated>2021-11-02T00:00:00.000Z</updated>
+<updated>2021-11-05T00:00:00.000Z</updated>
 
 <content type="html">&lt;p&gt;If you run into trouble, consult the following:&lt;/p&gt;
 &lt;ul&gt;
@@ -72,66 +72,68 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 </content>
 </entry>
 <entry>
-<title>Why not just use X instead?</title>
-<id>urn:md2blog:md2blog:Why%20not%20just%20use%20X%20instead%3F</id>
-<link rel="alternate" href="posts/faq/alternatives.html"/>
-<updated>2021-11-01T00:00:00.000Z</updated>
+<title>How do I add navigation links (e.g. to projects or social media profiles)?</title>
+<id>urn:md2blog:md2blog:How%20do%20I%20add%20navigation%20links%20(e.g.%20to%20projects%20or%20social%20media%20profiles)%3F</id>
+<link rel="alternate" href="posts/faq/additional-links.html"/>
+<updated>2021-11-04T00:00:00.000Z</updated>
 
-<content type="html">&lt;p&gt;There are &lt;a href=&quot;https://jamstack.org/generators/&quot;&gt;hundreds of static site generators&lt;/a&gt;. Why make yet another?&lt;/p&gt;
-&lt;p&gt;The short answer is that none of the &lt;a href=&quot;https://log.schemescape.com/posts/static-site-generators/comparison.html&quot;&gt;static site generators I tested out&lt;/a&gt; did what I wanted out of the box (or required too much setup).&lt;/p&gt;
-&lt;p&gt;The most common issues were:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;No support for relative links between Markdown files (that get translated to corresponding HTML files at build time)&lt;/li&gt;
-&lt;li&gt;No support for implicit categorization&lt;/li&gt;
-&lt;li&gt;No relative link checking at build time&lt;/li&gt;
-&lt;li&gt;Unintuitive/verbose template languages&lt;/li&gt;
-&lt;li&gt;Requiring a huge runtime I didn&amp;#39;t want to install&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Here are some specific notes on popular SSGs:&lt;/p&gt;
-&lt;h1 id=&quot;jekyll&quot;&gt;Jekyll&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; is probably the closest to what I was looking for, but I had no interest in setting up a Ruby environment or learning about the language (in case I needed to author my own plugins). I also didn&amp;#39;t like the verbose syntax of the &lt;a href=&quot;https://shopify.github.io/liquid/&quot;&gt;Liquid&lt;/a&gt; template language.&lt;/p&gt;
-&lt;h1 id=&quot;hugo&quot;&gt;Hugo&lt;/h1&gt;
-&lt;p&gt;Given that &lt;a href=&quot;https://gohugo.io/&quot;&gt;Hugo&lt;/a&gt; is broadly used and ships in a convenient single binary, I thought I would end up using Hugo. Unfortunately, it was &lt;em&gt;too&lt;/em&gt; general, and it wasn&amp;#39;t obvious how to go from a blank repository to a dev blog. Hugo&amp;#39;s template language was also the most unintuitive template language I ran across during my research.&lt;/p&gt;
-&lt;h1 id=&quot;pelican&quot;&gt;Pelican&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://blog.getpelican.com/&quot;&gt;Pelican&lt;/a&gt; seems like &amp;quot;Jekyll in Python&amp;quot;, but I honestly didn&amp;#39;t seriously consider it because I&amp;#39;ve had so many compatibility issues with Python in the past, that I generally try to avoid Python entirely. I realize I&amp;#39;m in the minority on this, but any language that practically requires virtual environments due to breaking changes seems too fragile for my delicate constitution.&lt;/p&gt;
-&lt;h1 id=&quot;eleventy&quot;&gt;Eleventy&lt;/h1&gt;
-&lt;p&gt;I actually started out using &lt;a href=&quot;https://www.11ty.dev/&quot;&gt;Eleventy&lt;/a&gt; because it was very simple and easy to understand, but I ended up preferring &lt;a href=&quot;https://metalsmith.io/&quot;&gt;Metalsmith&lt;/a&gt; (on which md2blog was originally built) because Metalsmith was &lt;em&gt;even simpler&lt;/em&gt;, to the point that I could easily understand everything it was doing, instead of having to guess.&lt;/p&gt;
-&lt;h1 id=&quot;metalsmith&quot;&gt;Metalsmith&lt;/h1&gt;
-&lt;p&gt;I originally used &lt;a href=&quot;https://metalsmith.io/&quot;&gt;Metalsmith&lt;/a&gt; for md2blog, but the dependency tree quickly grew out of control and recent security incidents on NPM made me wary of using so many packages from contributors I didn&amp;#39;t trust.&lt;/p&gt;
-&lt;h1 id=&quot;gatsby&quot;&gt;Gatsby&lt;/h1&gt;
-&lt;p&gt;I wasn&amp;#39;t interested in &lt;a href=&quot;https://www.gatsbyjs.com/&quot;&gt;Gatsby&lt;/a&gt; because I don&amp;#39;t want to run a bunch of client JavaScript to hopefully speed up subsequent page loads. Perhaps I&amp;#39;m being unreasonable, but I want a static site generator to spit out HTML, not a web app.&lt;/p&gt;
-&lt;h1 id=&quot;hexo&quot;&gt;Hexo&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt; sounds like it might be a great static site generator, but by the time I gave it a serious look, I was already building on Eleventy (and later Metalsmith), so I didn&amp;#39;t investigate Hexo further. I realize this isn&amp;#39;t a great reason for skipping Hexo.&lt;/p&gt;
-</content>
-</entry>
-<entry>
-<title>How do I customize the theme?</title>
-<id>urn:md2blog:md2blog:How%20do%20I%20customize%20the%20theme%3F</id>
-<link rel="alternate" href="posts/faq/themes.html"/>
-<updated>2021-10-31T00:00:00.000Z</updated>
-
-<content type="html">&lt;p&gt;Originally, I hadn&amp;#39;t planned on making md2blog&amp;#39;s theme customizable because theming would readily provide an irresistible distraction from authoring content (and eliminating such distractions is one of the main motivations for md2blog).&lt;/p&gt;
-&lt;p&gt;But in the end, I decided to make a concession to customization and add support for theming through the following four colors (specified in HTML-inspired 6 digit hex format, e.g. &lt;code&gt;#ffee88&lt;/code&gt;):&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Title (used for the site title)&lt;/li&gt;
-&lt;li&gt;Heading (used for headings)&lt;/li&gt;
-&lt;li&gt;Link (used for links)&lt;/li&gt;
-&lt;li&gt;Comment (used only in code blocks)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;All 4 colors are reused for syntax highlighting in code blocks.&lt;/p&gt;
-&lt;p&gt;To customize colors, use the &lt;code&gt;colors.title&lt;/code&gt;, etc. properties in your &lt;code&gt;site.json&lt;/code&gt; file (defaults values are shown):&lt;/p&gt;
+<content type="html">&lt;p&gt;md2blog supports adding additional links to the site header (for an example, see the &amp;quot;Home&amp;quot;, &amp;quot;Quick Start&amp;quot;, and &amp;quot;FAQ&amp;quot; links at the top of this page).&lt;/p&gt;
+&lt;p&gt;Links are specified on the &lt;code&gt;header.links&lt;/code&gt; property in &lt;code&gt;site.json&lt;/code&gt;. This property is an object where the keys are the link labels, and the values are the links (relative paths from the site root or absolute URLs).&lt;/p&gt;
+&lt;p&gt;Note that relative links to source Markdown files are automatically translated to point to the output HTML files.&lt;/p&gt;
+&lt;p&gt;Example:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;My blog&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;hljs-comment&quot;&gt;// ...&lt;/span&gt;
-    &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;colors&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;#e6b95c&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;heading&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;#d97c57&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;link&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;#d97c57&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;comment&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;#7bbf56&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;md2blog&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;A zero-config static site generator for dev blogs&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;header&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;links&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;Home&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;index.html&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;Quick Start&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;quick-start.md&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;FAQ&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;posts/faq/index.html&amp;quot;&lt;/span&gt;
+        &lt;span class=&quot;hljs-punctuation&quot;&gt;}&lt;/span&gt;
     &lt;span class=&quot;hljs-punctuation&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;hljs-punctuation&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;I suggest serving the site locally with &lt;code&gt;md2blog --serve&lt;/code&gt; while you play with the values and watch the page automatically reload in your browser.&lt;/p&gt;
+&lt;p&gt;Here are some common links to automatically generated resources:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Link&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;index.html&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Home page&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;posts/index.html&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Post archive page&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;posts/category1/index.html&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Tag index page for tag &lt;code&gt;category1&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;feed.xml&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Atom feed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+</content>
+</entry>
+<entry>
+<title>How do I add a copyright notice to my site?</title>
+<id>urn:md2blog:md2blog:How%20do%20I%20add%20a%20copyright%20notice%20to%20my%20site%3F</id>
+<link rel="alternate" href="posts/faq/copyright-notice.html"/>
+<updated>2021-11-03T00:00:00.000Z</updated>
+
+<content type="html">&lt;p&gt;The &lt;code&gt;footer.text&lt;/code&gt; property in &lt;code&gt;site.json&lt;/code&gt; can be used to add a plain text copyright notice to all pages of the site:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
+    ...
+    &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;footer&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;hljs-attr&quot;&gt;&amp;quot;text&amp;quot;&lt;/span&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&amp;quot;Copyright 2021 John Doe. All rights reserved.&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;hljs-punctuation&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;hljs-punctuation&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 </content>
 </entry>
 </feed>
