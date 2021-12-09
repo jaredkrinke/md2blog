@@ -23,11 +23,11 @@ export interface SiteMetadata {
         /** Color used only for syntax highlighting (generally for comments). */
         comment?: HexColor;
     };
-    /** Optional subtitle and top-level links (added to all pages). By default, the site description is used as the subtitle and links to the home page, archive, and non-post pages in the site root are shown. */
+    /** Optional subtitle and top-level links (added to all pages). By default, the site description is used as the subtitle and links to non-post pages in the site root are shown. */
     header?: {
         /** Optional subtitle (added to all pages). By default, the site description is used as the subtitle. */
         text?: string;
-        /** Optional map of top-level link names to relative paths or URLs. Use `index.html` to link to the home page and `posts/index.html` to link to the archive. By default, links to the home page, archive, and all non-post pages in the site root are shown. */
+        /** Optional map of top-level link names to relative paths or URLs. Use `index.html` to link to the home page and `posts/index.html` to link to the archive. By default, links to non-post pages in the site root are shown. */
         links?: {
             [key: string]: string;
         };

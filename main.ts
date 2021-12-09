@@ -79,6 +79,13 @@ function replaceLink(link: string) {
     return link.replace(/^([^/][^:]*)\.md(#[^#]+)?$/, "$1.html$2")
 }
 
+function capitalize(str: string): string {
+    if (str.length > 0) {
+        return str[0].toLocaleUpperCase() + str.substring(1);
+    }
+    return str;
+}
+
 const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
 
 await Goldsmith()
@@ -201,15 +208,15 @@ await Goldsmith()
         const text = site.header?.text ?? site.description;
         let links = site.header?.links;
         if (!links) {
-            links = site.header?.links ?? {
-                "home": "index.html",
-                "archive": "posts/index.html",
-            };
-
+            links = {};
             for (const file of metadata.collections!.nonPosts) {
                 const pathFromRoot = file.pathFromRoot!;
                 if (pathFromRoot !== "index.html") {
-                    const name = pathFromRoot.replace(/\.[^.]*$/, "");
+                    const name = capitalize(
+                        pathFromRoot
+                            .replace(/\.[^.]*$/, "")
+                            .replace("-", " ")
+                    );
                     links[name] = pathFromRoot;
                 }
             }

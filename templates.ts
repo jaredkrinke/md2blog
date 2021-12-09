@@ -254,7 +254,7 @@ ${{verbatim: o?.headVerbatim ?? ""}}
 <header>
 <h1><a href="${m.pathToRoot!}index.html">${m.site!.title!}</a></h1>
 ${{verbatim: m.site?.header?.text ? html`<p>${m.site.header.text}</p>` : ""}}
-${{verbatim: m.site?.header?.links ? html`<nav class="main"><ul>
+${{verbatim: (m.site?.header?.links && Object.keys(m.site.header.links).length > 0) ? html`<nav class="site"><ul>
 ${{verbatim: Object.entries(m.site.header.links).map(([name, link]) => html`<li><a href="${m.pathToRoot!}${link}">${name}</a></li>`).join("\n")}}
 </ul></nav>` : ""}}
 ${{verbatim: o?.navigationVerbatim ?? ""}}
@@ -276,7 +276,7 @@ interface PartialNavigationOptions {
 }
 
 function partialNavigation(m: GoldsmithLiteralHTMLLayoutContext, tags: string[], o?: PartialNavigationOptions): string {
-    return tags ? html`<nav>
+    return (tags && tags.length > 0) ? html`<nav>
 <strong>Topics:&nbsp;</strong>
 <ul>
 ${{verbatim: tags.map(t => (o?.isTagIndex && t === o.tag) ? html`<li>${o.tag}</li>` : html`<li><a href="${m.pathToRoot ?? ""}posts/${t}/index.html">${t}</a></li>`).join("\n")}}
