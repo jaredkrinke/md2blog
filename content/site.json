@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/jaredkrinke/md2blog/main/schema/site.schema.json",
     "title": "md2blog",
     "description": "A zero-config static site generator for dev blogs",
     "header": {
