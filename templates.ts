@@ -237,6 +237,10 @@ interface PartialBaseOptions {
     headVerbatim?: string;
 }
 
+function isRelativeLink(href: string): boolean {
+    return !(href.startsWith("/") || href.includes(":"));
+}
+
 const partialBase = (m: GoldsmithLiteralHTMLLayoutContext, mainVerbatim: string, o?: PartialBaseOptions) => 
 html`<!DOCTYPE html>
 <html lang="en">
@@ -255,7 +259,7 @@ ${{verbatim: o?.headVerbatim ?? ""}}
 <h1><a href="${m.pathToRoot!}index.html">${m.site!.title!}</a></h1>
 ${{verbatim: m.site?.header?.text ? html`<p>${m.site.header.text}</p>` : ""}}
 ${{verbatim: (m.site?.header?.links && Object.keys(m.site.header.links).length > 0) ? html`<nav class="site"><ul>
-${{verbatim: Object.entries(m.site.header.links).map(([name, link]) => html`<li><a href="${m.pathToRoot!}${link}">${name}</a></li>`).join("\n")}}
+${{verbatim: Object.entries(m.site.header.links).map(([name, link]) => html`<li><a href="${isRelativeLink(link) ? (m.pathToRoot! + link) : link}">${name}</a></li>`).join("\n")}}
 </ul></nav>` : ""}}
 ${{verbatim: o?.navigationVerbatim ?? ""}}
 </header>
