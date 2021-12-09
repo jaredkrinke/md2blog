@@ -1,4 +1,11 @@
 {
     "title": "md2blog",
-    "description": "A zero-config static site generator for dev blogs"
+    "description": "A zero-config static site generator for dev blogs",
+    "header": {
+        "links": {
+            "Home": "index.html",
+            "Quick Start": "quick-start.md",
+            "FAQ": "posts/faq/index.html"
+        }
+    }
 }

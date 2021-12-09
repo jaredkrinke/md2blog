@@ -97,8 +97,10 @@ Schema (official link [here](https://raw.githubusercontent.com/jaredkrinke/md2bl
 | --- | --- | --- | --- |
 | `title` | string | Required | |
 | `url` | string | Recommended | |
-| `description` | string | Optional | |
+| `description` | string | Optional | Used in meta tag and as the default subtitle |
 | `colors` | object | Optional | See [theme FAQ](posts/faq/themes.md) for details |
+| `header.text` | string | Optional | Overrides the default subtitle |
+| `header.links` | object | Optional | Site-wide navigation links ([more details here](posts/faq/additional-links.md)) |
 | `footer.text` | string | Optional | Footer text added to all pages of the site (recommended for [adding a copyright notice](posts/faq/copyright-notice.md)) |
 
 Note that the site *will* generally work without specifying a URL, but the Atom feed may not work in all feed readers because it will be forced to use relative links instead of absolute URLs.
