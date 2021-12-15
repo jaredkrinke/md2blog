@@ -1,6 +1,11 @@
 :root { color-scheme: dark; }
 html, body { margin: 0; }
 
+img {
+    max-width: 100%;
+    object-fit: contain;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -40,7 +45,6 @@ article > header > p { margin-top: 0em; }
 
 main { overflow: auto; }
 pre { overflow: auto; }
-article img, article svg { display: block; }
 
 code { font-size: 1rem; }
 pre code { font-size: 0.8125rem; }
@@ -63,8 +67,11 @@ h5 { font-size: 1rem; font-weight: normal; }
 
 :is(h1, h2, h3, h4, h5) :is(a:link, a:visited) { color: inherit; }
 
-body { background-color: #181818; }
-* { color: #c8c8c8; }
+body {
+    background-color: #181818;
+    color: #c8c8c8;
+}
+
 body > main { border-bottom: 1px solid #4b4b4b; }
 th { background-color: #4b4b4b; color: #dcdcdc; }
 pre, table, th, tr, td { border-color: #5f5f5f; }
@@ -90,13 +97,6 @@ h1, h2, h3, h4, h5 { color: #d97c57; }
 a:link { color: #59c5ff; }
 a:visited { color: #4eb7f0; }
 /* Also b5cea8 or 7dce52 or 7bbf56 */
-
-/* Diagrams */
-svg text { fill: #dcdcdc; }
-.diagram-transparent-white { stroke: none; fill: none; }
-ellipse.diagram-black-none { stroke: #a1a1a1; fill: #363636; }
-.diagram-black-none { stroke: #a1a1a1; fill:none; }
-.diagram-black-black { stroke: #a1a1a1; fill: #2c2c2c; }
 
 /* Syntax highlighting */
 .hljs-comment { color: #72a358; }

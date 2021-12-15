@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Are there guidelines for using images?</title>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet" href="../../css/style.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Are there guidelines for using images?",
+
+  "keywords": "faq",
+  "datePublished": "2021-10-30"
+}
+</script>
+</head>
+<body>
+<header>
+<h1><a href="../../index.html">md2blog</a></h1>
+<p>A zero-config static site generator for dev blogs</p>
+<nav class="site"><ul>
+<li><a href="../../index.html">Home</a></li>
+<li><a href="../../quick-start.html">Quick Start</a></li>
+<li><a href="../../posts/faq/index.html">FAQ</a></li>
+</ul></nav>
+<nav>
+<strong>Topics:&nbsp;</strong>
+<ul>
+<li><a href="../../posts/faq/index.html">faq</a></li>
+</ul>
+</nav>
+</header>
+<main>
+<article>
+<header>
+<h1><a href="../../posts/faq/images.html">Are there guidelines for using images?</a></h1>
+<p><time datetime="2021-10-30">October 30, 2021</time></p>
+</header>
+<p>Here are some notes and recommendations on using images within md2blog posts:</p>
+<h1 id="directory-structure">Directory structure</h1>
+<p>It&#39;s recommended that images (and other assets) be placed in an <code>assets/</code> directory in the content root, but this is not a requirement.</p>
+<p>Non-Markdown files (including all images) are simply copied from the input directory to the output directory, so images can be stored anywhere that is convenient.</p>
+<h1 id="image-sizes-and-formats">Image sizes and formats</h1>
+<p>md2blog currently does not process images and CSS is used to scale images to fit within the content area, so there are no strict requirements for images.</p>
+<p>Recommendations:</p>
+<ul>
+<li>Use a <strong>width of 1280</strong> for large images (the default layout is 640 pixels wide and high resolution screens use a scale factor of 2x)</li>
+<li>Use JPEG and PNG (and, if needed, GIF) formats (because they are the most widely supported)</li>
+</ul>
+<h1 id="image-syntax">Image syntax</h1>
+<p>Here&#39;s an example of Markdown&#39;s image syntax (used from <code>posts/category/sample.md</code>, referencing <code>assets/image.png</code>):</p>
+<pre><code class="language-markdown">![<span class="hljs-string">description</span>](<span class="hljs-link">../../assets/image.png</span>)
+</code></pre>
+<h2 id="image-links">Image links</h2>
+<p>Links and images can be composed to support image links (e.g. you could have a 1280x768 image for displaying inline that links to a very high resolution version of the image):</p>
+<pre><code class="language-markdown">[<span class="hljs-string">![description</span>](<span class="hljs-link">../../assets/lo-res.jpg</span>)](<span class="hljs-link">../../assets/hi-res.jpg</span>)
+</code></pre>
+<h2 id="customizing-img-tags">Customizing <code>&lt;img&gt;</code> tags</h2>
+<p>md2blog uses <a href="https://marked.js.org/">Marked</a> for Markdown processing and Marked does not support adding additional attributes (e.g. width and height) to images. Instead, inline HTML can be used.</p>
+
+<footer>
+<p>&crarr; <a href="../../index.html">Back to home</a></p>
+</footer>
+</article>
+</main>
+
+</body>
+</html>
