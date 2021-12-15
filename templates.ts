@@ -19,6 +19,11 @@ export interface GenerateCSSOptions {
 const cssTemplate = `:root { color-scheme: dark; }
 html, body { margin: 0; }
 
+img {
+    max-width: 100%;
+    object-fit: contain;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -58,7 +63,6 @@ article > header > p { margin-top: 0em; }
 
 main { overflow: auto; }
 pre { overflow: auto; }
-article img, article svg { display: block; }
 
 code { font-size: 1rem; }
 pre code { font-size: 0.8125rem; }
@@ -108,13 +112,6 @@ h1, h2, h3, h4, h5 { color: @textHeading; }
 a:link { color: @textLink; }
 a:visited { color: @textLinkVisited; }
 /* Also b5cea8 or 7dce52 or 7bbf56 */
-
-/* Diagrams */
-svg text { fill: @textLight; }
-.diagram-transparent-white { stroke: none; fill: none; }
-ellipse.diagram-black-none { stroke: @textDark; fill: @backgroundEvenLighter; }
-.diagram-black-none { stroke: @textDark; fill:none; }
-.diagram-black-black { stroke: @textDark; fill: @backgroundLighter; }
 
 /* Syntax highlighting */
 .hljs-comment { color: @textCommentDark; }
