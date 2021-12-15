@@ -85,8 +85,11 @@ h5 { font-size: 1rem; font-weight: normal; }
 
 :is(h1, h2, h3, h4, h5) :is(a:link, a:visited) { color: inherit; }
 
-body { background-color: @background; }
-* { color: @textDefault; }
+body {
+    background-color: @background;
+    color: @textDefault;
+}
+
 body > main { border-bottom: 1px solid @backgroundLightest; }
 th { background-color: @backgroundLightest; color: @textLight; }
 pre, table, th, tr, td { border-color: @border; }
