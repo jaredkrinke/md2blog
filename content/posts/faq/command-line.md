@@ -1,6 +1,6 @@
 ---
 title: What are all the command line options?
-date: 2021-10-30
+date: 2021-10-29
 ---
 ```txt
 $ md2blog --help
