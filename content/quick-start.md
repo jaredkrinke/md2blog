@@ -10,8 +10,10 @@ First, download the appropriate zip file for your platform from the [md2blog rel
 Alternatively, and *only if you have [Deno](https://deno.land/) and are familiar with it*, install the md2blog script (with desired [permissions](posts/faq/permissions.md)) using `deno install`:
 
 ```txt
-deno install --allow-read --allow-write --allow-net=localhost https://deno.land/x/md2blog/main.ts
+deno install -r -f --allow-read --allow-write --allow-net=localhost https://deno.land/x/md2blog/main.ts
 ```
+
+Note: `-r` and `-f` are used to replace any previous installation of md2blog.
 
 ## Create site from template
 After ensuring you can run md2blog (e.g. with `md2blog --help`), it's time to create your site (if md2blog doesn't run, check the [FAQ for likely problems](posts/faq/common-problems.md)).

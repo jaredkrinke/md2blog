@@ -30,3 +30,5 @@ deno install --allow-read=content,out --allow-write=out --allow-net=localhost ht
 ```
 
 Note that you can download a specific version or specify a version in the URL to ensure you get a particular version.
+
+Also note that you can add `-r -f` to re-download the latest version of md2blog and replace any existing installation of the script.
