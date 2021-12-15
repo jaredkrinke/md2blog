@@ -29,8 +29,9 @@
 <p>First, download the appropriate zip file for your platform from the <a href="https://github.com/jaredkrinke/md2blog/releases">md2blog releases page</a>. Then unzip the binary, and place it somewhere convenient (e.g. somewhere in <code>PATH</code>).</p>
 <h3 id="option-b-install-script-using-deno">Option B: install script using Deno</h3>
 <p>Alternatively, and <em>only if you have <a href="https://deno.land/">Deno</a> and are familiar with it</em>, install the md2blog script (with desired <a href="posts/faq/permissions.html">permissions</a>) using <code>deno install</code>:</p>
-<pre><code class="language-txt">deno install --allow-read --allow-write --allow-net=localhost https://deno.land/x/md2blog/main.ts
+<pre><code class="language-txt">deno install -r -f --allow-read --allow-write --allow-net=localhost https://deno.land/x/md2blog/main.ts
 </code></pre>
+<p>Note: <code>-r</code> and <code>-f</code> are used to replace any previous installation of md2blog.</p>
 <h2 id="create-site-from-template">Create site from template</h2>
 <p>After ensuring you can run md2blog (e.g. with <code>md2blog --help</code>), it&#39;s time to create your site (if md2blog doesn&#39;t run, check the <a href="posts/faq/common-problems.html">FAQ for likely problems</a>).</p>
 <p>You can start from scratch (using the information on the rest of this page) or continue reading this section to learn how to use the <a href="https://github.com/jaredkrinke/md2blog-template-site">md2blog-template-site repository</a>.</p>
