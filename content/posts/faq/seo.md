@@ -11,8 +11,8 @@ md2blog's search engine optimization efforts are mostly around creating simple p
 
 | JSON-LD property | Post YAML front matter property |
 | --- | --- |
-| `@context` | "https://schema.org" |
-| `@type` | "BlogPosting" |
+| `@context` | `"https://schema.org"` |
+| `@type` | `"BlogPosting"` |
 | `headline` | `title` |
 | `abstract` | `description` (if present) |
 | `keywords` | Category (parent directory) + `keywords` |
