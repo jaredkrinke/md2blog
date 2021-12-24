@@ -1,6 +1,6 @@
 ---
 title: How do I add navigation links (e.g. to projects or social media profiles)?
-date: 2021-11-04
+date: 2021-11-08
 ---
 md2blog supports adding additional links to the site header (for an example, see the "Home", "Quick Start", and "FAQ" links at the top of this page).
 

@@ -1,6 +1,6 @@
 ---
 title: How do I get support or report bugs?
-date: 2021-11-05
+date: 2021-11-09
 ---
 If you run into trouble, consult the following:
 
