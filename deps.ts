@@ -23,6 +23,7 @@ export { goldsmithWatch } from "https://deno.land/x/goldsmith@1.2.1/plugins/watc
 export { goldsmithServe } from "https://deno.land/x/goldsmith@1.2.1/plugins/serve/mod.ts";
 export { goldsmithFeed } from "https://deno.land/x/goldsmith@1.2.1/plugins/feed/mod.ts";
 export { goldsmithLinkChecker } from "https://deno.land/x/goldsmith@1.2.1/plugins/link_checker/mod.ts";
+export { version } from "./version.ts";
 
 declare module "https://deno.land/x/goldsmith@1.2.1/mod.ts" {
     interface GoldsmithMetadata {

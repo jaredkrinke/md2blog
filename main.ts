@@ -18,6 +18,7 @@ import {
     goldsmithLinkChecker,
     validatePostMetadata,
     validateSiteMetadata,
+    version as md2blogVersion,
 } from "./deps.ts";
 
 import { processFlags } from "https://deno.land/x/flags_usage@1.0.1/mod.ts";
@@ -27,7 +28,7 @@ import highlightJS from "./deps/highlightjs-11.3.1.js";
 import copyrightNotice from "./LICENSE.ts";
 
 // Command line arguments
-const { clean, drafts, input, output, serve, watch, copyright } = processFlags(Deno.args, {
+const { clean, drafts, input, output, serve, watch, version, copyright } = processFlags(Deno.args, {
     description: {
         clean: "Clean output directory before processing",
         drafts: "Include drafts in output",
@@ -35,7 +36,8 @@ const { clean, drafts, input, output, serve, watch, copyright } = processFlags(D
         watch: "Watch for changes and rebuild automatically",
         input: "Input directory",
         output: "Output directory",
-        copyright: "Display open source software copyright notices"
+        copyright: "Display open source software copyright notices",
+        version: "Display md2blog version information",
     },
     argument: {
         input: "dir",
@@ -51,6 +53,7 @@ const { clean, drafts, input, output, serve, watch, copyright } = processFlags(D
         "serve",
         "watch",
         "copyright",
+        "version",
     ],
     alias: {
         clean: "c",
@@ -68,6 +71,11 @@ const { clean, drafts, input, output, serve, watch, copyright } = processFlags(D
 
 if (copyright) {
     console.log(copyrightNotice);
+    Deno.exit(0);
+}
+
+if (version) {
+    console.log(md2blogVersion);
     Deno.exit(0);
 }
 
