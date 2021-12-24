@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>How do I get support or report bugs?</title>
+<title>How do I validate external links?</title>
 
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -12,10 +12,10 @@
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  "headline": "How do I get support or report bugs?",
+  "headline": "How do I validate external links?",
 
   "keywords": "faq",
-  "datePublished": "2021-11-09"
+  "datePublished": "2021-11-03"
 }
 </script>
 </head>
@@ -38,19 +38,13 @@
 <main>
 <article>
 <header>
-<h1><a href="../../posts/faq/support.html">How do I get support or report bugs?</a></h1>
-<p><time datetime="2021-11-09">November 9, 2021</time></p>
+<h1><a href="../../posts/faq/checking-external-links.html">How do I validate external links?</a></h1>
+<p><time datetime="2021-11-03">November 3, 2021</time></p>
 </header>
-<p>If you run into trouble, consult the following:</p>
-<ul>
-<li><a href="../../quick-start.html">Quick start</a></li>
-<li><a href="../index.html">FAQ</a></li>
-</ul>
-<p>If you don&#39;t find an answer:</p>
-<ul>
-<li><a href="https://github.com/jaredkrinke/md2blog/discussions">Post in the md2blog discussion board</a></li>
-<li>Or <a href="https://github.com/jaredkrinke/md2blog/issues">report an issue</a></li>
-</ul>
+<p>Currently, md2blog only validates internal links at build time (because validating external links can be complicated and slow).</p>
+<p>For now, the recommended solution is to periodically use a separate external link checking tool. If you have Deno installed, you can use the following tool (assuming you&#39;re at your repository root and the output folder is written to <code>out</code>):</p>
+<pre><code class="language-text">deno run --allow-read=. --allow-net https://deno.land/x/link_checker/check.ts -x -c 20 out/index.html
+</code></pre>
 
 <footer>
 <p>&crarr; <a href="../../index.html">Back to home</a></p>

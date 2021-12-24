@@ -6,7 +6,7 @@
 <author>
 <name>md2blog</name>
 </author>
-<updated>2021-12-21T16:54:01.576Z</updated>
+<updated>2021-12-24T21:30:39.132Z</updated>
 
 <entry>
 <title>What is causing this error?</title>
@@ -57,7 +57,7 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 <title>How do I get support or report bugs?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20get%20support%20or%20report%20bugs%3F</id>
 <link rel="alternate" href="posts/faq/support.html"/>
-<updated>2021-11-05T00:00:00.000Z</updated>
+<updated>2021-11-09T00:00:00.000Z</updated>
 
 <content type="html">&lt;p&gt;If you run into trouble, consult the following:&lt;/p&gt;
 &lt;ul&gt;
@@ -75,7 +75,7 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 <title>How do I add navigation links (e.g. to projects or social media profiles)?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20add%20navigation%20links%20(e.g.%20to%20projects%20or%20social%20media%20profiles)%3F</id>
 <link rel="alternate" href="posts/faq/additional-links.html"/>
-<updated>2021-11-04T00:00:00.000Z</updated>
+<updated>2021-11-08T00:00:00.000Z</updated>
 
 <content type="html">&lt;p&gt;md2blog supports adding additional links to the site header (for an example, see the &amp;quot;Home&amp;quot;, &amp;quot;Quick Start&amp;quot;, and &amp;quot;FAQ&amp;quot; links at the top of this page).&lt;/p&gt;
 &lt;p&gt;Links are specified on the &lt;code&gt;header.links&lt;/code&gt; property in &lt;code&gt;site.json&lt;/code&gt;. This property is an object where the keys are the link labels, and the values are the links (relative paths from the site root or absolute URLs).&lt;/p&gt;
@@ -124,7 +124,7 @@ From &amp;quot;posts/faq/common-problems.html&amp;quot; to &amp;quot;../../quick
 <title>How do I add a copyright notice to my site?</title>
 <id>urn:md2blog:md2blog:How%20do%20I%20add%20a%20copyright%20notice%20to%20my%20site%3F</id>
 <link rel="alternate" href="posts/faq/copyright-notice.html"/>
-<updated>2021-11-03T00:00:00.000Z</updated>
+<updated>2021-11-07T00:00:00.000Z</updated>
 
 <content type="html">&lt;p&gt;The &lt;code&gt;footer.text&lt;/code&gt; property in &lt;code&gt;site.json&lt;/code&gt; can be used to add a plain text copyright notice to all pages of the site:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;&lt;span class=&quot;hljs-punctuation&quot;&gt;{&lt;/span&gt;
