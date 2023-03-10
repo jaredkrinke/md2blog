@@ -1,0 +1,18 @@
+baseURL = 'http://example.org/'
+languageCode = 'en-us'
+title = 'My New Hugo Site'
+
+# Use "something.html" instead of "something/index.html"
+uglyURLs = true
+
+# Disable "tags" and "categories" pages, along with sitemap.xml
+disableKinds = ["term", "taxonomy", "sitemap"]
+
+# Don't produce feeds for every section
+[outputs]
+section = ["HTML"]
+
+# Name the feed "feed.xml" instead of "index.xml"
+[outputFormats.RSS]
+baseName = "feed"
+
