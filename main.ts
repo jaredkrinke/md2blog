@@ -28,7 +28,7 @@ import highlightJS from "./deps/highlightjs-11.3.1.js";
 import copyrightNotice from "./LICENSE.ts";
 
 // Command line arguments
-const { clean, drafts, input, output, serve, watch, version, copyright } = processFlags(Deno.args, {
+const { clean, drafts, execute, input, output, serve, watch, version, copyright } = processFlags(Deno.args, {
     description: {
         clean: "Clean output directory before processing",
         drafts: "Include drafts in output",
@@ -36,14 +36,17 @@ const { clean, drafts, input, output, serve, watch, version, copyright } = proce
         watch: "Watch for changes and rebuild automatically",
         input: "Input directory",
         output: "Output directory",
+        execute: "Command to run on build completion",
         copyright: "Display open source software copyright notices",
         version: "Display md2blog version information",
     },
     argument: {
+        execute: "command",
         input: "dir",
         output: "dir",
     },
     string: [
+        "execute",
         "input",
         "output",
     ],
@@ -58,6 +61,7 @@ const { clean, drafts, input, output, serve, watch, version, copyright } = proce
     alias: {
         clean: "c",
         drafts: "d",
+        execute: "x",
         input: "i",
         output: "o",
         serve: "s",
@@ -92,6 +96,37 @@ function capitalize(str: string): string {
         return str[0].toLocaleUpperCase() + str.substring(1);
     }
     return str;
+}
+
+function executeCallback(): void {
+    if (execute) {
+        Deno.run({ cmd: execute.split(" ") });
+    }
+}
+
+// Cache the results of syntax highlighting since that process is somewhat slow
+const highlightCache: { [language: string]: { [code: string]: string } } = {};
+function highlight(code: string, language?: string): string {
+    const key = language ?? "undefined";
+    let cache = highlightCache[key];
+    if (cache) {
+        const result = cache[code];
+        if (result) {
+            return result;
+        }
+    } else {
+        const newCache = {};
+        highlightCache[key] = newCache;
+        cache = newCache;
+    }
+
+    const result = (language && highlightJS.getLanguage(language))
+        ? highlightJS.highlight(code, { language }).value
+        :  highlightJS.highlightAuto(code).value;
+    
+    cache[code] = result;
+
+    return result;
 }
 
 const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
@@ -199,13 +234,7 @@ await Goldsmith({ lineEndings: "auto" })
     }))
     .use(goldsmithMarkdown({
         replaceLinks: link => replaceLink(link),
-        highlight: (code, language) => {
-            if (language && highlightJS.getLanguage(language)) {
-                return highlightJS.highlight(code, { language }).value;
-            } else {
-                return highlightJS.highlightAuto(code).value;
-            }
-        },
+        highlight,
     }))
     .use(goldsmithRootPaths())
     .use(goldsmithFeed({ getCollection: (metadata) => metadata.collections!.postsRecent! }))
@@ -246,7 +275,10 @@ await Goldsmith({ lineEndings: "auto" })
             defaultTemplate: "default",
         })
     }))
-    .use(goldsmithLinkChecker())
-    .use((serve || watch) ? goldsmithWatch() : noop) // --serve implies --watch
+    .use(goldsmithLinkChecker({ background: serve })) // Link-check asynchronously when serving
+    .use((serve || watch) ? goldsmithWatch({ onRebuildCompleted: executeCallback }) : noop) // --serve implies --watch
     .use(serve ? goldsmithServe() : noop)
     .build();
+
+executeCallback();
+
