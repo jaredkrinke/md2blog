@@ -96,7 +96,7 @@ function capitalize(str: string): string {
 
 const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
 
-await Goldsmith()
+await Goldsmith({ lineEndings: "auto" })
     .source(input)
     .destination(output)
     .clean(clean)
