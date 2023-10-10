@@ -1,7 +1,7 @@
 out/
 node_modules/
 .vscode/
-md2blog.exe
+*.exe
 md2blog
 *.zip
 npm/
