@@ -130,6 +130,7 @@ function highlight(code: string, language?: string): string {
 }
 
 const noop: GoldsmithPlugin = (_files, _goldsmith) => {};
+const watching = serve || watch; // --serve implies --watch
 
 await Goldsmith({ lineEndings: "auto" })
     .source(input)
@@ -235,6 +236,7 @@ await Goldsmith({ lineEndings: "auto" })
     .use(goldsmithMarkdown({
         replaceLinks: link => replaceLink(link),
         highlight,
+        cache: watching,
     }))
     .use(goldsmithRootPaths())
     .use(goldsmithFeed({ getCollection: (metadata) => metadata.collections!.postsRecent! }))
@@ -276,7 +278,7 @@ await Goldsmith({ lineEndings: "auto" })
         })
     }))
     .use(goldsmithLinkChecker({ background: serve })) // Link-check asynchronously when serving
-    .use((serve || watch) ? goldsmithWatch({ onRebuildCompleted: executeCallback }) : noop) // --serve implies --watch
+    .use(watching ? goldsmithWatch({ onRebuildCompleted: executeCallback, delayMS: 10 }) : noop)
     .use(serve ? goldsmithServe() : noop)
     .build();
 
